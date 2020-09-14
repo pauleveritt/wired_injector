@@ -1,0 +1,13 @@
+[run]
+source =
+    wired_injector
+    tests
+
+[paths]
+source =
+    src/wired_injector
+    */site-packages/wired_injector
+
+[report]
+show_missing = true
+precision = 2

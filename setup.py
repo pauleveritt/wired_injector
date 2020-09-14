@@ -20,6 +20,7 @@ docs_require = [
 ]
 
 tests_require = [
+    'coverage',
     'mypy',
     'pytest',
     'pytest-cov',

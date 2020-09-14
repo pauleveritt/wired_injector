@@ -1,4 +1,4 @@
-graft src/wired_injector_injector
+graft src/wired_injector
 graft tests
 graft docs
 prune docs/_build
