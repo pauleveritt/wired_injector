@@ -13,52 +13,59 @@ from dataclasses import Field, MISSING
 from inspect import Parameter
 from typing import NamedTuple, Optional, get_args, get_origin
 
+from wired_injector.operators import Operator
+
 
 class FieldInfo(NamedTuple):
     field_name: str
     field_type: typing.Type
-    service_type: Optional[typing.Type]
     default_value: Optional[typing.Any]
-    init: bool = True  # Dataclasses can flag init=False
+    init: bool  # Dataclasses can flag init=False
+    pipeline: typing.Tuple[Operator, ...]
 
 
 def function_field_info_factory(parameter: Parameter) -> FieldInfo:
-    annotation = parameter.annotation
+    field_type = parameter.annotation
 
-    # Is this a generic, such as Optional[ServiceContainer]?
-    origin = get_origin(annotation)
-    args = get_args(annotation)
-    if origin is typing.Union and args[-1] is type(None):
-        field_type = args[0]
-    else:
-        field_type = annotation
-
-    service_type = None
-
-    if parameter.default is getattr(inspect, '_empty'):
-        default_value = None
-    else:
-        default_value = parameter.default
-    return FieldInfo(
-        field_name=parameter.name,
-        field_type=field_type,
-        service_type=service_type,
-        default_value=default_value,
-    )
-
-
-def dataclass_field_info_factory(field: Field) -> FieldInfo:
-    field_type = field.type
+    # Using Annotation[] ??
+    pipeline = ()
+    if hasattr(field_type, '__metadata__'):
+        field_type, *pipeline = get_args(field_type)
 
     # Is this a generic, such as Optional[ServiceContainer]?
     origin = get_origin(field_type)
     args = get_args(field_type)
     if origin is typing.Union and args[-1] is type(None):
         field_type = args[0]
-    else:
-        field_type = field_type
 
-    service_type = None
+    # Default values
+    if parameter.default is getattr(inspect, '_empty'):
+        default_value = None
+    else:
+        default_value = parameter.default
+
+    return FieldInfo(
+        field_name=parameter.name,
+        field_type=field_type,
+        default_value=default_value,
+        init=False,
+        pipeline=tuple(pipeline),
+    )
+
+
+def dataclass_field_info_factory(field: Field) -> FieldInfo:
+    field_type = field.type
+
+    # Using Annotation[] ??
+    pipeline = ()
+    if hasattr(field_type, '__metadata__'):
+        field_type, *pipeline = get_args(field_type)
+
+    # Is this a generic, such as Optional[ServiceContainer]?
+    origin = get_origin(field_type)
+    args = get_args(field_type)
+    if origin is typing.Union and args[-1] is type(None):
+        field_type = args[0]
 
     if field.default is MISSING:
         default_value = None
@@ -67,7 +74,7 @@ def dataclass_field_info_factory(field: Field) -> FieldInfo:
     return FieldInfo(
         field_name=field.name,
         field_type=field_type,
-        service_type=service_type,
         default_value=default_value,
         init=field.init,
+        pipeline=tuple(pipeline),
     )
