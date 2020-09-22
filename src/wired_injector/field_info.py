@@ -48,7 +48,7 @@ def function_field_info_factory(parameter: Parameter) -> FieldInfo:
         field_name=parameter.name,
         field_type=field_type,
         default_value=default_value,
-        init=False,
+        init=True,
         pipeline=tuple(pipeline),
     )
 
