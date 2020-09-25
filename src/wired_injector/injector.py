@@ -54,14 +54,13 @@ class Injector:
                 args[field_name] = props[field_name]
                 continue
 
+            # Next: They are asking for the ServiceContainer
+            if field_type is ServiceContainer:
+                args[field_name] = self.container
+                continue
+
             # Next: no pipeline
             if not pipeline:
-                # # Asking for container
-
-                if field_type is ServiceContainer:
-                    args[field_name] = self.container
-                    continue
-
                 args[field_name] = self.container.get(field_type)
 
             else:

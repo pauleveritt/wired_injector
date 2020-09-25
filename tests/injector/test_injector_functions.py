@@ -39,7 +39,7 @@ def test_one_parameter_annotated(this_container):
 
     injector = Injector(this_container)
     result = injector(target)
-    assert result.name == 'Some Customer'
+    assert result.name == 'French Customer'
 
 
 def test_two_parameters_unannotated(this_container):
@@ -52,6 +52,8 @@ def test_two_parameters_unannotated(this_container):
 
 
 def test_two_parameters_annotated(this_container):
+    this_container.register_singleton(FrenchCustomer(), Customer)
+
     def target(
             container: ServiceContainer,
             french_customer: Annotated[FrenchCustomer, Get(Customer)],
@@ -71,6 +73,19 @@ def test_optional_unannotated(this_container):
     injector = Injector(this_container)
     result = injector(target)
     assert result.name == 'Some Customer'
+
+
+def test_optional_annotated(this_container):
+    this_container.register_singleton(FrenchCustomer(), Customer)
+
+    def target(
+            french_customer: Optional[Annotated[FrenchCustomer, Get(Customer)]],
+    ):
+        return french_customer
+
+    injector = Injector(this_container)
+    result = injector(target)
+    assert result.name == 'French Customer'
 
 
 def test_props_unannotated(this_container):

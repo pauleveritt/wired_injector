@@ -89,3 +89,16 @@ def test_annotation():
     assert field_infos[0].field_type is Customer
     assert field_infos[0].default_value is None
     assert field_infos[0].pipeline == (Get(FrenchCustomer),)
+
+
+def test_annotation_optional():
+    def target(
+            customer: Optional[Annotated[Customer, Get(FrenchCustomer)]]
+    ):
+        return 99
+
+    field_infos = _get_field_infos(target)
+    assert field_infos[0].field_name == 'customer'
+    assert field_infos[0].field_type is Customer
+    assert field_infos[0].default_value is None
+    assert field_infos[0].pipeline == (Get(FrenchCustomer),)
