@@ -8,20 +8,19 @@ downstream.
 """
 
 import inspect
-import typing
 from dataclasses import Field, MISSING
 from inspect import Parameter
-from typing import NamedTuple, Optional, get_args, get_origin
+from typing import NamedTuple, Optional, get_args, get_origin, Type, Any, Tuple, Union
 
 from wired_injector.operators import Operator
 
 
 class FieldInfo(NamedTuple):
     field_name: str
-    field_type: typing.Type
-    default_value: Optional[typing.Any]
+    field_type: Type
+    default_value: Optional[Any]
     init: bool  # Dataclasses can flag init=False
-    pipeline: typing.Tuple[Operator, ...]
+    pipeline: Tuple[Operator, ...]
 
 
 def function_field_info_factory(parameter: Parameter) -> FieldInfo:
@@ -35,7 +34,7 @@ def function_field_info_factory(parameter: Parameter) -> FieldInfo:
     # Is this a generic, such as Optional[ServiceContainer]?
     origin = get_origin(field_type)
     args = get_args(field_type)
-    if origin is typing.Union and args[-1] is type(None):
+    if origin is Union and args[-1] is type(None):
         field_type = args[0]
 
     # Default values
@@ -64,7 +63,7 @@ def dataclass_field_info_factory(field: Field) -> FieldInfo:
     # Is this a generic, such as Optional[ServiceContainer]?
     origin = get_origin(field_type)
     args = get_args(field_type)
-    if origin is typing.Union and args[-1] is type(None):
+    if origin is Union and args[-1] is type(None):
         field_type = args[0]
 
     if field.default is MISSING:

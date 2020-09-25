@@ -9,6 +9,14 @@ class Customer:
         self.name = 'Some Customer'
 
 
+class FrenchCustomer(Customer):
+    name: str
+
+    def __init__(self):
+        super().__init__()
+        self.name = 'French Customer'
+
+
 @pytest.fixture
 def this_container() -> ServiceContainer:
     r = ServiceRegistry()

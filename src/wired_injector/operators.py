@@ -19,7 +19,7 @@ class Get(Operator):
     lookup_type: Type
 
     def __call__(self, previous: Type, container: ServiceContainer):
-        return self.lookup_type
+        return container.get(self.lookup_type)
 
 
 @dataclass(frozen=True)

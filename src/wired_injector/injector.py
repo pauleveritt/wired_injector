@@ -4,6 +4,7 @@ from typing import Union, Type, Callable
 
 from wired import ServiceContainer
 from wired_injector.field_info import function_field_info_factory, dataclass_field_info_factory
+from wired_injector.operators import process_pipeline
 
 try:
     from typing import Annotated
@@ -40,24 +41,36 @@ class Injector:
         for field_info in field_infos:
             field_name = field_info.field_name
             field_type = field_info.field_type
+            pipeline = field_info.pipeline
 
             # ----  Special cases to bail out early on
-            # Field has init=False which means, don't initialize
+            # First: Field has init=False which means, don't initialize
             if field_info.init is False:
                 continue
 
-            # Next-highest precedence: this field occurs in the passed-in
-            # props. Check there first.
+            # Next: This field occurs in the passed-in props.
             if props and field_name in props:
                 prop_value = props[field_name]
                 args[field_name] = props[field_name]
                 continue
 
-            if field_type is ServiceContainer:
-                args[field_name] = self.container
-                continue
+            # Next: no pipeline
+            if not pipeline:
+                # # Asking for container
 
-            # customer: Customer
-            args[field_name] = self.container.get(field_type)
+                if field_type is ServiceContainer:
+                    args[field_name] = self.container
+                    continue
+
+                args[field_name] = self.container.get(field_type)
+
+            else:
+                # We have a pipeline, process it
+                field_value = process_pipeline(
+                    self.container,
+                    pipeline,
+                    field_type
+                )
+                args[field_name] = field_value
 
         return target(**args)

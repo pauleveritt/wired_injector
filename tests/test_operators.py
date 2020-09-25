@@ -2,13 +2,7 @@ import pytest
 from wired import ServiceRegistry, ServiceContainer
 from wired_injector.operators import Get, Attr, process_pipeline
 
-
-class Customer:
-    name = 'Customer'
-
-
-class FrenchCustomer(Customer):
-    name = 'French Customer'
+from .conftest import Customer, FrenchCustomer
 
 
 @pytest.fixture
@@ -23,8 +17,8 @@ def this_container() -> ServiceContainer:
 def test_get(this_container):
     get = Get(FrenchCustomer)
     previous = Customer
-    result = get(previous, this_container)
-    assert FrenchCustomer is result
+    result: FrenchCustomer = get(previous, this_container)
+    assert result.name == 'French Customer'
 
 
 def test_attr(this_container):
@@ -45,12 +39,12 @@ def test_get_then_attr(this_container):
 
 def test_pipeline_one(this_container):
     pipeline = (Get(FrenchCustomer),)
-    result = process_pipeline(
+    result: FrenchCustomer = process_pipeline(
         this_container,
         pipeline,
         start=Customer,
     )
-    assert FrenchCustomer is result
+    assert result.name == 'French Customer'
 
 
 def test_pipeline_two(this_container):
