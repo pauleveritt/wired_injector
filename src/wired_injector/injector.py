@@ -53,6 +53,11 @@ class Injector:
                 args[field_name] = props[field_name]
                 continue
 
-            args[field_name] = self.container
+            if field_type is ServiceContainer:
+                args[field_name] = self.container
+                continue
+
+            # customer: Customer
+            args[field_name] = self.container.get(field_type)
 
         return target(**args)
