@@ -27,6 +27,7 @@ def function_field_info_factory(parameter: Parameter) -> FieldInfo:
     field_type = parameter.annotation
 
     pipeline = ()
+
     # Is this a generic, such as Optional[ServiceContainer]?
     origin = get_origin(field_type)
     args = get_args(field_type)
@@ -55,16 +56,16 @@ def function_field_info_factory(parameter: Parameter) -> FieldInfo:
 def dataclass_field_info_factory(field: Field) -> FieldInfo:
     field_type = field.type
 
-    # Using Annotation[] ??
-    pipeline = ()
-    if hasattr(field_type, '__metadata__'):
-        field_type, *pipeline = get_args(field_type)
-
     # Is this a generic, such as Optional[ServiceContainer]?
     origin = get_origin(field_type)
     args = get_args(field_type)
     if origin is Union and args[-1] is type(None):
         field_type = args[0]
+
+    # Using Annotation[] ??
+    pipeline = ()
+    if hasattr(field_type, '__metadata__'):
+        field_type, *pipeline = get_args(field_type)
 
     if field.default is MISSING:
         default_value = None

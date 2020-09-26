@@ -19,7 +19,7 @@ def test_one_parameter_container(regular_container):
 
     injector = Injector(regular_container)
     target = injector(Target)
-    result = target()
+    result: RegularView = target()
     assert result.name == 'Regular View'
 
 
@@ -33,93 +33,121 @@ def test_one_parameter_field_type(regular_container):
 
     injector = Injector(regular_container)
     target = injector(Target)
-    result = target()
+    result: RegularView = target()
     assert result.name == 'Regular View'
 
 
 def test_one_parameter_annotated(french_container):
-    def target(
-            french_view: Annotated[
-                FrenchView,
-                Get(View),
-            ]
-    ):
-        return french_view
+    @dataclass
+    class Target:
+        french_view: Annotated[
+            FrenchView,
+            Get(View),
+        ]
+
+        def __call__(self):
+            return self.french_view
 
     injector = Injector(french_container)
-    result = injector(target)
+    target = injector(Target)
+    result: FrenchView = target()
     assert result.name == 'French View'
 
 
 def test_two_parameters_unannotated(regular_container):
-    def target(
-            container: ServiceContainer,
-            view: View,
-    ):
-        return view
+    @dataclass
+    class Target:
+        container: ServiceContainer
+        view: View
+
+        def __call__(self):
+            return self.view
 
     injector = Injector(regular_container)
-    result: RegularView = injector(target)
+    target = injector(Target)
+    result: RegularView = target()
     assert result.name == 'Regular View'
 
 
 def test_two_parameters_annotated(french_container):
-    def target(
-            container: ServiceContainer,
-            french_customer: Annotated[
-                FrenchView,
-                Get(View),
-            ],
-    ):
-        return french_customer
+    @dataclass
+    class Target:
+        container: ServiceContainer
+        french_customer: Annotated[
+            FrenchView,
+            Get(View),
+        ]
+
+        def __call__(self):
+            return self.french_customer
 
     injector = Injector(french_container)
-    result: FrenchView = injector(target)
+    target = injector(Target)
+    result: FrenchView = target()
     assert result.name == 'French View'
 
 
 def test_optional_unannotated(regular_container):
-    def target(container: Optional[ServiceContainer]):
-        view = container.get(View)
-        return view
+    @dataclass
+    class Target:
+        container: Optional[ServiceContainer]
+
+        def __call__(self):
+            view = self.container.get(View)
+            return view
 
     injector = Injector(regular_container)
-    result: RegularView = injector(target)
+    target = injector(Target)
+    result: RegularView = target()
     assert result.name == 'Regular View'
 
 
 def test_optional_annotated(french_container):
-    def target(
-            french_customer: Optional[Annotated[
-                FrenchView,
-                Get(View),
-            ]
-            ],
-    ):
-        return french_customer
+    @dataclass
+    class Target:
+        french_customer: Optional[Annotated[
+            FrenchView,
+            Get(View),
+        ]]
+
+        def __call__(self):
+            return self.french_customer
 
     injector = Injector(french_container)
-    result = injector(target)
+    target = injector(Target)
+    result: FrenchView = target()
     assert result.name == 'French View'
 
 
 def test_props_extra(regular_container):
     # Send an extra prop, not one that overrides an injected prop
-    def target(container: ServiceContainer, flag: int):
-        return flag
+    @dataclass
+    class Target:
+        container: ServiceContainer
+        flag: int
+
+        def __call__(self):
+            return self.flag
 
     injector = Injector(regular_container)
-    result = injector(target, flag=88)
+    target = injector(Target, flag=88)
+    result: int = target()
     assert 88 == result
 
 
 def test_props_override(regular_container):
     # Send a prop that overrides an injected prop
-    def target(container: ServiceContainer):
-        return container
+
+    @dataclass
+    class Target:
+        container: ServiceContainer
+
+        def __call__(self):
+            return self.container
 
     injector = Injector(regular_container)
-    result = injector(target, container=88)
+    target = injector(Target, container=88)
+    result: int = target()
     assert 88 == result
 
 
