@@ -1,9 +1,8 @@
 from dataclasses import dataclass
-from typing import Annotated, TypeVar
 
 import pytest
 from wired import ServiceRegistry, ServiceContainer
-from wired_injector import Injector, _target_type, TargetType, _inject_marker, Attr, Injected
+from wired_injector import Injector, _target_type, TargetType, Injected
 
 
 class Customer:
@@ -17,7 +16,8 @@ class FrenchCustomer:
 @pytest.fixture
 def this_container() -> ServiceContainer:
     r = ServiceRegistry()
-    r.register_service(Customer)
+    customer = Customer()
+    r.register_singleton(customer, Customer)
     c = r.create_container()
     return c
 
@@ -25,7 +25,8 @@ def this_container() -> ServiceContainer:
 @pytest.fixture
 def french_container() -> ServiceContainer:
     r = ServiceRegistry()
-    r.register_service(FrenchCustomer, for_=Customer)
+    french_customer = FrenchCustomer()
+    r.register_singleton(french_customer, Customer)
     c = r.create_container(context=FrenchCustomer())
     return c
 
@@ -109,9 +110,6 @@ def test_handle_field_injected_servicecontainer(this_injector):
 
 
 def test_handle_field_injected_customer(this_container, this_injector):
-    class Customer:
-        pass
-
     this_container.register_singleton(Customer(), Customer)
 
     def dummy_service(customer: Injected[Customer]):
@@ -119,69 +117,3 @@ def test_handle_field_injected_customer(this_container, this_injector):
 
     result = this_injector(target=dummy_service)
     assert Customer is result.__class__
-
-
-def test_handle_field_injected_customer_experiment(this_container, this_injector, this_injector2):
-    this_container.register_singleton(Customer(), Customer)
-
-    InjectT = TypeVar('InjectT')
-
-    def simple_factory(customer: Customer):
-        return customer
-
-    result = this_injector(target=simple_factory)
-    assert 'Base Customer' == result.name
-
-    # ==============================================================
-    # Let's start using Annotated so we can bring in the other
-    # features from the current injector.
-    def annotated_factory(customer: Annotated[Customer, _inject_marker]):
-        return customer
-
-    result = this_injector(target=annotated_factory)
-    assert 'Base Customer' == result.name
-
-    # ==============================================================
-    # The current injector lets the return type be different than
-    # the lookup type. We want the result to be FrenchCustomer,
-    # but ask the injector for the registered Customer.
-
-    def frenchcustomer_factory(customer: Annotated[FrenchCustomer, Customer, _inject_marker]):
-        # The injector looked up "Customer" which
-        return customer
-
-    result = this_injector2(target=frenchcustomer_factory)
-    assert 'French Customer' == result.name
-
-    # ==============================================================
-    # The current injector also lets you pluck off just an
-    # attribute, which is handy for building a props-based
-    # component system.
-
-    def attr_factory(customer_name: Annotated[str, Customer, Attr('name'), _inject_marker]):
-        # The injector looked up "Customer" which
-        return f'Name: {customer_name}'
-
-    result = this_injector2(target=attr_factory)
-    assert 'Name: French Customer' == result
-
-    # ==============================================================
-    # That's getting a little noisy. Would be nice to use a TypeAlias
-    # to at least cut down that last part. But the alias fails at
-    # runtime with:
-    #   TypeError: Too many parameters for typing.Annotated[~InjectT,
-    #      <object object at 0x10a4ce8c0>]; actual 3, expected 1
-    #
-    # mypy fails with:
-    # tests/test_593_injector.py:177: error: Bad number of arguments for type alias, expected: 1, given: 3
-    # tests/test_593_injector.py:177: error: Invalid type comment or annotation
-    # tests/test_593_injector.py:177: note: Suggestion: use Attr[...] instead of Attr(...)
-
-    Injected = Annotated[InjectT, _inject_marker]
-
-    def injected_factory(customer_name: Injected[str, Customer, Attr('name')]):
-        # The injector looked up "Customer" which
-        return f'Name: {customer_name}'
-
-    result = this_injector2(target=injected_factory)
-    assert 'Name: French Customer' == result

@@ -8,8 +8,10 @@ from .conftest import Customer, FrenchCustomer
 @pytest.fixture
 def this_container() -> ServiceContainer:
     registry = ServiceRegistry()
-    registry.register_service(Customer)
-    registry.register_service(FrenchCustomer)
+    customer = Customer()
+    registry.register_singleton(customer, Customer)
+    french_customer = FrenchCustomer()
+    registry.register_singleton(french_customer, FrenchCustomer)
     container = registry.create_container()
     return container
 

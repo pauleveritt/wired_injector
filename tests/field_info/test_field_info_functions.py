@@ -14,13 +14,7 @@ except ImportError:
     # Need the updated get_type_hints which allows include_extras=True
     from typing_extensions import Annotated, get_type_hints
 
-
-class Customer:
-    pass
-
-
-class FrenchCustomer(Customer):
-    pass
+from ..conftest import Customer, FrenchCustomer
 
 
 def _get_field_infos(target) -> List[FieldInfo]:
