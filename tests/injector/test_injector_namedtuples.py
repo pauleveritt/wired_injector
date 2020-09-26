@@ -1,5 +1,4 @@
-from dataclasses import dataclass
-from typing import Optional, Annotated
+from typing import Optional, Annotated, NamedTuple
 
 from wired import ServiceContainer
 from wired_injector.injector import Injector
@@ -9,8 +8,7 @@ from ..conftest import View, FrenchView, RegularView
 
 
 def test_one_parameter_container(regular_container):
-    @dataclass
-    class Target:
+    class Target(NamedTuple):
         container: ServiceContainer
 
         def __call__(self):
@@ -24,8 +22,7 @@ def test_one_parameter_container(regular_container):
 
 
 def test_one_parameter_field_type(regular_container):
-    @dataclass
-    class Target:
+    class Target(NamedTuple):
         view: View
 
         def __call__(self):
@@ -38,8 +35,7 @@ def test_one_parameter_field_type(regular_container):
 
 
 def test_one_parameter_annotated(french_container):
-    @dataclass
-    class Target:
+    class Target(NamedTuple):
         french_view: Annotated[
             FrenchView,
             Get(View),
@@ -55,8 +51,7 @@ def test_one_parameter_annotated(french_container):
 
 
 def test_two_parameters_unannotated(regular_container):
-    @dataclass
-    class Target:
+    class Target(NamedTuple):
         container: ServiceContainer
         view: View
 
@@ -70,8 +65,7 @@ def test_two_parameters_unannotated(regular_container):
 
 
 def test_two_parameters_annotated(french_container):
-    @dataclass
-    class Target:
+    class Target(NamedTuple):
         container: ServiceContainer
         french_customer: Annotated[
             FrenchView,
@@ -88,8 +82,7 @@ def test_two_parameters_annotated(french_container):
 
 
 def test_optional_unannotated(regular_container):
-    @dataclass
-    class Target:
+    class Target(NamedTuple):
         container: Optional[ServiceContainer]
 
         def __call__(self):
@@ -103,8 +96,7 @@ def test_optional_unannotated(regular_container):
 
 
 def test_optional_annotated(french_container):
-    @dataclass
-    class Target:
+    class Target(NamedTuple):
         french_customer: Optional[Annotated[
             FrenchView,
             Get(View),
@@ -121,8 +113,8 @@ def test_optional_annotated(french_container):
 
 def test_props_extra(regular_container):
     # Send an extra prop, not one that overrides an injected prop
-    @dataclass
-    class Target:
+
+    class Target(NamedTuple):
         container: ServiceContainer
         flag: int
 
@@ -138,8 +130,7 @@ def test_props_extra(regular_container):
 def test_props_override(regular_container):
     # Send a prop that overrides an injected prop
 
-    @dataclass
-    class Target:
+    class Target(NamedTuple):
         container: ServiceContainer
 
         def __call__(self):
@@ -154,8 +145,7 @@ def test_props_override(regular_container):
 def test_get_then_attr(regular_container):
     """ Pipeline: Get, Attr """
 
-    @dataclass
-    class Target:
+    class Target(NamedTuple):
         customer_name: Annotated[
             str,
             Get(View),
