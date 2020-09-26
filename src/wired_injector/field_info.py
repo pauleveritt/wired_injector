@@ -23,20 +23,34 @@ class FieldInfo(NamedTuple):
     pipeline: Tuple[Operator, ...]
 
 
-def function_field_info_factory(parameter: Parameter) -> FieldInfo:
-    field_type = parameter.annotation
+def _get_field_origin(field_type: Type) -> Type:
+    """ Helper to extract generic origin """
 
-    pipeline = ()
-
-    # Is this a generic, such as Optional[ServiceContainer]?
     origin = get_origin(field_type)
     args = get_args(field_type)
     if origin is Union and args[-1] is type(None):
-        field_type = args[0]
+        return args[0]
+    else:
+        return field_type
 
-    # Using Annotation[] ??
+
+def _get_pipeline(field_type: Type):
+    """ If using Annotation, get the pipeline information """
+    pipeline = ()
     if hasattr(field_type, '__metadata__'):
         field_type, *pipeline = get_args(field_type)
+
+    return field_type, pipeline
+
+
+def function_field_info_factory(parameter: Parameter) -> FieldInfo:
+    field_type = parameter.annotation
+
+    # Is this a generic, such as Optional[ServiceContainer]?
+    field_type = _get_field_origin(field_type)
+
+    # Using Annotation[] ??
+    field_type, pipeline = _get_pipeline(field_type)
 
     # Default values
     if parameter.default is getattr(inspect, '_empty'):
@@ -57,20 +71,14 @@ def dataclass_field_info_factory(field: Field) -> FieldInfo:
     field_type = field.type
 
     # Is this a generic, such as Optional[ServiceContainer]?
-    origin = get_origin(field_type)
-    args = get_args(field_type)
-    if origin is Union and args[-1] is type(None):
-        field_type = args[0]
+    field_type = _get_field_origin(field_type)
 
     # Using Annotation[] ??
-    pipeline = ()
-    if hasattr(field_type, '__metadata__'):
-        field_type, *pipeline = get_args(field_type)
+    field_type, pipeline = _get_pipeline(field_type)
 
-    if field.default is MISSING:
-        default_value = None
-    else:
-        default_value = field.default
+    # Default values
+    default_value = None if field.default is MISSING else field.default
+
     return FieldInfo(
         field_name=field.name,
         field_type=field_type,
