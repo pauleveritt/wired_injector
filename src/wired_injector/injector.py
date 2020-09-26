@@ -1,6 +1,6 @@
 from dataclasses import dataclass, is_dataclass, fields
 from inspect import signature
-from typing import Union, Type, Callable
+from typing import Union, Type, Callable, TypeVar
 
 from wired import ServiceContainer
 from wired_injector.field_info import function_field_info_factory, dataclass_field_info_factory
@@ -13,12 +13,14 @@ except ImportError:
     # Need the updated get_type_hints which allows include_extras=True
     from typing_extensions import Annotated, get_type_hints
 
+T = TypeVar('T')
+
 
 @dataclass
 class Injector:
     container: ServiceContainer
 
-    def __call__(self, target: Union[Type, Callable], **kwargs):
+    def __call__(self, target: Union[T, Callable], **kwargs) -> T:
         args = {}
         props = kwargs
         if is_dataclass(target):

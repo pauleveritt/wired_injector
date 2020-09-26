@@ -32,8 +32,8 @@ def french_container() -> ServiceContainer:
 
 
 @pytest.fixture
-def this_injector(this_container) -> Injector:
-    return Injector(container=this_container)
+def this_injector(regular_container) -> Injector:
+    return Injector(container=regular_container)
 
 
 @pytest.fixture
@@ -109,8 +109,8 @@ def test_handle_field_injected_servicecontainer(this_injector):
     assert 99 == result
 
 
-def test_handle_field_injected_customer(this_container, this_injector):
-    this_container.register_singleton(Customer(), Customer)
+def test_handle_field_injected_customer(regular_container, this_injector):
+    regular_container.register_singleton(Customer(), Customer)
 
     def dummy_service(customer: Injected[Customer]):
         return customer

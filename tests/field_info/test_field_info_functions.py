@@ -14,7 +14,7 @@ except ImportError:
     # Need the updated get_type_hints which allows include_extras=True
     from typing_extensions import Annotated, get_type_hints
 
-from ..conftest import Customer, FrenchCustomer
+from ..conftest import RegularCustomer, FrenchCustomer
 
 
 def _get_field_infos(target) -> List[FieldInfo]:
@@ -74,25 +74,25 @@ def test_default_value():
 
 def test_annotation():
     def target(
-            customer: Annotated[Customer, Get(FrenchCustomer)]
+            customer: Annotated[RegularCustomer, Get(FrenchCustomer)]
     ):
         return 99
 
     field_infos = _get_field_infos(target)
     assert field_infos[0].field_name == 'customer'
-    assert field_infos[0].field_type is Customer
+    assert field_infos[0].field_type is RegularCustomer
     assert field_infos[0].default_value is None
     assert field_infos[0].pipeline == (Get(FrenchCustomer),)
 
 
 def test_annotation_optional():
     def target(
-            customer: Optional[Annotated[Customer, Get(FrenchCustomer)]]
+            customer: Optional[Annotated[RegularCustomer, Get(FrenchCustomer)]]
     ):
         return 99
 
     field_infos = _get_field_infos(target)
     assert field_infos[0].field_name == 'customer'
-    assert field_infos[0].field_type is Customer
+    assert field_infos[0].field_type is RegularCustomer
     assert field_infos[0].default_value is None
     assert field_infos[0].pipeline == (Get(FrenchCustomer),)

@@ -1,59 +1,46 @@
-import pytest
-from wired import ServiceRegistry, ServiceContainer
 from wired_injector.operators import Get, Attr, process_pipeline
 
-from .conftest import Customer, FrenchCustomer
+from .conftest import View, FrenchView, FrenchCustomer, RegularCustomer, RegularView
 
 
-@pytest.fixture
-def this_container() -> ServiceContainer:
-    registry = ServiceRegistry()
-    customer = Customer()
-    registry.register_singleton(customer, Customer)
-    french_customer = FrenchCustomer()
-    registry.register_singleton(french_customer, FrenchCustomer)
-    container = registry.create_container()
-    return container
+def test_get(french_container):
+    get = Get(View)
+    previous = FrenchView
+    result: FrenchView = get(previous, french_container)
+    assert result.name == 'French View'
 
 
-def test_get(this_container):
-    get = Get(FrenchCustomer)
-    previous = Customer
-    result: FrenchCustomer = get(previous, this_container)
-    assert result.name == 'French Customer'
-
-
-def test_attr(this_container):
+def test_attr(regular_container):
     attr = Attr('name')
     previous = FrenchCustomer()
-    result = attr(previous, this_container)
+    result = attr(previous, regular_container)
     assert 'French Customer' == result
 
 
-def test_get_then_attr(this_container):
-    get = Get(FrenchCustomer)
-    start = Customer
-    result1 = get(start, this_container)
+def test_get_then_attr(french_container):
+    get = Get(View)
+    start = RegularView
+    result1 = get(start, french_container)
     attr = Attr('name')
-    result = attr(result1, this_container)
-    assert 'French Customer' == result
+    result = attr(result1, french_container)
+    assert 'French View' == result
 
 
-def test_pipeline_one(this_container):
-    pipeline = (Get(FrenchCustomer),)
-    result: FrenchCustomer = process_pipeline(
-        this_container,
+def test_pipeline_one(french_container):
+    pipeline = (Get(View),)
+    result: FrenchView = process_pipeline(
+        french_container,
         pipeline,
-        start=Customer,
+        start=RegularView,
     )
-    assert result.name == 'French Customer'
+    assert result.name == 'French View'
 
 
-def test_pipeline_two(this_container):
-    pipeline = (Get(FrenchCustomer), Attr('name'))
+def test_pipeline_two(french_container):
+    pipeline = (Get(View), Attr('name'))
     result = process_pipeline(
-        this_container,
+        french_container,
         pipeline,
-        start=Customer,
+        start=RegularView,
     )
-    assert 'French Customer' == result
+    assert result == 'French View'

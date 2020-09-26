@@ -22,8 +22,8 @@ def this_container() -> ServiceContainer:
 
 
 @pytest.fixture
-def this_injector(this_container) -> Injector:
-    return Injector(container=this_container)
+def this_injector(regular_container) -> Injector:
+    return Injector(container=regular_container)
 
 
 class DummyService:
