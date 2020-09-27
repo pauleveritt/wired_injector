@@ -134,9 +134,27 @@ def test_get_then_attr(regular_container):
 def test_default_value_unannotated(regular_container):
     class Foo:
         pass
-    def target(customer_name: Foo = 'Customer Name'):
-        return customer_name
+
+    def target(view_name: Foo = 'View Name'):
+        return view_name
 
     injector = Injector(regular_container)
     result: str = injector(target)
-    assert result == 'Customer Name'
+    assert result == 'View Name'
+
+
+def test_default_value_annotated(regular_container):
+    class Foo:
+        pass
+
+    def target(view_name: Annotated[
+        str,
+        Get(Foo),
+        Attr('name'),
+    ] = 'View Name'
+               ):
+        return view_name
+
+    injector = Injector(regular_container)
+    result: str = injector(target)
+    assert result == 'View Name'

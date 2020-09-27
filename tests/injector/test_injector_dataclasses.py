@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional, Annotated
+from typing import Optional, Annotated, Union
 
 from wired import ServiceContainer
 from wired_injector.injector import Injector
@@ -186,3 +186,41 @@ def test_get_then_attr(regular_container):
     target: Target = injector(Target)
     result: str = target()
     assert result == 'Regular View'
+
+
+def test_default_value_unannotated(regular_container):
+    class Foo:
+        pass
+
+    @dataclass
+    class Target:
+        view_name: Foo = 'View Name'
+
+        def __call__(self) -> Union[Foo, str]:
+            return self.view_name
+
+    injector = Injector(regular_container)
+    target: Target = injector(Target)
+    result: str = target()
+    assert result == 'View Name'
+
+
+def test_default_value_annotated(regular_container):
+    class Foo:
+        pass
+
+    @dataclass
+    class Target:
+        view_name: Annotated[
+            str,
+            Get(Foo),
+            Attr('name'),
+        ] = 'View Name'
+
+        def __call__(self):
+            return self.view_name
+
+    injector = Injector(regular_container)
+    target: Target = injector(Target)
+    result = target()
+    assert result == 'View Name'
