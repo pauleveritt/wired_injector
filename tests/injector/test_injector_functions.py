@@ -129,3 +129,14 @@ def test_get_then_attr(regular_container):
     injector = Injector(regular_container)
     result: RegularView = injector(target)
     assert result == 'Regular View'
+
+
+def test_default_value_unannotated(regular_container):
+    class Foo:
+        pass
+    def target(customer_name: Foo = 'Customer Name'):
+        return customer_name
+
+    injector = Injector(regular_container)
+    result: str = injector(target)
+    assert result == 'Customer Name'

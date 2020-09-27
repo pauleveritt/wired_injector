@@ -38,25 +38,24 @@ class FoundValueField(BaseException):
         self.value = args[0] if args else None
 
 
-class FieldRule(NamedTuple):
+class FieldIsInit(NamedTuple):
+    """ If this is a dataclass field with init=True, skip """
+
     field_info: FieldInfo
     props: Dict
     container: ServiceContainer
-
-    def __call__(self):
-        ...
-
-
-class FieldIsInit(FieldRule):
-    """ If this is a dataclass field with init=True, skip """
 
     def __call__(self):
         if self.field_info.init is False:
             raise SkipField()
 
 
-class FieldIsInProps(FieldRule):
+class FieldIsInProps(NamedTuple):
     """ If this field is in passed-in props, return that value """
+
+    field_info: FieldInfo
+    props: Dict
+    container: ServiceContainer
 
     def __call__(self):
         if self.props and self.field_info.field_name in self.props:
@@ -64,22 +63,35 @@ class FieldIsInProps(FieldRule):
             raise FoundValueField(prop_value)
 
 
-class FieldIsContainer(FieldRule):
+class FieldIsContainer(NamedTuple):
     """ If the field is asking for a ServiceContainer, return it """
+
+    field_info: FieldInfo
+    props: Dict
+    container: ServiceContainer
 
     def __call__(self):
         if self.field_info.field_type is ServiceContainer:
             raise FoundValueField(self.container)
 
 
-class FieldMakePipeline(FieldRule):
+class FieldMakePipeline(NamedTuple):
     """ If pipeline, process it, else, bail out """
+
+    field_info: FieldInfo
+    props: Dict
+    container: ServiceContainer
 
     def __call__(self):
         fi = self.field_info
         c = self.container
         if not fi.pipeline:
-            fv = c.get(fi.field_type)
+            try:
+                fv = c.get(fi.field_type)
+            except (TypeError, LookupError):
+                # We're probably looking up something like str. Since
+                # we might have a default value, let's skip this.
+                raise SkipField()
         else:
             fv = process_pipeline(
                 c,
@@ -92,7 +104,7 @@ class FieldMakePipeline(FieldRule):
 @dataclass
 class Injector:
     container: ServiceContainer
-    rules: Tuple[Type[FieldRule], ...] = (
+    rules: Tuple[Type[NamedTuple], ...] = (
         FieldIsInit,
         FieldIsInProps,
         FieldIsContainer,

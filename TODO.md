@@ -2,11 +2,12 @@
 
 ## Now
 
+- Default values (function, named tuple, typed dict, dataclass)
+
 ## Next
 
 ## Eventually
 
-- Default values (function, named tuple, typed dict, dataclass)
 - `wired.dataclasses.Context` sentinel
 - InitVar and postinit ideas
 - Allow `customers: Tuple[Customer]`
