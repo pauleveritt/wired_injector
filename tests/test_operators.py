@@ -1,6 +1,6 @@
-from wired_injector.operators import Get, Attr, process_pipeline
+from wired_injector.operators import Get, Attr, process_pipeline, Context
 
-from .conftest import View, FrenchView, FrenchCustomer, RegularCustomer, RegularView
+from .conftest import View, FrenchView, FrenchCustomer, RegularView
 
 
 def test_get(french_container):
@@ -8,6 +8,7 @@ def test_get(french_container):
     previous = FrenchView
     result: FrenchView = get(previous, french_container)
     assert result.name == 'French View'
+
 
 def test_get_failed(french_container):
     get = Get(View)
@@ -50,3 +51,13 @@ def test_pipeline_two(french_container):
         start=RegularView,
     )
     assert result == 'French View'
+
+
+def test_context(regular_container):
+    pipeline = (Context(),)
+    result = process_pipeline(
+        regular_container,
+        pipeline,
+        start=RegularView,
+    )
+    assert result == regular_container.context

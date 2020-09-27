@@ -3,7 +3,7 @@ from typing import Optional, Annotated, Union
 
 from wired import ServiceContainer
 from wired_injector.injector import Injector
-from wired_injector.operators import Get, Attr
+from wired_injector.operators import Get, Attr, Context
 
 from ..conftest import View, FrenchView, RegularView
 
@@ -224,3 +224,23 @@ def test_default_value_annotated(regular_container):
     target: Target = injector(Target)
     result = target()
     assert result == 'View Name'
+
+
+def test_context_then_attr(regular_container):
+    """ Pipeline: Context, Attr """
+
+    @dataclass
+    class Target:
+        customer_name: Annotated[
+            str,
+            Context(),
+            Attr('name'),
+        ]
+
+        def __call__(self):
+            return self.customer_name
+
+    injector = Injector(regular_container)
+    target: Target = injector(Target)
+    result = target()
+    assert result == 'Some Customer'
