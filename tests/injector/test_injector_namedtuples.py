@@ -7,6 +7,18 @@ from wired_injector.operators import Get, Attr
 from ..conftest import View, FrenchView, RegularView
 
 
+def test_no_parameters(regular_container):
+    class Target(NamedTuple):
+
+        def __call__(self) -> int:
+            return 99
+
+    injector = Injector(regular_container)
+    target = injector(Target)
+    result: int = target()
+    assert result == 99
+
+
 def test_one_parameter_container(regular_container):
     class Target(NamedTuple):
         container: ServiceContainer

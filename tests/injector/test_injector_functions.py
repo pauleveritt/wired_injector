@@ -12,6 +12,15 @@ def test_construction(regular_container):
     assert injector
 
 
+def test_no_parameters(regular_container):
+    def target():
+        return 99
+
+    injector = Injector(regular_container)
+    result: int = injector(target)
+    assert result == 99
+
+
 def test_one_parameter_container(regular_container):
     def target(container: ServiceContainer):
         view = container.get(View)
