@@ -1,6 +1,6 @@
 from dataclasses import dataclass, is_dataclass, fields
 from inspect import signature
-from typing import Union, Callable, TypeVar, Dict
+from typing import Union, Callable, TypeVar, Dict, NamedTuple, Tuple, Type
 
 from wired import ServiceContainer
 from wired_injector.field_info import function_field_info_factory, dataclass_field_info_factory, FieldInfo
@@ -38,50 +38,72 @@ class FoundValueField(BaseException):
         self.value = args[0] if args else None
 
 
-def is_init(fi: FieldInfo):
+class FieldRule(NamedTuple):
+    field_info: FieldInfo
+    props: Dict
+    container: ServiceContainer
+
+    def __call__(self):
+        ...
+
+
+class FieldIsInit(FieldRule):
     """ If this is a dataclass field with init=True, skip """
 
-    if fi.init is False:
-        raise SkipField()
+    def __call__(self):
+        if self.field_info.init is False:
+            raise SkipField()
 
 
-def is_in_props(fi: FieldInfo, p: Dict):
-    if p and fi.field_name in p:
-        prop_value = p[fi.field_name]
-        raise FoundValueField(prop_value)
+class FieldIsInProps(FieldRule):
+    """ If this field is in passed-in props, return that value """
+
+    def __call__(self):
+        if self.props and self.field_info.field_name in self.props:
+            prop_value = self.props[self.field_info.field_name]
+            raise FoundValueField(prop_value)
 
 
-def is_container(fi: FieldInfo, c: ServiceContainer):
-    """ Is the asked-for field type the container? """
+class FieldIsContainer(FieldRule):
+    """ If the field is asking for a ServiceContainer, return it """
 
-    if fi.field_type is ServiceContainer:
-        raise FoundValueField(c)
+    def __call__(self):
+        if self.field_info.field_type is ServiceContainer:
+            raise FoundValueField(self.container)
 
 
-def make_pipeline(fi: FieldInfo, c: ServiceContainer):
+class FieldMakePipeline(FieldRule):
     """ If pipeline, process it, else, bail out """
 
-    if not fi.pipeline:
-        fv = c.get(fi.field_type)
-    else:
-        fv = process_pipeline(
-            c,
-            fi.pipeline,
-            fi.field_type
-        )
-    raise FoundValueField(fv)
+    def __call__(self):
+        fi = self.field_info
+        c = self.container
+        if not fi.pipeline:
+            fv = c.get(fi.field_type)
+        else:
+            fv = process_pipeline(
+                c,
+                fi.pipeline,
+                fi.field_type
+            )
+        raise FoundValueField(fv)
 
 
 @dataclass
 class Injector:
     container: ServiceContainer
+    rules: Tuple[Type[FieldRule], ...] = (
+        FieldIsInit,
+        FieldIsInProps,
+        FieldIsContainer,
+        FieldMakePipeline,
+    )
 
     def __call__(self, target: Union[T, Callable], **kwargs) -> T:
         args = {}
         props = kwargs
         if is_dataclass(target):
             type_hints = get_type_hints(target, include_extras=True)
-            # noinspection PyDataclass
             fields_mapping = {f.name: f for f in fields(target)}
             field_infos = [
                 dataclass_field_info_factory(fields_mapping[field_name])
@@ -102,10 +124,10 @@ class Injector:
             pipeline = field_info.pipeline
 
             try:
-                is_init(field_info)
-                is_in_props(field_info, props)
-                is_container(field_info, self.container)
-                make_pipeline(field_info, self.container)
+                for rule in self.rules:
+                    # noinspection PyArgumentList
+                    r = rule(field_info, props, self.container)
+                    r()
             except SkipField:
                 continue
             except FoundValueField as exc:
