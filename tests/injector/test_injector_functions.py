@@ -48,7 +48,7 @@ def test_one_parameter_annotated(french_container):
         return french_view
 
     injector = Injector(french_container)
-    result = injector(target)
+    result: FrenchView = injector(target)
     assert result.name == 'French View'
 
 
@@ -79,11 +79,13 @@ def test_two_parameters_annotated(french_container):
 def test_optional_unannotated(regular_container):
     # TODO: Need Optional[str] = None default value
     def target(container: Optional[ServiceContainer]):
+        if container is None:
+            return None
         view = container.get(View)
         return view
 
     injector = Injector(regular_container)
-    result = injector(target)
+    result: RegularView = injector(target)
     assert result.name == 'Regular View'
 
 
@@ -99,7 +101,7 @@ def test_optional_annotated(french_container):
         return french_view
 
     injector = Injector(french_container)
-    result = injector(target)
+    result: FrenchView = injector(target)
     assert result.name == 'French View'
 
 
@@ -108,7 +110,7 @@ def test_props_unannotated(regular_container):
         return container
 
     injector = Injector(regular_container)
-    result = injector(target, container=88)
+    result: int = injector(target, container=88)
     assert 88 == result
 
 
@@ -125,5 +127,5 @@ def test_get_then_attr(regular_container):
         return view_name
 
     injector = Injector(regular_container)
-    result = injector(target)
+    result: RegularView = injector(target)
     assert result == 'Regular View'

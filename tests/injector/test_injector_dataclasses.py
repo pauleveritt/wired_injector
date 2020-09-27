@@ -16,7 +16,7 @@ def test_no_parameters(regular_container):
             return 99
 
     injector = Injector(regular_container)
-    target = injector(Target)
+    target: Target = injector(Target)
     result: int = target()
     assert result == 99
 
@@ -31,7 +31,7 @@ def test_one_parameter_container(regular_container):
             return view
 
     injector = Injector(regular_container)
-    target = injector(Target)
+    target: Target = injector(Target)
     result: RegularView = target()
     assert result.name == 'Regular View'
 
@@ -45,7 +45,7 @@ def test_one_parameter_field_type(regular_container):
             return self.view
 
     injector = Injector(regular_container)
-    target = injector(Target)
+    target: Target = injector(Target)
     result: RegularView = target()
     assert result.name == 'Regular View'
 
@@ -62,7 +62,7 @@ def test_one_parameter_annotated(french_container):
             return self.french_view
 
     injector = Injector(french_container)
-    target = injector(Target)
+    target: Target = injector(Target)
     result: FrenchView = target()
     assert result.name == 'French View'
 
@@ -77,7 +77,7 @@ def test_two_parameters_unannotated(regular_container):
             return self.view
 
     injector = Injector(regular_container)
-    target = injector(Target)
+    target: Target = injector(Target)
     result: RegularView = target()
     assert result.name == 'Regular View'
 
@@ -95,7 +95,7 @@ def test_two_parameters_annotated(french_container):
             return self.french_customer
 
     injector = Injector(french_container)
-    target = injector(Target)
+    target: Target = injector(Target)
     result: FrenchView = target()
     assert result.name == 'French View'
 
@@ -103,16 +103,20 @@ def test_two_parameters_annotated(french_container):
 def test_optional_unannotated(regular_container):
     @dataclass
     class Target:
-        container: Optional[ServiceContainer]
+        container: Optional[ServiceContainer] = None
 
-        def __call__(self):
-            view = self.container.get(View)
-            return view
+        def __call__(self) -> Optional[View]:
+            if self.container is None:
+                return None
+            else:
+                view = self.container.get(View)
+                return view
 
     injector = Injector(regular_container)
-    target = injector(Target)
-    result: RegularView = target()
-    assert result.name == 'Regular View'
+    target: Target = injector(Target)
+    result = target()
+    if result is not None:
+        assert result.name == 'Regular View'
 
 
 def test_optional_annotated(french_container):
@@ -127,7 +131,7 @@ def test_optional_annotated(french_container):
             return self.french_customer
 
     injector = Injector(french_container)
-    target = injector(Target)
+    target: Target = injector(Target)
     result: FrenchView = target()
     assert result.name == 'French View'
 
@@ -143,7 +147,7 @@ def test_props_extra(regular_container):
             return self.flag
 
     injector = Injector(regular_container)
-    target = injector(Target, flag=88)
+    target: Target = injector(Target, flag=88)
     result: int = target()
     assert 88 == result
 
@@ -159,8 +163,8 @@ def test_props_override(regular_container):
             return self.container
 
     injector = Injector(regular_container)
-    target = injector(Target, container=88)
-    result: int = target()
+    target: Target = injector(Target, container=88)
+    result = target()
     assert 88 == result
 
 
@@ -179,6 +183,6 @@ def test_get_then_attr(regular_container):
             return self.customer_name
 
     injector = Injector(regular_container)
-    target = injector(Target)
+    target: Target = injector(Target)
     result: str = target()
     assert result == 'Regular View'

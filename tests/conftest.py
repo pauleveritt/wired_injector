@@ -1,3 +1,5 @@
+from typing import Protocol
+
 import pytest
 from wired import ServiceContainer, ServiceRegistry
 
@@ -16,18 +18,18 @@ class FrenchCustomer:
         self.name = 'French Customer'
 
 
-class View:
-    pass
+class View(Protocol):
+    name: str
 
 
-class RegularView:
+class RegularView(View):
     name: str
 
     def __init__(self):
         self.name = 'Regular View'
 
 
-class FrenchView:
+class FrenchView(View):
     name: str
 
     def __init__(self):
