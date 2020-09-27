@@ -4,17 +4,16 @@
 
 ## Next
 
-- InitVar and postinit ideas
+- Allow `customers: Tuple[Customer]`
 
 ## Eventually
 
-- Allow `customers: Tuple[Customer]`
-- What should happen when `Get` fails? Fallback to default, or fail?
 - Very friendly exceptions that tell the field and target very specifically
 - Operators: `Key`, `Call`, `AsDict`
 - Ensure mypy is happy
 - Handle Union[Foo, str]
 - Tests that cover TypeDict, regular classes
+- InitVar and postinit ideas
 
 ## Done
 
@@ -23,3 +22,4 @@
 - Eliminate previous 593 stuff
 - Default values (function, named tuple, typed dict, dataclass)
 - `Context` operator
+- What should happen when `Get` fails? Fallback to default, or fail?
