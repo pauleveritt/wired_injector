@@ -8,11 +8,20 @@ downstream.
 """
 
 import inspect
+import sys
 from dataclasses import Field, MISSING
 from inspect import Parameter
-from typing import NamedTuple, Optional, get_args, get_origin, Type, Any, Tuple, Union
+from typing import NamedTuple, Optional, get_origin, Type, Any, Tuple, Union
 
 from wired_injector.operators import Operator
+
+# get_args is augmented in Python 3.9. We need to use
+# typing_extensions if not running on an older version
+if sys.version_info[:3] > (3,9):
+    from typing import get_args
+else:
+    # noinspection PyUnresolvedReferences
+    from typing_extensions import get_args
 
 
 class FieldInfo(NamedTuple):
