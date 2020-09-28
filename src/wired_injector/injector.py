@@ -1,5 +1,6 @@
 from dataclasses import dataclass, is_dataclass, fields
-from inspect import signature
+from inspect import signature, getmodule
+import typing
 from typing import Union, Callable, TypeVar, Dict, NamedTuple, Tuple, Type, Any, Optional
 
 from wired import ServiceContainer
@@ -95,6 +96,11 @@ class FieldMakePipeline(NamedTuple):
         fi = self.field_info
         c = self.container
         if not fi.pipeline:
+            if getmodule(fi.field_type) is typing:
+                # Test this because, when you have a field like:
+                #   names: Tuple[str, ...] = ('Name 1',)
+                # ...then wired tries to do obj.__qualname__ and fails
+                raise SkipField()
             try:
                 fv = c.get(fi.field_type)
             except (TypeError, LookupError):
