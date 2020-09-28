@@ -23,3 +23,4 @@
 - Default values (function, named tuple, typed dict, dataclass)
 - `Context` operator
 - What should happen when `Get` fails? Fallback to default, or fail?
+- System props

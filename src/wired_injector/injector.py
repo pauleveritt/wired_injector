@@ -1,6 +1,6 @@
 from dataclasses import dataclass, is_dataclass, fields
 from inspect import signature
-from typing import Union, Callable, TypeVar, Dict, NamedTuple, Tuple, Type
+from typing import Union, Callable, TypeVar, Dict, NamedTuple, Tuple, Type, Any, Optional
 
 from wired import ServiceContainer
 from wired_injector.field_info import function_field_info_factory, dataclass_field_info_factory, FieldInfo
@@ -44,6 +44,7 @@ class FieldIsInit(NamedTuple):
     field_info: FieldInfo
     props: Dict
     container: ServiceContainer
+    system_props: Optional[Dict] = None
 
     def __call__(self):
         if self.field_info.init is False:
@@ -51,15 +52,21 @@ class FieldIsInit(NamedTuple):
 
 
 class FieldIsInProps(NamedTuple):
-    """ If this field is in passed-in props, return that value """
+    """ If field in passed-in props or system props, return value """
 
     field_info: FieldInfo
     props: Dict
     container: ServiceContainer
+    system_props: Optional[Dict] = None
 
     def __call__(self):
         if self.props and self.field_info.field_name in self.props:
+            # Props have precedence
             prop_value = self.props[self.field_info.field_name]
+            raise FoundValueField(prop_value)
+        elif self.system_props and self.field_info.field_name in self.system_props:
+            # If the "system" passes in props behind the scenes, use it
+            prop_value = self.system_props[self.field_info.field_name]
             raise FoundValueField(prop_value)
 
 
@@ -69,6 +76,7 @@ class FieldIsContainer(NamedTuple):
     field_info: FieldInfo
     props: Dict
     container: ServiceContainer
+    system_props: Optional[Dict] = None
 
     def __call__(self):
         if self.field_info.field_type is ServiceContainer:
@@ -81,6 +89,7 @@ class FieldMakePipeline(NamedTuple):
     field_info: FieldInfo
     props: Dict
     container: ServiceContainer
+    system_props: Optional[Dict] = None
 
     def __call__(self):
         fi = self.field_info
@@ -111,7 +120,12 @@ class Injector:
         FieldMakePipeline,
     )
 
-    def __call__(self, target: Union[T, Callable], **kwargs) -> T:
+    def __call__(
+            self,
+            target: Union[T, Callable],
+            system_props: Dict[str, Any] = None,
+            **kwargs,
+    ) -> T:
         args = {}
         props = kwargs
         if is_dataclass(target):
@@ -138,7 +152,8 @@ class Injector:
             try:
                 for rule in self.rules:
                     # noinspection PyArgumentList
-                    r = rule(field_info, props, self.container)
+                    r = rule(field_info, props, self.container, system_props)
+                    # noinspection PyCallingNonCallable
                     r()
             except SkipField:
                 continue

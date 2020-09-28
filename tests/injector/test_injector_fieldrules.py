@@ -50,6 +50,48 @@ def test_is_in_props_in_props(regular_container):
     assert exc.value.value == 9999
 
 
+def test_is_in_system_props_no_system_props(regular_container):
+    # No system props
+    fi = FieldInfo('foo', str, None, True, ())
+    props = {}
+    system_props = {}
+    field_is_props = FieldIsInProps(fi, props, regular_container, system_props)
+    result = field_is_props()
+    assert None is result
+
+
+def test_is_in_system_props_not_in(regular_container):
+    # There are system props, but the field_name 'foo' isn't in it
+    fi = FieldInfo('foo', str, None, True, ())
+    props = {}
+    system_props = dict(notfoo=1)
+    field_is_props = FieldIsInProps(fi, props, regular_container, system_props)
+    result = field_is_props()
+    assert None is result
+
+
+def test_is_in_system_props_in_props(regular_container):
+    # There are system props passed in and the field_value is in it
+    fi = FieldInfo('foo', str, None, True, ())
+    props = {}
+    system_props = dict(foo=9999)
+    field_is_props = FieldIsInProps(fi, props, regular_container, system_props)
+    with pytest.raises(FoundValueField) as exc:
+        result = field_is_props()
+    assert exc.value.value == 9999
+
+
+def test_is_in_both_props_and_system_props(regular_container):
+    # Props has higher precedence than system props
+    fi = FieldInfo('foo', str, None, True, ())
+    props = dict(foo=1111)
+    system_props = dict(foo=9999)
+    field_is_props = FieldIsInProps(fi, props, regular_container, system_props)
+    with pytest.raises(FoundValueField) as exc:
+        result = field_is_props()
+    assert exc.value.value == 1111
+
+
 def test_is_not_container(regular_container):
     # The field is NOT asking for field_type=ServiceContainer
     fi = FieldInfo('foo', str, None, True, ())

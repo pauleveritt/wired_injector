@@ -4,7 +4,7 @@ from wired import ServiceContainer
 from wired_injector.injector import Injector
 from wired_injector.operators import Get, Attr, Context
 
-from ..conftest import RegularCustomer, FrenchCustomer, View, RegularView, FrenchView
+from ..conftest import RegularCustomer, View, RegularView, FrenchView
 
 
 def test_construction(regular_container):
@@ -105,7 +105,16 @@ def test_optional_annotated(french_container):
     assert result.name == 'French View'
 
 
-def test_props_unannotated(regular_container):
+def test_props_unannotated_untyped(regular_container):
+    def target(container):
+        return container
+
+    injector = Injector(regular_container)
+    result: int = injector(target, container=88)
+    assert 88 == result
+
+
+def test_props_unannotated_typed(regular_container):
     def target(container: ServiceContainer):
         return container
 
@@ -175,3 +184,13 @@ def test_context_then_attr(regular_container):
     injector = Injector(regular_container)
     result: RegularView = injector(target)
     assert result == 'Some Customer'
+
+
+def test_system_props_unannotated_untyped(regular_container):
+    def target(children):
+        return children
+
+    injector = Injector(regular_container)
+    system_props = dict(children=77)
+    result: int = injector(target, system_props=system_props)
+    assert 77 == result
