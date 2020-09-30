@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+
 from wired_injector.operators import Get, Attr, process_pipeline, Context
 
 from .conftest import View, FrenchView, FrenchCustomer, RegularView
@@ -51,6 +53,24 @@ def test_pipeline_two(french_container):
         start=RegularView,
     )
     assert result == 'French View'
+
+
+def test_pipeline_two_attr_attr(french_container):
+    @dataclass
+    class Customer:
+        name: str = 'Some Customer'
+
+    @dataclass
+    class Config:
+        customer: Customer = Customer()
+
+    pipeline = (Attr('customer'), Attr('name'))
+    result = process_pipeline(
+        french_container,
+        pipeline,
+        start=Config(),
+    )
+    assert result == 'Some Customer'
 
 
 def test_context(regular_container):
