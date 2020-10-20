@@ -12,6 +12,13 @@ def test_get(french_container):
     assert result.name == 'French View'
 
 
+def test_get_attr(french_container):
+    get = Get(View, attr='name')
+    previous = FrenchView
+    result: FrenchView = get(previous, french_container)
+    assert result == 'French View'
+
+
 def test_get_failed(french_container):
     get = Get(View)
     previous = FrenchView

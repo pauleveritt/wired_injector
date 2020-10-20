@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Type, Any, Tuple
+from typing import Type, Any, Tuple, Optional
 
 from wired import ServiceContainer
 
@@ -19,12 +19,17 @@ class Operator:
 class Get(Operator):
     """ Which service in the container to get """
 
-    __slots__ = ('lookup_type',)
+    # Can't do slots because of default value
     lookup_type: Type
+    attr: Optional[str] = None
 
     def __call__(self, previous: Type, container: ServiceContainer):
         try:
-            return container.get(self.lookup_type)
+            service = container.get(self.lookup_type)
+            if self.attr is None:
+                return service
+            else:
+                return getattr(service, self.attr)
         except LookupError:
             # We don't want to just crash with a LookupError, as the
             # field might have a default. Thus, bail out of processing
