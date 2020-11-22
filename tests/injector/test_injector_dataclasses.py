@@ -46,7 +46,7 @@ def test_one_parameter_field_type(regular_container):
 
     injector = Injector(regular_container)
     target: Target = injector(Target)
-    result: RegularView = target()
+    result: View = target()
     assert result.name == 'Regular View'
 
 
@@ -78,7 +78,7 @@ def test_two_parameters_unannotated(regular_container):
 
     injector = Injector(regular_container)
     target: Target = injector(Target)
-    result: RegularView = target()
+    result: View = target()
     assert result.name == 'Regular View'
 
 

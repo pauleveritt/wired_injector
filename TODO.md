@@ -2,6 +2,8 @@
 
 ## Now
 
+- Make a `@injectable` decorator
+
 ## Next
 
 - Allow `customers: Tuple[Customer]`
