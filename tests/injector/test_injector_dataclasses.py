@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from typing import Optional, Annotated, Union
 
-from wired import ServiceContainer
+from wired import ServiceContainer, ServiceRegistry
+from wired_injector.decorators import register_injectable
 from wired_injector.injector import Injector
 from wired_injector.operators import Get, Attr, Context
 
@@ -186,6 +187,35 @@ def test_get_then_attr(regular_container):
     target: Target = injector(Target)
     result: str = target()
     assert result == 'Regular View'
+
+
+def test_get_then_attr_double_injected(regular_container):
+    """ An injected attribute is itself injected """
+
+    @dataclass
+    class URL:
+        name: str = 'Some URL'
+
+        @property
+        def caps_name(self):
+            return self.name.upper()
+
+    @dataclass
+    class Target:
+        customer_name: Annotated[
+            str,
+            Get(URL),
+            Attr('caps_name'),
+        ]
+
+    registry = ServiceRegistry()
+    register_injectable(registry, URL)
+    register_injectable(registry, Target)
+    this_container = registry.create_container()
+    injector = Injector(this_container)
+    this_container.register_singleton(injector, Injector)
+    target: Target = injector(Target)
+    assert 'SOME URL' == target.customer_name
 
 
 def test_default_value_unannotated(regular_container):

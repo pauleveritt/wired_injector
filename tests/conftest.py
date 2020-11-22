@@ -28,12 +28,18 @@ class RegularView(View):
     def __init__(self):
         self.name = 'Regular View'
 
+    def __call__(self):
+        return self.name
+
 
 class FrenchView(View):
     name: str
 
     def __init__(self):
         self.name = 'French View'
+
+    def __call__(self):
+        return self.name
 
 
 def regular_view_factory(container):

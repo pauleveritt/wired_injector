@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from inspect import isclass
 from typing import Type, Any, Tuple, Optional
 
 from wired import ServiceContainer
@@ -26,6 +27,13 @@ class Get(Operator):
     def __call__(self, previous: Type, container: ServiceContainer):
         try:
             service = container.get(self.lookup_type)
+            if isclass(service):
+                # This "service" is actually injectable, instead of
+                # a plain factory. At the moment, we just have a class.
+                # Use this injector instance to turn it into an instance.
+                from wired_injector import Injector
+                injector = container.get(Injector)
+                service = injector(service)
             if self.attr is None:
                 return service
             else:
