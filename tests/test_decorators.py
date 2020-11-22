@@ -63,6 +63,8 @@ def registry() -> ServiceRegistry:
 class URL:
     name: str = 'Some URL'
 
+    def message(self):
+        return self.name
 
 @injectable()
 @dataclass
@@ -105,4 +107,4 @@ def test_injectable_url(registry):
     container = registry.create_container()
     injector = Injector(container)
     show_url: ShowURL = injector(ShowURL)
-    assert 'Some URL' == show_url.url.name
+    assert 'Some URL' == show_url.url.message()

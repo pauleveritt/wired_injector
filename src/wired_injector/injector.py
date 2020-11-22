@@ -1,6 +1,6 @@
-from dataclasses import dataclass, is_dataclass, fields
-from inspect import signature, getmodule
 import typing
+from dataclasses import dataclass, is_dataclass, fields
+from inspect import signature, getmodule, isclass
 from typing import Union, Callable, TypeVar, Dict, NamedTuple, Tuple, Type, Any, Optional
 
 from wired import ServiceContainer
@@ -132,6 +132,7 @@ class Injector:
             system_props: Dict[str, Any] = None,
             **kwargs,
     ) -> T:
+
         args = {}
         props = kwargs
         if is_dataclass(target):
@@ -164,7 +165,13 @@ class Injector:
             except SkipField:
                 continue
             except FoundValueField as exc:
-                args[field_name] = exc.value
+                this_value = exc.value
+                if isclass(this_value):
+                    # This "service" is actually injectable, instead of
+                    # a plain factory. At the moment, we just have a class.
+                    # Use this injector instance to turn it into an instance.
+                    this_value = self(this_value)
+                args[field_name] = this_value
                 continue
 
         return target(**args)
