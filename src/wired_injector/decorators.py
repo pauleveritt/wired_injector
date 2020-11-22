@@ -13,19 +13,19 @@ def adherent(c: Callable[[], protocol]) -> Callable[[Type[protocol]], Type[proto
     return decor
 
 
-def register_component(
+def register_injectable(
         registry: ServiceRegistry,
         for_: Callable,
         target: Callable = None,
         context: Optional[Any] = None
 ):
-    """ Imperative form of the component decorator """
+    """ Imperative form of the injectable decorator """
 
-    def component_factory(container: ServiceContainer):
+    def injectable_factory(container: ServiceContainer):
         return target if target else for_
 
     registry.register_factory(
-        component_factory, for_, context=context
+        injectable_factory, for_, context=context
     )
 
 
@@ -39,7 +39,7 @@ class injectable:
             for_ = self.for_ if self.for_ else cls
             registry: ServiceRegistry = getattr(scanner, 'registry')
 
-            register_component(
+            register_injectable(
                 registry,
                 for_,
                 target=cls,
