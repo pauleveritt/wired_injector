@@ -11,7 +11,7 @@ from dataclasses import dataclass
 
 import pytest
 from wired import ServiceRegistry
-from wired.dataclasses import factory, register_dataclass
+from wired.dataclasses import register_dataclass
 from wired_injector import injectable, Injector
 from wired_injector.operators import Attr, Context, Get
 
@@ -31,7 +31,7 @@ class SecondContext:
         self.name = 'Second Context'
 
 
-@factory()
+@injectable()
 @dataclass
 class Settings:
     greeting: str = 'Hello'
