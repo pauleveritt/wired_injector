@@ -58,6 +58,18 @@ def registry() -> ServiceRegistry:
     return registry
 
 
+@injectable()
+@dataclass
+class URL:
+    name: str = 'Some URL'
+
+
+@injectable()
+@dataclass
+class ShowURL:
+    url: URL
+
+
 @injectable(for_=Heading, context=SecondContext)
 @dataclass
 class SecondHeading:
@@ -86,3 +98,11 @@ def test_injectable_second(registry):
     assert 'Another Person' == heading.person
     assert 'Second Context' == heading.name
     assert 'Hello' == heading.greeting
+
+
+def test_injectable_url(registry):
+    """ Ensure double injection works """
+    container = registry.create_container()
+    injector = Injector(container)
+    show_url: ShowURL = injector(ShowURL)
+    assert 'Some URL' == show_url.url.name
