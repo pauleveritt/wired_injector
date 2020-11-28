@@ -12,9 +12,7 @@ try:
     from typing import get_type_hints
 except ImportError:
     # Need the updated get_type_hints which allows include_extras=True
-    from typing_extensions import Annotated, get_type_hints
-
-T = TypeVar('T')
+    from typing_extensions import Annotated, get_type_hints # type: ignore
 
 
 class SkipField(BaseException):
@@ -119,7 +117,7 @@ class FieldMakePipeline(NamedTuple):
 @dataclass
 class Injector:
     container: ServiceContainer
-    rules: Tuple[Type[NamedTuple], ...] = (
+    rules: Tuple[Type[Any], ...] = (
         FieldIsInit,
         FieldIsInProps,
         FieldIsContainer,
@@ -128,15 +126,16 @@ class Injector:
 
     def __call__(
         self,
-        target: Union[T, Callable],
+        target: Type,
         system_props: Dict[str, Any] = None,
         **kwargs,
-    ) -> T:
+    ) -> Type:
 
         args = {}
         props = kwargs
         if is_dataclass(target):
             type_hints = get_type_hints(target, include_extras=True)
+            # noinspection PyDataclass
             fields_mapping = {f.name: f for f in fields(target)}
             field_infos = [
                 dataclass_field_info_factory(fields_mapping[field_name])
