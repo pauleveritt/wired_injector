@@ -45,19 +45,6 @@ class Heading:
     greeting: Annotated[str, Get(Settings), Attr('greeting')]
 
 
-@pytest.fixture
-def registry() -> ServiceRegistry:
-    import sys
-    from venusian import Scanner
-
-    registry = ServiceRegistry()
-    scanner = Scanner(registry=registry)
-    current_module = sys.modules[__name__]
-    scanner.scan(current_module)
-    register_dataclass(registry, Settings)
-    return registry
-
-
 @injectable()
 @dataclass
 class URL:
@@ -65,6 +52,17 @@ class URL:
 
     def message(self):
         return self.name
+
+
+@dataclass
+class Config:
+    """ An old-school, non-injectable factory """
+    punctuation: str
+
+
+def config_factory(container):
+    return Config(punctuation='!')
+
 
 @injectable()
 @dataclass
@@ -78,6 +76,28 @@ class SecondHeading:
     person: str
     name: Annotated[str, Context(), Attr('name')]
     greeting: Annotated[str, Get(Settings), Attr('greeting')]
+
+
+@injectable(for_=Heading, context=SecondContext)
+@dataclass
+class ThirdHeading:
+    """ Double injection but with a plain factory, not injectable """
+
+    greeting: Annotated[str, Get(Settings), Attr('greeting')]
+    config: Config  # Annotated[Config, Get(Config)]
+
+
+@pytest.fixture
+def registry() -> ServiceRegistry:
+    import sys
+    from venusian import Scanner
+
+    registry = ServiceRegistry()
+    scanner = Scanner(registry=registry)
+    current_module = sys.modules[__name__]
+    scanner.scan(current_module)
+    register_dataclass(registry, Settings)
+    return registry
 
 
 def test_injectable_first(registry):
@@ -102,9 +122,12 @@ def test_injectable_second(registry):
     assert 'Hello' == heading.greeting
 
 
-def test_injectable_url(registry):
-    """ Ensure double injection works """
+def test_injectable_double(registry):
+    """ Ensure double injection works with both injectable and factory """
+
+    registry.register_factory(config_factory, Config)
     container = registry.create_container()
     injector = Injector(container)
-    show_url: ShowURL = injector(ShowURL)
-    assert 'Some URL' == show_url.url.message()
+    heading: ThirdHeading = injector(ThirdHeading)
+    assert 'Hello' == heading.greeting
+    assert '!' == heading.config.punctuation

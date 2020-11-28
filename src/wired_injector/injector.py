@@ -127,10 +127,10 @@ class Injector:
     )
 
     def __call__(
-            self,
-            target: Union[T, Callable],
-            system_props: Dict[str, Any] = None,
-            **kwargs,
+        self,
+        target: Union[T, Callable],
+        system_props: Dict[str, Any] = None,
+        **kwargs,
     ) -> T:
 
         args = {}

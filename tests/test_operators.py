@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from wired_injector.operators import Get, Attr, process_pipeline, Context
 
-from .conftest import View, FrenchView, FrenchCustomer, RegularView
+from .conftest import View, FrenchView, FrenchCustomer, RegularView, Greeting
 
 
 def test_get(french_container):
@@ -10,6 +10,13 @@ def test_get(french_container):
     previous = FrenchView
     result: FrenchView = get(previous, french_container)
     assert result.name == 'French View'
+
+
+def test_get_injectable_attr(regular_container):
+    get = Get(Greeting)
+    previous = Greeting
+    result: Greeting = get(previous, regular_container)
+    assert result() == 'Hello REGULAR VIEW'
 
 
 def test_get_attr(french_container):

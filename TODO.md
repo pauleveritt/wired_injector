@@ -2,8 +2,6 @@
 
 ## Now
 
-- Make a `@injectable` decorator
-
 ## Next
 
 - Allow `customers: Tuple[Customer]`
@@ -26,3 +24,4 @@
 - `Context` operator
 - What should happen when `Get` fails? Fallback to default, or fail?
 - System props
+- Make a `@injectable` decorator
