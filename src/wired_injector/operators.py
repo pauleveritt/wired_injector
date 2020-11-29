@@ -9,7 +9,7 @@ from wired import ServiceContainer
 #   in an annotation should be a generic.
 
 
-class Operator:
+class Operator:  # pragma: no cover
     """ Part of a pipeline for field construction """
 
     def __call__(self, previous: Any, container: ServiceContainer) -> Any:
@@ -32,6 +32,7 @@ class Get(Operator):
                 # a plain factory. At the moment, we just have a class.
                 # Use this injector instance to turn it into an instance.
                 from wired_injector import Injector
+
                 injector = container.get(Injector)
                 service = injector(service)
             if self.attr is None:
@@ -43,6 +44,7 @@ class Get(Operator):
             # field might have a default. Thus, bail out of processing
             # the pipeline.
             from wired_injector.injector import SkipField
+
             raise SkipField()
 
 

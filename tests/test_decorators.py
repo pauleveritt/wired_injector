@@ -18,7 +18,7 @@ from wired_injector.operators import Attr, Context, Get
 try:
     from typing import Annotated
 except ImportError:
-    from typing_extensions import Annotated
+    from typing_extensions import Annotated  # type: ignore
 
 
 class FirstContext:
@@ -57,6 +57,7 @@ class URL:
 @dataclass
 class Config:
     """ An old-school, non-injectable factory """
+
     punctuation: str
 
 
@@ -105,7 +106,9 @@ def test_injectable_first(registry):
     container = registry.create_container(context=context)
     injector = Injector(container)
     props = dict(person='Some Person')
-    heading: Heading = injector(Heading, **props)
+    # TODO Injector.__call__ typing has a challenge with positional
+    #   vs. keyword-only, might need to re-think system props
+    heading: Heading = injector(Heading, **props)  # type: ignore
     assert 'Some Person' == heading.person
     assert 'First Context' == heading.name
     assert 'Hello' == heading.greeting
@@ -116,7 +119,9 @@ def test_injectable_second(registry):
     container = registry.create_container(context=context)
     injector = Injector(container)
     props = dict(person='Another Person')
-    heading: Heading = injector(Heading, **props)
+    # TODO Injector.__call__ typing has a challenge with positional
+    #   vs. keyword-only, might need to re-think system props
+    heading: Heading = injector(Heading, **props)  # type: ignore
     assert 'Another Person' == heading.person
     assert 'Second Context' == heading.name
     assert 'Hello' == heading.greeting

@@ -26,6 +26,8 @@ tests_require = [
     'pytest',
     'pytest-cov',
     'tox',
+    'flake8',
+    'black',
 ]
 
 setup(

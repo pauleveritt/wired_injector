@@ -1,8 +1,16 @@
+from typing import Dict, Any
+
 import pytest
 from wired import ServiceContainer
 from wired_injector.field_info import FieldInfo
-from wired_injector.injector import FieldIsInit, SkipField, FieldIsInProps, FoundValueField, FieldIsContainer, \
-    FieldMakePipeline
+from wired_injector.injector import (
+    FieldIsInit,
+    SkipField,
+    FieldIsInProps,
+    FoundValueField,
+    FieldIsContainer,
+    FieldMakePipeline,
+)
 from wired_injector.operators import Get
 
 from tests.conftest import View
@@ -11,7 +19,7 @@ from tests.conftest import View
 def test_is_init_false(regular_container):
     fi = FieldInfo('foo', str, None, False, ())
     field_is_init = FieldIsInit(fi, {}, regular_container)
-    with pytest.raises(SkipField) as exc:
+    with pytest.raises(SkipField):
         field_is_init()
 
 
@@ -25,7 +33,7 @@ def test_is_init_true(regular_container):
 def test_is_in_props_no_props(regular_container):
     # No props
     fi = FieldInfo('foo', str, None, True, ())
-    props = {}
+    props: Dict[Any, Any] = {}
     field_is_props = FieldIsInProps(fi, props, regular_container)
     result = field_is_props()
     assert None is result
@@ -34,7 +42,7 @@ def test_is_in_props_no_props(regular_container):
 def test_is_in_props_not_in(regular_container):
     # There are props, but the field_name 'foo' isn't in it
     fi = FieldInfo('foo', str, None, True, ())
-    props = dict(notfoo=1)
+    props: Dict[Any, Any] = dict(notfoo=1)
     field_is_props = FieldIsInProps(fi, props, regular_container)
     result = field_is_props()
     assert None is result
@@ -43,18 +51,18 @@ def test_is_in_props_not_in(regular_container):
 def test_is_in_props_in_props(regular_container):
     # There are props passed in and the field_value is in it
     fi = FieldInfo('foo', str, None, True, ())
-    props = dict(foo=9999)
+    props: Dict[Any, Any] = dict(foo=9999)
     field_is_props = FieldIsInProps(fi, props, regular_container)
     with pytest.raises(FoundValueField) as exc:
-        result = field_is_props()
+        field_is_props()
     assert exc.value.value == 9999
 
 
 def test_is_in_system_props_no_system_props(regular_container):
     # No system props
     fi = FieldInfo('foo', str, None, True, ())
-    props = {}
-    system_props = {}
+    props: Dict[Any, Any] = {}
+    system_props: Dict[Any, Any] = {}
     field_is_props = FieldIsInProps(fi, props, regular_container, system_props)
     result = field_is_props()
     assert None is result
@@ -63,7 +71,7 @@ def test_is_in_system_props_no_system_props(regular_container):
 def test_is_in_system_props_not_in(regular_container):
     # There are system props, but the field_name 'foo' isn't in it
     fi = FieldInfo('foo', str, None, True, ())
-    props = {}
+    props: Dict[Any, Any] = {}
     system_props = dict(notfoo=1)
     field_is_props = FieldIsInProps(fi, props, regular_container, system_props)
     result = field_is_props()
@@ -73,22 +81,22 @@ def test_is_in_system_props_not_in(regular_container):
 def test_is_in_system_props_in_props(regular_container):
     # There are system props passed in and the field_value is in it
     fi = FieldInfo('foo', str, None, True, ())
-    props = {}
+    props: Dict[Any, Any] = {}
     system_props = dict(foo=9999)
     field_is_props = FieldIsInProps(fi, props, regular_container, system_props)
     with pytest.raises(FoundValueField) as exc:
-        result = field_is_props()
+        field_is_props()
     assert exc.value.value == 9999
 
 
 def test_is_in_both_props_and_system_props(regular_container):
     # Props has higher precedence than system props
     fi = FieldInfo('foo', str, None, True, ())
-    props = dict(foo=1111)
+    props: Dict[Any, Any] = dict(foo=1111)
     system_props = dict(foo=9999)
     field_is_props = FieldIsInProps(fi, props, regular_container, system_props)
     with pytest.raises(FoundValueField) as exc:
-        result = field_is_props()
+        field_is_props()
     assert exc.value.value == 1111
 
 
@@ -105,7 +113,7 @@ def test_is_container(regular_container):
     fi = FieldInfo('foo', ServiceContainer, None, True, ())
     field_is_container = FieldIsContainer(fi, {}, regular_container)
     with pytest.raises(FoundValueField) as exc:
-        result = field_is_container()
+        field_is_container()
     assert isinstance(exc.value.value, ServiceContainer)
 
 

@@ -16,15 +16,8 @@ from wired_injector.operators import process_pipeline
 # typing_extensions if not running on an older version
 if sys.version_info[:3] >= (3, 9):
     from typing import get_type_hints
-else:
+else:  # pragma: no cover
     from typing_extensions import get_type_hints
-
-
-# if sys.version_info[:3] < (3, 9):
-#     from typing import Annotations
-# else:
-#     # type: ignore
-#     from typing_extensions import Annotations
 
 
 class SkipField(BaseException):
@@ -77,8 +70,8 @@ class FieldIsInProps(NamedTuple):
             prop_value = self.props[self.field_info.field_name]
             raise FoundValueField(prop_value)
         elif (
-            self.system_props
-            and self.field_info.field_name in self.system_props
+                self.system_props
+                and self.field_info.field_name in self.system_props
         ):
             # If the "system" passes in props behind the scenes, use it
             prop_value = self.system_props[self.field_info.field_name]
@@ -137,11 +130,11 @@ class Injector:
     )
 
     def __call__(
-        self,
-        target: Type,
-        system_props: Dict[str, Any] = None,
-        **kwargs,
-    ) -> Type:
+            self,
+            target: Any,
+            system_props: Optional[typing.Mapping[str, Any]] = None,
+            **kwargs,
+    ) -> Any:
 
         args = {}
         props = kwargs

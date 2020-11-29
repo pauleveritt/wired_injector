@@ -19,14 +19,14 @@ from wired_injector.operators import Operator
 # typing_extensions if not running on an older version
 if sys.version_info[:3] >= (3, 9):
     from typing import get_args
-else:
+else:  # pragma: no cover
     # noinspection PyUnresolvedReferences
     from typing_extensions import get_args
 
 try:
     from typing import get_origin
-except ImportError:
-    from typing_utils import get_origin
+except ImportError:  # pragma: no cover
+    from typing_utils import get_origin  # type: ignore
 
 
 class FieldInfo(NamedTuple):

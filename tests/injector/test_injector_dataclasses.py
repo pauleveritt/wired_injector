@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional, Union
+from typing import Optional
 
 from wired import ServiceContainer
 from wired_injector.operators import Get, Attr, Context
@@ -9,13 +9,12 @@ from ..conftest import View, FrenchView, RegularView
 try:
     from typing import Annotated
 except ImportError:
-    from typing_extensions import Annotated
+    from typing_extensions import Annotated  # type: ignore
 
 
 def test_no_parameters(regular_injector):
     @dataclass
     class Target:
-
         def __call__(self) -> int:
             return 99
 
@@ -119,10 +118,12 @@ def test_optional_unannotated(regular_injector):
 def test_optional_annotated(french_injector):
     @dataclass
     class Target:
-        french_customer: Optional[Annotated[
-            FrenchView,
-            Get(View),
-        ]]
+        french_customer: Optional[
+            Annotated[
+                FrenchView,
+                Get(View),
+            ]
+        ]
 
         def __call__(self):
             return self.french_customer
@@ -200,16 +201,18 @@ def test_default_value_unannotated(regular_injector):
     class Foo:
         pass
 
+    f = Foo()
+
     @dataclass
     class Target:
-        view_name: Foo = 'View Name'
+        view: Foo = f
 
-        def __call__(self) -> Union[Foo, str]:
-            return self.view_name
+        def __call__(self) -> Foo:
+            return self.view
 
     target: Target = regular_injector(Target)
-    result: str = target()
-    assert result == 'View Name'
+    result: Foo = target()
+    assert result == f
 
 
 def test_default_value_annotated(regular_injector):

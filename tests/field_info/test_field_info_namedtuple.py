@@ -11,7 +11,7 @@ from wired_injector.operators import Get
 try:
     from typing import Annotated
 except ImportError:
-    from typing_extensions import Annotated
+    from typing_extensions import Annotated  # type: ignore
 
 
 class Customer:
@@ -28,29 +28,30 @@ def _get_field_infos(target) -> List[FieldInfo]:
     # Exact same as for functions
     sig = signature(target)
     parameters = sig.parameters.values()
-    field_infos = [
-        function_field_info_factory(param)
-        for param in parameters
-    ]
+    field_infos = [function_field_info_factory(param) for param in parameters]
     return field_infos
 
 
-def test_one_typed_parameters():
-    class Target(NamedTuple):
-        container: ServiceContainer
+# Damn, mypy bug with nested named tuples
+# https://github.com/python/mypy/issues/7281
+class Target1(NamedTuple):
+    container: ServiceContainer
 
-    field_infos = _get_field_infos(Target)
+
+def test_one_typed_parameters():
+    field_infos = _get_field_infos(Target1)
     assert field_infos[0].field_name == 'container'
     assert field_infos[0].field_type == ServiceContainer
     assert field_infos[0].default_value is None
 
 
-def test_two_parameters():
-    class Target(NamedTuple):
-        container: ServiceContainer
-        customer_name: str
+class Target2(NamedTuple):
+    container: ServiceContainer
+    customer_name: str
 
-    field_infos = _get_field_infos(Target)
+
+def test_two_parameters():
+    field_infos = _get_field_infos(Target2)
     assert field_infos[0].field_name == 'container'
     assert field_infos[0].field_type == ServiceContainer
     assert field_infos[0].default_value is None
@@ -59,32 +60,35 @@ def test_two_parameters():
     assert field_infos[1].default_value is None
 
 
-def test_optional():
-    class Target(NamedTuple):
-        container: Optional[ServiceContainer]
+class Target3(NamedTuple):
+    container: Optional[ServiceContainer]
 
-    field_infos = _get_field_infos(Target)
+
+def test_optional():
+    field_infos = _get_field_infos(Target3)
     assert field_infos[0].field_name == 'container'
     assert field_infos[0].field_type == ServiceContainer
     assert field_infos[0].default_value is None
 
 
-def test_default_value():
-    class Target(NamedTuple):
-        customer_name: str = 'Some Customer'
+class Target4(NamedTuple):
+    customer_name: str = 'Some Customer'
 
-    field_infos = _get_field_infos(Target)
+
+def test_default_value():
+    field_infos = _get_field_infos(Target4)
     assert field_infos[0].field_name == 'customer_name'
     assert field_infos[0].field_type == str
     assert field_infos[0].default_value == 'Some Customer'
 
 
-def test_namedtuple_two_parameters():
-    class Target(NamedTuple):
-        container: ServiceContainer
-        customer_name: str
+class Target5(NamedTuple):
+    container: ServiceContainer
+    customer_name: str
 
-    field_infos = _get_field_infos(Target)
+
+def test_namedtuple_two_parameters():
+    field_infos = _get_field_infos(Target5)
     assert field_infos[0].field_name == 'container'
     assert field_infos[0].field_type == ServiceContainer
     assert field_infos[0].default_value is None
@@ -93,9 +97,10 @@ def test_namedtuple_two_parameters():
     assert field_infos[1].default_value is None
 
 
-def test_annotation():
-    class Target(NamedTuple):
-        customer: Annotated[Customer, Get(FrenchCustomer)]
+class Target6(NamedTuple):
+    customer: Annotated[Customer, Get(FrenchCustomer)]
 
-    field_infos = _get_field_infos(Target)
+
+def test_annotation():
+    field_infos = _get_field_infos(Target6)
     assert field_infos[0].pipeline == (Get(FrenchCustomer),)

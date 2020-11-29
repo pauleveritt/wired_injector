@@ -9,7 +9,7 @@ from ..conftest import RegularCustomer, View, RegularView, FrenchView
 try:
     from typing import Annotated
 except ImportError:
-    from typing_extensions import Annotated
+    from typing_extensions import Annotated  # type: ignore
 
 
 def test_construction(regular_container):
@@ -46,10 +46,12 @@ def test_one_parameter_field_type(regular_container):
 
 
 def test_one_parameter_annotated(french_container):
-    def target(french_view: Annotated[
-        FrenchView,
-        Get(View),
-    ]):
+    def target(
+        french_view: Annotated[
+            FrenchView,
+            Get(View),
+        ]
+    ):
         return french_view
 
     injector = Injector(french_container)
@@ -149,24 +151,27 @@ def test_default_value_unannotated(regular_container):
     class Foo:
         pass
 
-    def target(view_name: Foo = 'View Name'):
-        return view_name
+    f = Foo()
+
+    def target(some_foo: Foo = f) -> Foo:
+        return some_foo
 
     injector = Injector(regular_container)
-    result: str = injector(target)
-    assert result == 'View Name'
+    result: Foo = injector(target)
+    assert result is f
 
 
 def test_default_value_annotated(regular_container):
     class Foo:
         pass
 
-    def target(view_name: Annotated[
-        str,
-        Get(Foo),
-        Attr('name'),
-    ] = 'View Name'
-               ):
+    def target(
+        view_name: Annotated[
+            str,
+            Get(Foo),
+            Attr('name'),
+        ] = 'View Name'
+    ):
         return view_name
 
     injector = Injector(regular_container)

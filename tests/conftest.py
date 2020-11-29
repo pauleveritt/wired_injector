@@ -10,8 +10,8 @@ try:
     from typing import Annotated
     from typing import Protocol
 except ImportError:
-    from typing_extensions import Annotated
-    from typing_extensions import Protocol
+    from typing_extensions import Annotated  # type: ignore
+    from typing_extensions import Protocol  # type: ignore
 
 
 class RegularCustomer:
@@ -62,10 +62,7 @@ class FrenchView(View):
 
 @dataclass
 class Greeting:
-    customer_name: Annotated[
-        str,
-        Get(View, attr='caps_name')
-    ]
+    customer_name: Annotated[str, Get(View, attr='caps_name')]
 
     def __call__(self):
         return f'Hello {self.customer_name}'
@@ -82,8 +79,16 @@ def french_view_factory(container):
 @pytest.fixture
 def this_registry() -> ServiceRegistry:
     registry = ServiceRegistry()
-    registry.register_factory(regular_view_factory, View, context=RegularCustomer)
-    registry.register_factory(french_view_factory, View, context=FrenchCustomer)
+    registry.register_factory(
+        regular_view_factory,
+        View,
+        context=RegularCustomer,
+    )
+    registry.register_factory(
+        french_view_factory,
+        View,
+        context=FrenchCustomer,
+    )
     register_injectable(registry, Greeting)
     return registry
 

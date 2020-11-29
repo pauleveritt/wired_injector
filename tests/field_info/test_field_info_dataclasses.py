@@ -20,7 +20,7 @@ class FrenchCustomer(Customer):
 try:
     from typing import Annotated
 except ImportError:
-    from typing_extensions import Annotated
+    from typing_extensions import Annotated  # type: ignore
 
 # get_type_hints is augmented in Python 3.9. We need to use
 # typing_extensions if not running on an older version
