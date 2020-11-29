@@ -1,10 +1,15 @@
 from dataclasses import dataclass
-from typing import Optional, Annotated, Union
+from typing import Optional, Union
 
 from wired import ServiceContainer
 from wired_injector.operators import Get, Attr, Context
 
 from ..conftest import View, FrenchView, RegularView
+
+try:
+    from typing import Annotated
+except ImportError:
+    from typing_extensions import Annotated
 
 
 def test_no_parameters(regular_injector):

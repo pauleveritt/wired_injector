@@ -1,10 +1,15 @@
-from typing import Optional, Annotated, NamedTuple
+from typing import Optional, NamedTuple
 
 from wired import ServiceContainer
 from wired_injector.injector import Injector
 from wired_injector.operators import Get, Attr
 
 from ..conftest import View, FrenchView, RegularView
+
+try:
+    from typing import Annotated
+except ImportError:
+    from typing_extensions import Annotated
 
 
 def test_no_parameters(regular_container):

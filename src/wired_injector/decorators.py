@@ -6,7 +6,9 @@ from wired import ServiceContainer, ServiceRegistry
 protocol = TypeVar("protocol")
 
 
-def adherent(c: Callable[[], protocol]) -> Callable[[Type[protocol]], Type[protocol]]:  # pragma: no cover
+def adherent(
+    c: Callable[[], protocol]
+) -> Callable[[Type[protocol]], Type[protocol]]:  # pragma: no cover
     def decor(input_value: Type[protocol]) -> Type[protocol]:
         return input_value
 
@@ -14,19 +16,17 @@ def adherent(c: Callable[[], protocol]) -> Callable[[Type[protocol]], Type[proto
 
 
 def register_injectable(
-        registry: ServiceRegistry,
-        for_: Callable,
-        target: Callable = None,
-        context: Optional[Any] = None
+    registry: ServiceRegistry,
+    for_: Callable,
+    target: Callable = None,
+    context: Optional[Any] = None,
 ):
     """ Imperative form of the injectable decorator """
 
     def injectable_factory(container: ServiceContainer):
         return target if target else for_
 
-    registry.register_factory(
-        injectable_factory, for_, context=context
-    )
+    registry.register_factory(injectable_factory, for_, context=context)
 
 
 class injectable:

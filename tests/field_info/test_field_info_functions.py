@@ -1,6 +1,7 @@
 """
 Test FieldInfo from parameters on a function.
 """
+import sys
 from inspect import signature
 from typing import Optional, List
 
@@ -8,13 +9,19 @@ from wired import ServiceContainer
 from wired_injector.field_info import function_field_info_factory, FieldInfo
 from wired_injector.operators import Get
 
+from ..conftest import RegularCustomer, FrenchCustomer
+
 try:
     from typing import Annotated
 except ImportError:
-    # Need the updated get_type_hints which allows include_extras=True
-    from typing_extensions import Annotated, get_type_hints
+    from typing_extensions import Annotated
 
-from ..conftest import RegularCustomer, FrenchCustomer
+# get_type_hints is augmented in Python 3.9. We need to use
+# typing_extensions if not running on an older version
+if sys.version_info[:3] >= (3, 9):
+    from typing import get_type_hints
+else:
+    from typing_extensions import get_type_hints
 
 
 def _get_field_infos(target) -> List[FieldInfo]:
@@ -74,7 +81,7 @@ def test_default_value():
 
 def test_annotation():
     def target(
-            customer: Annotated[RegularCustomer, Get(FrenchCustomer)]
+        customer: Annotated[RegularCustomer, Get(FrenchCustomer)]
     ):
         return 99
 
@@ -87,7 +94,7 @@ def test_annotation():
 
 def test_annotation_optional():
     def target(
-            customer: Optional[Annotated[RegularCustomer, Get(FrenchCustomer)]]
+        customer: Optional[Annotated[RegularCustomer, Get(FrenchCustomer)]]
     ):
         return 99
 

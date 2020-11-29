@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Protocol
 
 import pytest
 from wired import ServiceContainer, ServiceRegistry
@@ -9,8 +8,10 @@ from wired_injector.operators import Get
 
 try:
     from typing import Annotated
+    from typing import Protocol
 except ImportError:
     from typing_extensions import Annotated
+    from typing_extensions import Protocol
 
 
 class RegularCustomer:

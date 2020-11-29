@@ -1,6 +1,7 @@
 """
 Test FieldInfo from fields on a dataclass.
 """
+import sys
 from dataclasses import dataclass, field, fields
 from typing import Optional, List
 
@@ -18,10 +19,15 @@ class FrenchCustomer(Customer):
 
 try:
     from typing import Annotated
-    from typing import get_type_hints
 except ImportError:
-    # Need the updated get_type_hints which allows include_extras=True
-    from typing_extensions import Annotated, get_type_hints
+    from typing_extensions import Annotated
+
+# get_type_hints is augmented in Python 3.9. We need to use
+# typing_extensions if not running on an older version
+if sys.version_info[:3] >= (3, 9):
+    from typing import get_type_hints
+else:
+    from typing_extensions import get_type_hints
 
 
 def _get_field_infos(target) -> List[FieldInfo]:

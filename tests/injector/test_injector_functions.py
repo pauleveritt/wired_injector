@@ -1,10 +1,15 @@
-from typing import Optional, Annotated
+from typing import Optional
 
 from wired import ServiceContainer
 from wired_injector.injector import Injector
 from wired_injector.operators import Get, Attr, Context
 
 from ..conftest import RegularCustomer, View, RegularView, FrenchView
+
+try:
+    from typing import Annotated
+except ImportError:
+    from typing_extensions import Annotated
 
 
 def test_construction(regular_container):
@@ -63,11 +68,11 @@ def test_two_parameters_unannotated(regular_container):
 
 def test_two_parameters_annotated(french_container):
     def target(
-            container: ServiceContainer,
-            french_customer: Annotated[
-                FrenchView,
-                Get(View),
-            ],
+        container: ServiceContainer,
+        french_customer: Annotated[
+            FrenchView,
+            Get(View),
+        ],
     ):
         return french_customer
 
@@ -91,12 +96,12 @@ def test_optional_unannotated(regular_container):
 
 def test_optional_annotated(french_container):
     def target(
-            french_view: Optional[
-                Annotated[
-                    FrenchView,
-                    Get(View),
-                ]
-            ],
+        french_view: Optional[
+            Annotated[
+                FrenchView,
+                Get(View),
+            ]
+        ],
     ):
         return french_view
 
@@ -127,11 +132,11 @@ def test_get_then_attr(regular_container):
     """ Pipeline: Get, Attr """
 
     def target(
-            view_name: Annotated[
-                str,
-                Get(View),
-                Attr('name'),
-            ],
+        view_name: Annotated[
+            str,
+            Get(View),
+            Attr('name'),
+        ],
     ):
         return view_name
 
@@ -173,11 +178,11 @@ def test_context_then_attr(regular_container):
     """ Pipeline: Context, Attr """
 
     def target(
-            customer_name: Annotated[
-                str,
-                Context(),
-                Attr('name'),
-            ],
+        customer_name: Annotated[
+            str,
+            Context(),
+            Attr('name'),
+        ],
     ):
         return customer_name
 

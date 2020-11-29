@@ -12,7 +12,8 @@ changes = readfile('CHANGES.md')
 requires = [
     'wired',
     'venusian',
-    'typing_extensions;python_version<="3.9"',
+    'typing_extensions;python_version<"3.9"',
+    'typing_utils;python_version<"3.8"',
 ]
 
 docs_require = [

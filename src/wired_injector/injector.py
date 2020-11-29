@@ -1,32 +1,45 @@
+import sys
 import typing
 from dataclasses import dataclass, is_dataclass, fields
 from inspect import signature, getmodule, isclass
-from typing import Union, Callable, TypeVar, Dict, NamedTuple, Tuple, Type, Any, Optional
+from typing import Dict, NamedTuple, Tuple, Type, Any, Optional
 
 from wired import ServiceContainer
-from wired_injector.field_info import function_field_info_factory, dataclass_field_info_factory, FieldInfo
+from wired_injector.field_info import (
+    function_field_info_factory,
+    dataclass_field_info_factory,
+    FieldInfo,
+)
 from wired_injector.operators import process_pipeline
 
-try:
-    from typing import Annotated
+# get_type_hints is augmented in Python 3.9. We need to use
+# typing_extensions if not running on an older version
+if sys.version_info[:3] >= (3, 9):
     from typing import get_type_hints
-except ImportError:
-    # Need the updated get_type_hints which allows include_extras=True
-    from typing_extensions import Annotated, get_type_hints # type: ignore
+else:
+    from typing_extensions import get_type_hints
+
+
+# if sys.version_info[:3] < (3, 9):
+#     from typing import Annotations
+# else:
+#     # type: ignore
+#     from typing_extensions import Annotations
 
 
 class SkipField(BaseException):
-    """ Not part of construction.
+    """Not part of construction.
 
     Tell the injector that this field should not be part of
     construction. Used for example on a dataclass field with
     field(init=False).
     """
+
     pass
 
 
 class FoundValueField(BaseException):
-    """ Found a value for the field.
+    """Found a value for the field.
 
     If a rule matches a condition and finds a value, return
     the value as the exception value, then put it in the
@@ -63,7 +76,10 @@ class FieldIsInProps(NamedTuple):
             # Props have precedence
             prop_value = self.props[self.field_info.field_name]
             raise FoundValueField(prop_value)
-        elif self.system_props and self.field_info.field_name in self.system_props:
+        elif (
+            self.system_props
+            and self.field_info.field_name in self.system_props
+        ):
             # If the "system" passes in props behind the scenes, use it
             prop_value = self.system_props[self.field_info.field_name]
             raise FoundValueField(prop_value)
@@ -106,11 +122,7 @@ class FieldMakePipeline(NamedTuple):
                 # we might have a default value, let's skip this.
                 raise SkipField()
         else:
-            fv = process_pipeline(
-                c,
-                fi.pipeline,
-                fi.field_type
-            )
+            fv = process_pipeline(c, fi.pipeline, fi.field_type)
         raise FoundValueField(fv)
 
 
@@ -145,15 +157,12 @@ class Injector:
             sig = signature(target)
             parameters = sig.parameters.values()
             field_infos = [
-                function_field_info_factory(param)
-                for param in parameters
+                function_field_info_factory(param) for param in parameters
             ]
 
         # Go through each field and apply policies
         for field_info in field_infos:
             field_name = field_info.field_name
-            field_type = field_info.field_type
-            pipeline = field_info.pipeline
 
             try:
                 for rule in self.rules:

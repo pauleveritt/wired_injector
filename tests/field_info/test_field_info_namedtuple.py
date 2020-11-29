@@ -2,11 +2,16 @@
 Test FieldInfo from fields on a namedtuple class.
 """
 from inspect import signature
-from typing import Optional, List, NamedTuple, Annotated
+from typing import Optional, List, NamedTuple
 
 from wired import ServiceContainer
 from wired_injector.field_info import function_field_info_factory, FieldInfo
 from wired_injector.operators import Get
+
+try:
+    from typing import Annotated
+except ImportError:
+    from typing_extensions import Annotated
 
 
 class Customer:
