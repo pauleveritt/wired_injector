@@ -68,9 +68,9 @@ class Context(Operator):
 
 
 def process_pipeline(
-        container: ServiceContainer,
-        pipeline: Tuple[Operator, ...],
-        start: Any,
+    container: ServiceContainer,
+    pipeline: Tuple[Operator, ...],
+    start: Any,
 ):
     iter_pipeline = iter(pipeline)
     result = start
