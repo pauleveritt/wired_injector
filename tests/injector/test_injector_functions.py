@@ -4,7 +4,11 @@ from wired import ServiceContainer
 from wired_injector.injector import Injector
 from wired_injector.operators import Get, Attr, Context
 
-from ..conftest import RegularCustomer, View, RegularView, FrenchView
+from examples.models import (
+    Customer,
+    View,
+    FrenchView,
+)
 
 try:
     from typing import Annotated
@@ -32,8 +36,8 @@ def test_one_parameter_container(regular_container):
         return view
 
     injector = Injector(regular_container)
-    result: RegularView = injector(target)
-    assert result.name == 'Regular View'
+    result: View = injector(target)
+    assert result.name == 'View'
 
 
 def test_one_parameter_field_type(regular_container):
@@ -41,16 +45,16 @@ def test_one_parameter_field_type(regular_container):
         return view
 
     injector = Injector(regular_container)
-    result: RegularView = injector(target)
-    assert result.name == 'Regular View'
+    result: View = injector(target)
+    assert result.name == 'View'
 
 
 def test_one_parameter_annotated(french_container):
     def target(
-        french_view: Annotated[
-            FrenchView,
-            Get(View),
-        ]
+            french_view: Annotated[
+                FrenchView,
+                Get(View),
+            ]
     ):
         return french_view
 
@@ -64,22 +68,22 @@ def test_two_parameters_unannotated(regular_container):
         return view
 
     injector = Injector(regular_container)
-    result: RegularView = injector(target)
-    assert result.name == 'Regular View'
+    result: View = injector(target)
+    assert result.name == 'View'
 
 
 def test_two_parameters_annotated(french_container):
     def target(
-        container: ServiceContainer,
-        french_customer: Annotated[
-            FrenchView,
-            Get(View),
-        ],
+            container: ServiceContainer,
+            french_customer: Annotated[
+                FrenchView,
+                Get(View),
+            ],
     ):
         return french_customer
 
     injector = Injector(french_container)
-    result: RegularCustomer = injector(target)
+    result: Customer = injector(target)
     assert result.name == 'French View'
 
 
@@ -92,18 +96,18 @@ def test_optional_unannotated(regular_container):
         return view
 
     injector = Injector(regular_container)
-    result: RegularView = injector(target)
-    assert result.name == 'Regular View'
+    result: View = injector(target)
+    assert result.name == 'View'
 
 
 def test_optional_annotated(french_container):
     def target(
-        french_view: Optional[
-            Annotated[
-                FrenchView,
-                Get(View),
-            ]
-        ],
+            french_view: Optional[
+                Annotated[
+                    FrenchView,
+                    Get(View),
+                ]
+            ],
     ):
         return french_view
 
@@ -134,17 +138,17 @@ def test_get_then_attr(regular_container):
     """ Pipeline: Get, Attr """
 
     def target(
-        view_name: Annotated[
-            str,
-            Get(View),
-            Attr('name'),
-        ],
+            view_name: Annotated[
+                str,
+                Get(View),
+                Attr('name'),
+            ],
     ):
         return view_name
 
     injector = Injector(regular_container)
-    result: RegularView = injector(target)
-    assert result == 'Regular View'
+    result: View = injector(target)
+    assert result == 'View'
 
 
 def test_default_value_unannotated(regular_container):
@@ -166,11 +170,11 @@ def test_default_value_annotated(regular_container):
         pass
 
     def target(
-        view_name: Annotated[
-            str,
-            Get(Foo),
-            Attr('name'),
-        ] = 'View Name'
+            view_name: Annotated[
+                str,
+                Get(Foo),
+                Attr('name'),
+            ] = 'View Name'
     ):
         return view_name
 
@@ -183,17 +187,17 @@ def test_context_then_attr(regular_container):
     """ Pipeline: Context, Attr """
 
     def target(
-        customer_name: Annotated[
-            str,
-            Context(),
-            Attr('name'),
-        ],
+            customer_name: Annotated[
+                str,
+                Context(),
+                Attr('name'),
+            ],
     ):
         return customer_name
 
     injector = Injector(regular_container)
-    result: RegularView = injector(target)
-    assert result == 'Some Customer'
+    result: View = injector(target)
+    assert result == 'Customer'
 
 
 def test_system_props_unannotated_untyped(regular_container):

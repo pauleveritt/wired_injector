@@ -8,7 +8,7 @@ from wired import ServiceContainer
 from wired_injector.field_info import function_field_info_factory, FieldInfo
 from wired_injector.operators import Get
 
-from ..conftest import RegularCustomer, FrenchCustomer
+from examples.models import Customer, FrenchCustomer
 
 try:
     from typing import Annotated
@@ -69,24 +69,24 @@ def test_default_value():
 
 
 def test_annotation():
-    def target(customer: Annotated[RegularCustomer, Get(FrenchCustomer)]):
+    def target(customer: Annotated[Customer, Get(FrenchCustomer)]):
         return 99
 
     field_infos = _get_field_infos(target)
     assert field_infos[0].field_name == 'customer'
-    assert field_infos[0].field_type is RegularCustomer
+    assert field_infos[0].field_type is Customer
     assert field_infos[0].default_value is None
     assert field_infos[0].pipeline == (Get(FrenchCustomer),)
 
 
 def test_annotation_optional():
     def target(
-        customer: Optional[Annotated[RegularCustomer, Get(FrenchCustomer)]]
+        customer: Optional[Annotated[Customer, Get(FrenchCustomer)]]
     ):
         return 99
 
     field_infos = _get_field_infos(target)
     assert field_infos[0].field_name == 'customer'
-    assert field_infos[0].field_type is RegularCustomer
+    assert field_infos[0].field_type is Customer
     assert field_infos[0].default_value is None
     assert field_infos[0].pipeline == (Get(FrenchCustomer),)

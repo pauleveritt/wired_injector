@@ -4,7 +4,10 @@ from typing import Optional
 from wired import ServiceContainer
 from wired_injector.operators import Get, Attr, Context
 
-from ..conftest import View, FrenchView, RegularView
+from examples.models import (
+    View,
+    FrenchView,
+)
 
 try:
     from typing import Annotated
@@ -33,8 +36,8 @@ def test_one_parameter_container(regular_injector):
             return view
 
     target: Target = regular_injector(Target)
-    result: RegularView = target()
-    assert result.name == 'Regular View'
+    result: View = target()
+    assert result.name == 'View'
 
 
 def test_one_parameter_field_type(regular_injector):
@@ -47,7 +50,7 @@ def test_one_parameter_field_type(regular_injector):
 
     target: Target = regular_injector(Target)
     result: View = target()
-    assert result.name == 'Regular View'
+    assert result.name == 'View'
 
 
 def test_one_parameter_annotated(french_injector):
@@ -77,7 +80,7 @@ def test_two_parameters_unannotated(regular_injector):
 
     target: Target = regular_injector(Target)
     result: View = target()
-    assert result.name == 'Regular View'
+    assert result.name == 'View'
 
 
 def test_two_parameters_annotated(french_injector):
@@ -112,7 +115,7 @@ def test_optional_unannotated(regular_injector):
     target: Target = regular_injector(Target)
     result = target()
     if result is not None:
-        assert result.name == 'Regular View'
+        assert result.name == 'View'
 
 
 def test_optional_annotated(french_injector):
@@ -179,7 +182,7 @@ def test_get_then_attr(regular_injector):
 
     target: Target = regular_injector(Target)
     result: str = target()
-    assert result == 'Regular View'
+    assert result == 'View'
 
 
 def test_get_then_attr_double_injected(regular_injector):
@@ -194,7 +197,7 @@ def test_get_then_attr_double_injected(regular_injector):
         ]
 
     target: Target = regular_injector(Target)
-    assert 'REGULAR VIEW' == target.customer_name
+    assert 'VIEW' == target.customer_name
 
 
 def test_default_value_unannotated(regular_injector):
@@ -251,4 +254,4 @@ def test_context_then_attr(regular_injector):
 
     target: Target = regular_injector(Target)
     result = target()
-    assert result == 'Some Customer'
+    assert result == 'Customer'

@@ -125,7 +125,7 @@ def test_is_pipeline_no_pipeline_registered_type(regular_container):
     field_make_pipeline = FieldMakePipeline(fi, {}, regular_container)
     with pytest.raises(FoundValueField) as exc:
         field_make_pipeline()
-    assert exc.value.value.name == 'Regular View'
+    assert exc.value.value.name == 'View'
 
 
 def test_is_pipeline_get(regular_container):
@@ -135,7 +135,7 @@ def test_is_pipeline_get(regular_container):
     field_make_pipeline = FieldMakePipeline(fi, {}, regular_container)
     with pytest.raises(FoundValueField) as exc:
         field_make_pipeline()
-    assert exc.value.value.name == 'Regular View'
+    assert exc.value.value.name == 'View'
 
 
 def test_is_pipeline_no_pipeline_type_error(regular_container):

@@ -4,7 +4,10 @@ from wired import ServiceContainer
 from wired_injector.injector import Injector
 from wired_injector.operators import Get, Attr
 
-from ..conftest import View, FrenchView, RegularView
+from examples.models import (
+    View,
+    FrenchView,
+)
 
 try:
     from typing import Annotated
@@ -37,8 +40,8 @@ class Target2(NamedTuple):
 def test_one_parameter_container(regular_container):
     injector = Injector(regular_container)
     target: Target2 = injector(Target2)
-    result: RegularView = target()
-    assert result.name == 'Regular View'
+    result: View = target()
+    assert result.name == 'View'
 
 
 class Target3(NamedTuple):
@@ -52,7 +55,7 @@ def test_one_parameter_field_type(regular_container):
     injector = Injector(regular_container)
     target: Target3 = injector(Target3)
     result: View = target()
-    assert result.name == 'Regular View'
+    assert result.name == 'View'
 
 
 class Target4(NamedTuple):
@@ -84,7 +87,7 @@ def test_two_parameters_unannotated(regular_container):
     injector = Injector(regular_container)
     target: Target5 = injector(Target5)
     result: View = target()
-    assert result.name == 'Regular View'
+    assert result.name == 'View'
 
 
 class Target6(NamedTuple):
@@ -120,7 +123,7 @@ def test_optional_unannotated(regular_container):
     target: Target7 = injector(Target7)
     result: Optional[View] = target()
     if result is not None:
-        assert result.name == 'Regular View'
+        assert result.name == 'View'
 
 
 class Target8(NamedTuple):
@@ -192,4 +195,4 @@ def test_get_then_attr(regular_container):
     injector = Injector(regular_container)
     target: Target11 = injector(Target11)
     result: str = target()
-    assert result == 'Regular View'
+    assert result == 'View'

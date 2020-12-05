@@ -2,7 +2,12 @@ from dataclasses import dataclass
 
 from wired_injector.operators import Get, Attr, process_pipeline, Context
 
-from .conftest import View, FrenchView, FrenchCustomer, RegularView, Greeting
+from examples.models import (
+    FrenchCustomer,
+    View,
+    FrenchView,
+)
+from .conftest import Greeting
 
 
 def test_get(french_container):
@@ -16,7 +21,7 @@ def test_get_injectable_attr(regular_container):
     get = Get(Greeting)
     previous = Greeting
     result: Greeting = get(previous, regular_container)
-    assert result() == 'Hello REGULAR VIEW'
+    assert result() == 'Hello VIEW'
 
 
 def test_get_attr(french_container):
@@ -42,7 +47,7 @@ def test_attr(regular_container):
 
 def test_get_then_attr(french_container):
     get = Get(View)
-    start = RegularView
+    start = View
     result1 = get(start, french_container)
     attr = Attr('name')
     result = attr(result1, french_container)
@@ -54,7 +59,7 @@ def test_pipeline_one(french_container):
     result: FrenchView = process_pipeline(
         french_container,
         pipeline,
-        start=RegularView,
+        start=View,
     )
     assert result.name == 'French View'
 
@@ -64,7 +69,7 @@ def test_pipeline_two(french_container):
     result = process_pipeline(
         french_container,
         pipeline,
-        start=RegularView,
+        start=View,
     )
     assert result == 'French View'
 
@@ -92,6 +97,6 @@ def test_context(regular_container):
     result = process_pipeline(
         regular_container,
         pipeline,
-        start=RegularView,
+        start=View,
     )
     assert result == regular_container.context

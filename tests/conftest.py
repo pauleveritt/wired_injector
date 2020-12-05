@@ -1,10 +1,20 @@
-from dataclasses import dataclass
+import os
+import sys
 
 import pytest
 from wired import ServiceContainer, ServiceRegistry
 from wired_injector import Injector
 from wired_injector.decorators import register_injectable
-from wired_injector.operators import Get
+
+from examples import example_registry
+from examples.models import (
+    Customer,
+    FrenchCustomer,
+    View,
+    view_factory,
+    french_view_factory,
+    Greeting,
+)
 
 try:
     from typing import Annotated
@@ -14,88 +24,14 @@ except ImportError:
     from typing_extensions import Protocol  # type: ignore
 
 
-class RegularCustomer:
-    name: str
-
-    def __init__(self):
-        self.name = 'Some Customer'
-
-
-class FrenchCustomer:
-    name: str
-
-    def __init__(self):
-        self.name = 'French Customer'
-
-
-class View(Protocol):
-    name: str
-
-
-class RegularView(View):
-    name: str
-
-    def __init__(self):
-        self.name = 'Regular View'
-
-    def __call__(self):
-        return self.name
-
-    @property
-    def caps_name(self):
-        return self.name.upper()
-
-
-class FrenchView(View):
-    name: str
-
-    def __init__(self):
-        self.name = 'French View'
-
-    def __call__(self):
-        return self.name
-
-    @property
-    def caps_name(self):
-        return self.name.upper()
-
-
-@dataclass
-class Greeting:
-    customer_name: Annotated[str, Get(View, attr='caps_name')]
-
-    def __call__(self):
-        return f'Hello {self.customer_name}'
-
-
-def regular_view_factory(container):
-    return RegularView()
-
-
-def french_view_factory(container):
-    return FrenchView()
-
-
 @pytest.fixture
-def this_registry() -> ServiceRegistry:
-    registry = ServiceRegistry()
-    registry.register_factory(
-        regular_view_factory,
-        View,
-        context=RegularCustomer,
-    )
-    registry.register_factory(
-        french_view_factory,
-        View,
-        context=FrenchCustomer,
-    )
-    register_injectable(registry, Greeting)
-    return registry
+def this_registry():
+    return example_registry()
 
 
 @pytest.fixture
 def regular_container(this_registry) -> ServiceContainer:
-    c = this_registry.create_container(context=RegularCustomer())
+    c = this_registry.create_container(context=Customer())
     injector = Injector(c)
     c.register_singleton(injector, Injector)
     return c
@@ -119,3 +55,12 @@ def regular_injector(regular_container):
 def french_injector(french_container):
     i: Injector = french_container.get(Injector)
     return i
+
+
+@pytest.fixture(scope="session", autouse=True)
+def examples_path():
+    """ Automatically add the root of the repo to path """
+    ep = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), '..')
+    )
+    sys.path.insert(0, ep)

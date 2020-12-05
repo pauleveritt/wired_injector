@@ -8,18 +8,12 @@ from wired import ServiceContainer
 from wired_injector.field_info import function_field_info_factory, FieldInfo
 from wired_injector.operators import Get
 
+from examples.models import Customer, FrenchCustomer
+
 try:
     from typing import Annotated
 except ImportError:
     from typing_extensions import Annotated  # type: ignore
-
-
-class Customer:
-    pass
-
-
-class FrenchCustomer(Customer):
-    pass
 
 
 def _get_field_infos(target) -> List[FieldInfo]:
@@ -103,4 +97,4 @@ class Target6(NamedTuple):
 
 def test_annotation():
     field_infos = _get_field_infos(Target6)
-    assert field_infos[0].pipeline == (Get(FrenchCustomer),)
+    assert (Get(FrenchCustomer),) == field_infos[0].pipeline
