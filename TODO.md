@@ -5,6 +5,8 @@
 ## Next
 
 - Allow `customers: Tuple[Customer]`
+- Use new examples style
+- myst for docs
 
 ## Eventually
 

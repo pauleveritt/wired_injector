@@ -18,16 +18,24 @@ requires = [
 
 docs_require = [
     'Sphinx',
+    'sphinx-book-theme',
+    'myst-parser',
 ]
 
 tests_require = [
-    'coverage',
-    'mypy',
     'pytest',
-    'pytest-cov',
+]
+
+dev_require = [
+    'mypy',
+    'coverage',
+    'pytest-coverage',
     'tox',
-    'flake8',
     'black',
+    'flake8',
+    'twine',
+    'pre-commit',
+    'check-manifest',
 ]
 
 setup(
@@ -45,7 +53,9 @@ setup(
     include_package_data=True,
     python_requires='>=3.6',
     install_requires=requires,
-    extras_require={'docs': docs_require, 'tests': tests_require},
+    extras_require=dict(
+        docs=docs_require, tests=tests_require, dev=dev_require,
+    ),
     zip_safe=False,
     keywords=','.join(
         [
