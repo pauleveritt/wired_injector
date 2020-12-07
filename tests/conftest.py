@@ -18,12 +18,8 @@ except ImportError:
 
 
 @pytest.fixture
-def this_registry():
-    return example_registry()
-
-
-@pytest.fixture
-def regular_container(this_registry) -> ServiceContainer:
+def regular_container() -> ServiceContainer:
+    this_registry = example_registry()
     c = this_registry.create_container(context=Customer())
     injector = Injector(c)
     c.register_singleton(injector, Injector)
@@ -31,7 +27,8 @@ def regular_container(this_registry) -> ServiceContainer:
 
 
 @pytest.fixture
-def french_container(this_registry) -> ServiceContainer:
+def french_container() -> ServiceContainer:
+    this_registry = example_registry()
     c = this_registry.create_container(context=FrenchCustomer())
     injector = Injector(c)
     c.register_singleton(injector, Injector)
