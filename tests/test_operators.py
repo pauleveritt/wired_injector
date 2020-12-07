@@ -2,12 +2,12 @@ from dataclasses import dataclass
 
 from wired_injector.operators import Get, Attr, process_pipeline, Context
 
-from examples.models import (
+from examples.factories import (
     FrenchCustomer,
     View,
     FrenchView,
+    Greeting,
 )
-from .conftest import Greeting
 
 
 def test_get(french_container):

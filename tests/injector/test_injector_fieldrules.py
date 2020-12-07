@@ -13,7 +13,7 @@ from wired_injector.injector import (
 )
 from wired_injector.operators import Get
 
-from tests.conftest import View
+from examples.factories import View
 
 
 def test_is_init_false(regular_container):

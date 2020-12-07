@@ -2,26 +2,19 @@ import os
 import sys
 
 import pytest
-from wired import ServiceContainer, ServiceRegistry
+from wired import ServiceContainer
 from wired_injector import Injector
-from wired_injector.decorators import register_injectable
 
 from examples import example_registry
-from examples.models import (
+from examples.factories import (
     Customer,
     FrenchCustomer,
-    View,
-    view_factory,
-    french_view_factory,
-    Greeting,
 )
 
 try:
     from typing import Annotated
-    from typing import Protocol
 except ImportError:
     from typing_extensions import Annotated  # type: ignore
-    from typing_extensions import Protocol  # type: ignore
 
 
 @pytest.fixture

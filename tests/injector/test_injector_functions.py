@@ -4,7 +4,7 @@ from wired import ServiceContainer
 from wired_injector.injector import Injector
 from wired_injector.operators import Get, Attr, Context
 
-from examples.models import (
+from examples.factories import (
     Customer,
     View,
     FrenchView,

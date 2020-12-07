@@ -8,6 +8,12 @@
 - Use new examples style
 - myst for docs
 
+## Soon
+
+- Put API into Sphinx docs
+  * Improve docstrings and use Napoleon
+
+
 ## Eventually
 
 - Very friendly exceptions that tell the field and target very specifically

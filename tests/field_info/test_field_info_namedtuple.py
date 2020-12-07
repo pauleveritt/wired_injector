@@ -8,7 +8,7 @@ from wired import ServiceContainer
 from wired_injector.field_info import function_field_info_factory, FieldInfo
 from wired_injector.operators import Get
 
-from examples.models import Customer, FrenchCustomer
+from examples.factories import Customer, FrenchCustomer
 
 try:
     from typing import Annotated
