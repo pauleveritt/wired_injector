@@ -44,7 +44,7 @@ class FoundValueField(BaseException):
 
 
 class FieldIsInit(NamedTuple):
-    """ If this is a dataclass field with init=True, skip """
+    """ If this is a dataclass field with init=False, skip """
 
     field_info: FieldInfo
     props: Dict

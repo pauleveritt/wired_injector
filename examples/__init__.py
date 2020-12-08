@@ -1,3 +1,6 @@
+from importlib import import_module
+from typing import Sequence, Optional
+
 from venusian import Scanner
 from wired import ServiceRegistry, ServiceContainer
 from wired_injector import Injector
@@ -6,10 +9,24 @@ from . import factories
 from .factories import View, Customer, FrenchCustomer, Greeting
 
 
-def example_registry() -> ServiceRegistry:
+def example_registry(
+        pkg: Optional[str] = None,
+        pkgs: Sequence[str] = tuple(),
+
+) -> ServiceRegistry:
     registry = ServiceRegistry()
     scanner = Scanner(registry=registry)
     scanner.scan(factories)
+
+    # Now scan for custom factories
+    if pkg is not None:
+        scannable = import_module(pkg)
+        scanner.scan(scannable)
+    for scannable in pkgs:
+        if isinstance(scannable, str):
+            scannable = import_module(scannable)
+        scanner.scan(scannable)
+
     return registry
 
 

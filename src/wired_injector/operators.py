@@ -5,7 +5,7 @@ from typing import Type, Any, Tuple, Optional
 from wired import ServiceContainer
 
 
-# TODO This should be a Protocol but the typechecker then says a usage
+# TODO Operator should be a Protocol but the typechecker then says a usage
 #   in an annotation should be a generic.
 
 

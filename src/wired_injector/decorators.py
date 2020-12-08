@@ -6,6 +6,7 @@ from wired import ServiceContainer, ServiceRegistry
 protocol = TypeVar("protocol")
 
 
+# TODO: This is all speculative from Glyph's approach
 def adherent(
     c: Callable[[], protocol]
 ) -> Callable[[Type[protocol]], Type[protocol]]:  # pragma: no cover

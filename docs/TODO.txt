@@ -1,0 +1,43 @@
+
+```{toctree}
+---
+hidden: true
+---
+who
+what
+why
+pluggable
+examples/index
+future
+```
+
+
+Basic Wired
+- Simple factory
+- Dataclass with a `__wired_factory__`
+- Registry and container
+
+- Simple mode: no pipeline/annotated, just a type (perhaps optional with default value)
+- register_injectable vs. @injectable
+- Pipelines and operators
+- Advanced dataclass stuff: init=false, post init, etc.
+- Props
+- Functions, namedtuples
+- Writing custom operators
+    - previous value
+    - exceptions to stop processing
+
+Why
+- Let functions and non-dc play in the game
+- Avoid big garbage barge
+- Classes can very clearly communicate what they depend on
+- Enable props-based styles such as CDD
+- Possible future where injector is smarter and records who needs what
+- LINQ-style, Rx-style operators
+- Even easier to write tests
+- Symbols, not magic names (for static analysis aka better tooling)
+
+Downside
+- It's magical as shit (but perhaps less than other things)
+- Immature, currently hard to debug
+

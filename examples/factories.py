@@ -11,11 +11,13 @@ except ImportError:
     from typing_extensions import Annotated  # type: ignore
 
 
+# Normal kind of customer
 @dataclass
 class Customer:
     name: Optional[str] = 'Customer'
 
 
+# Default View
 @service_factory()
 @dataclass
 class View:
@@ -33,6 +35,7 @@ class View:
         return cls()
 
 
+# Example of an injectable factory
 @injectable()
 @dataclass
 class Greeting:
@@ -42,11 +45,13 @@ class Greeting:
         return f'Hello {self.customer_name}'
 
 
+# Special kind of Customer
 @dataclass
 class FrenchCustomer(Customer):
     name: Optional[str] = 'French Customer'
 
 
+# Special kind of View, for that special kind of Customer
 @service_factory(for_=View, context=FrenchCustomer)
 @dataclass
 class FrenchView(View):
