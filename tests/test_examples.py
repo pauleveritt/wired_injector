@@ -6,7 +6,10 @@ from examples.index import (
     settings_view,
     injector_settings,
     annotated,
+    annotated_namedtuple,
+    annotated_functions,
     operators,
+    pipelines,
 )
 
 
@@ -18,7 +21,10 @@ from examples.index import (
         settings_view,
         injector_settings,
         annotated,
+        annotated_namedtuple,
+        annotated_functions,
         operators,
+        pipelines,
     ],
 )
 def test_examples(target):
