@@ -2,6 +2,9 @@
 
 ## Now
 
+- Allow the injectable class-based decorator to be subclassed 
+  to gain a default `for_`
+  
 ## Next
 
 - Allow `customers: Tuple[Customer]`

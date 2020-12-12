@@ -31,6 +31,11 @@ class SecondContext:
         self.name = 'Second Context'
 
 
+class ThirdContext:
+    def __init__(self):
+        self.name = 'Third Context'
+
+
 @injectable()
 @dataclass
 class Settings:
@@ -79,7 +84,7 @@ class SecondHeading:
     greeting: Annotated[str, Get(Settings), Attr('greeting')]
 
 
-@injectable(for_=Heading, context=SecondContext)
+@injectable(for_=Heading, context=ThirdContext)
 @dataclass
 class ThirdHeading:
     """ Double injection but with a plain factory, not injectable """
