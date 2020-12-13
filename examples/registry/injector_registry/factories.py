@@ -1,7 +1,12 @@
 from dataclasses import dataclass
 
-from wired import service_factory
 from wired_injector import injectable
+from wired_injector.operators import Get
+
+try:
+    from typing import Annotated
+except ImportError:
+    from typing_extensions import Annotated  # type: ignore
 
 
 # Site settings
@@ -11,15 +16,14 @@ class Settings:
     site_name: str = 'My Site'
 
 
-@service_factory()
+@injectable()
 @dataclass
 class View:
-    name: str = 'iew'
+    site_name: Annotated[
+        str,
+        Get(Settings, attr='site_name')
+    ]
 
-    @classmethod
-    def __wired_factory__(cls, container):
-        settings: Settings = container.get(Settings)
-        site_name = settings.site_name
-        name = f'View - {site_name}'
-        return cls(name=name)
-
+    @property
+    def name(self):
+        return f'View - {self.site_name}'

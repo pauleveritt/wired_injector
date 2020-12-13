@@ -1,14 +1,17 @@
 from dataclasses import dataclass
 
 from wired import service_factory
-from wired_injector import injectable
 
 
 # Site settings
-@injectable()
+@service_factory()
 @dataclass
 class Settings:
     site_name: str = 'My Site'
+
+    @classmethod
+    def __wired_factory__(cls, container):
+        return cls()
 
 
 @service_factory()
@@ -22,4 +25,3 @@ class View:
         site_name = settings.site_name
         name = f'View - {site_name}'
         return cls(name=name)
-

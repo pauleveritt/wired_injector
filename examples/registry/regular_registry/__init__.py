@@ -1,12 +1,15 @@
-from wired_injector import InjectorRegistry
+from venusian import Scanner
+from wired import ServiceRegistry
 
+from examples.registry.regular_registry import factories
 from .factories import View
 
 
 def test():
     # The app
-    registry = InjectorRegistry()
-    registry.scan()
+    registry = ServiceRegistry()
+    scanner = Scanner(registry=registry)
+    scanner.scan(factories)
 
     # Per "request"
     container = registry.create_container()

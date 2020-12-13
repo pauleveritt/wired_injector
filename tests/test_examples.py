@@ -32,8 +32,8 @@ from examples.props import props_injection
         annotated_functions,
         operators,
         pipelines,
-        # regular_registry,
-        # injector_registry,
+        regular_registry,
+        injector_registry,
         props_injection,
     ],
 )
