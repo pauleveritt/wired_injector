@@ -1,6 +1,6 @@
 # wired_injector: Dependency Injection for Containers
 
-Tired of picking apart the [wired](https://wired.readthedocs.io/en/latest/) container inside your data classes and services?
+Tired of picking apart the [wired](wired:index) container inside your data classes and services?
 `wired_injector` brings type-based dependency injection, plus operators, to your code.
 
 
@@ -25,7 +25,7 @@ end-before: def test
 ---
 ```
 
-This, though, could be simpler, using the `@injectable` decorator.
+This, though, could be simpler, using the [@injectable](wired_injector.injectable) decorator.
 It eliminates `__wired_factory__`:
 
 ```{literalinclude} ../examples/index/injectable_view.py
@@ -35,7 +35,7 @@ end-at: str =
 ---
 ```
 
-We do this by making an `Injector`, bound to the container.
+We do this by making an [Injector](wired_injector.Injector), bound to the container.
 Then, instead of doing `container.get(View)`, we use the injector:
 
 ```python
@@ -137,3 +137,10 @@ end-at: f'View - {self.site_name}'
 
 Other operators are built-in, and systems and sites can add their own.
 For example, `Themester` has some component-centric operators.
+
+```{toctree}
+---
+hidden: true
+---
+api
+```

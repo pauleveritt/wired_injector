@@ -121,6 +121,15 @@ class FieldMakePipeline(NamedTuple):
 
 @dataclass
 class Injector:
+    """Introspect targets and call/construct with container data.
+
+    The injector is a factory in a container which fetch the data
+    needed for a factory, then call it. The injector is a per-container
+    service.
+
+
+    """
+
     container: ServiceContainer
     rules: Tuple[Type[Any], ...] = (
         FieldIsInit,

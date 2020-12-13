@@ -20,6 +20,7 @@ docs_require = [
     'Sphinx',
     'sphinx-book-theme',
     'myst-parser',
+    'sphinx-autodoc-typehints',
 ]
 
 tests_require = [

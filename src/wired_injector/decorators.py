@@ -22,7 +22,18 @@ def register_injectable(
         target: Callable = None,
         context: Optional[Any] = None,
 ):
-    """ Imperative form of the injectable decorator """
+    """Imperative form of the injectable decorator.
+
+    This can be called imperatively instead of using the
+    ``@injectable`` decorator. In fact, the decorator just
+    calls this function.
+
+    Args:
+        registry: The registry to use for this.
+        for_: A for
+        target: A target
+        context: A context
+    """
 
     def injectable_factory(container: ServiceContainer):
         return target
@@ -31,6 +42,8 @@ def register_injectable(
 
 
 class injectable:
+    """ ``venusian`` decorator to register an injectable factory  """
+
     for_ = None  # Give subclasses a chance to give default, e.g. view
 
     def __init__(self, for_: type = None, context: Type = None):
