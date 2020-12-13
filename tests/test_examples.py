@@ -14,6 +14,7 @@ from examples.index import (
 
 from examples.registry import (
     regular_registry,
+injector_registry,
 )
 
 
@@ -30,6 +31,7 @@ from examples.registry import (
         operators,
         pipelines,
         regular_registry,
+        injector_registry,
     ],
 )
 def test_examples(target):

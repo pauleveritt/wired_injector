@@ -1,7 +1,6 @@
 import sys
-from importlib import import_module
 from types import ModuleType
-from typing import Sequence, Optional, Union
+from typing import Optional, Union
 
 from venusian import Scanner
 from wired import ServiceRegistry, ServiceContainer

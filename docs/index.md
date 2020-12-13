@@ -1,8 +1,7 @@
-# wired_injector: Dependency Injection for Containers
+# wired_injector
 
 Tired of picking apart the [wired](wired:index) container inside your data classes and services?
 `wired_injector` brings type-based dependency injection, plus operators, to your code.
-
 
 ## Installation
 
@@ -151,5 +150,6 @@ For example, `Themester` has some component-centric operators.
 ---
 hidden: true
 ---
+usage/index
 api
 ```
