@@ -2,9 +2,6 @@
 
 ## Now
 
-- Allow the injectable class-based decorator to be subclassed 
-  to gain a default `for_`
-  
 ## Next
 
 - Allow `customers: Tuple[Customer]`
@@ -36,3 +33,5 @@
 - What should happen when `Get` fails? Fallback to default, or fail?
 - System props
 - Make a `@injectable` decorator
+- Allow the injectable class-based decorator to be subclassed 
+  to gain a default `for_`

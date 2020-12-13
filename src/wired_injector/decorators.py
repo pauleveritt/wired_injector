@@ -25,7 +25,7 @@ def register_injectable(
     """ Imperative form of the injectable decorator """
 
     def injectable_factory(container: ServiceContainer):
-        return target if target else for_
+        return target
 
     registry.register_factory(injectable_factory, for_, context=context)
 
@@ -46,7 +46,7 @@ class injectable:
 
             register_injectable(
                 registry,
-                for_,
+                for_=for_,
                 target=cls,
                 context=self.context,
             )

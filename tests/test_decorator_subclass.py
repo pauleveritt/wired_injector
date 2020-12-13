@@ -44,5 +44,5 @@ def test_injectable_overridden(registry):
     container = registry.create_container()
     injector = Injector(container)
     view_class = container.get(View)
-    view: OverriddenView = injector(view_class)
-    assert 'Overridden View' == view.name
+    v: OverriddenView = injector(view_class)
+    assert 'Overridden View' == v.name
