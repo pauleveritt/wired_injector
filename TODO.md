@@ -2,16 +2,14 @@
 
 ## Now
 
+- Refactor examples to not be executed immediately on import
+
 ## Next
 
 - Allow `customers: Tuple[Customer]`
 - Use new examples style
-- myst for docs
 
 ## Soon
-
-- Put API into Sphinx docs
-  * Improve docstrings and use Napoleon
 
 
 ## Eventually
@@ -35,3 +33,9 @@
 - Make a `@injectable` decorator
 - Allow the injectable class-based decorator to be subclassed 
   to gain a default `for_`
+- myst for docs
+- Put API into Sphinx docs
+  * Improve docstrings and use Napoleon
+  * intersphinx
+
+  
