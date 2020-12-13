@@ -39,6 +39,7 @@ class InjectorRegistry(ServiceRegistry):
             for_: Callable,
             target: Callable = None,
             context: Optional[Any] = None,
+            use_props: bool = False,
     ):
         """Imperative form of the injectable decorator.
 
@@ -50,9 +51,18 @@ class InjectorRegistry(ServiceRegistry):
             for_: The type or interface to register for
             target: A callable or class to register
             context: A container context
+            use_props This factory should be injected with keyword args
         """
 
         def injectable_factory(container: ServiceContainer):
-            return target
+            if use_props:
+                # Just return the target, it will be
+                # constructed when the props are available
+                return target
+            else:
+                injector = container.get(Injector)
+                instance = injector(target)
+                return instance
 
-        self.register_factory(injectable_factory, for_, context=context)
+        target.__wired_factory__ = injectable_factory
+        self.register_factory(target, for_, context=context)

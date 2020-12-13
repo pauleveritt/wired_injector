@@ -4,10 +4,7 @@ A decorator usage that overrides another registration.
 from dataclasses import dataclass
 
 import pytest
-from wired import ServiceRegistry
-from wired.dataclasses import register_dataclass
-from wired_injector import injectable, Injector
-from wired_injector.operators import Attr, Context, Get
+from wired_injector import injectable, InjectorRegistry
 
 try:
     from typing import Annotated
@@ -27,20 +24,13 @@ class OverriddenView:
 
 
 @pytest.fixture
-def registry() -> ServiceRegistry:
-    import sys
-    from venusian import Scanner
-
-    registry = ServiceRegistry()
-    scanner = Scanner(registry=registry)
-    current_module = sys.modules[__name__]
-    scanner.scan(current_module)
+def registry() -> InjectorRegistry:
+    registry = InjectorRegistry()
+    registry.scan()
     return registry
 
 
 def test_injectable_overridden(registry):
-    container = registry.create_container()
-    injector = Injector(container)
-    view_class = container.get(View)
-    view: OverriddenView = injector(view_class)
+    container = registry.create_injectable_container()
+    view: OverriddenView = container.get(View)
     assert 'Overridden View' == view.name

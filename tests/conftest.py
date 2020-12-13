@@ -9,6 +9,7 @@ from examples.factories import (
     Customer,
     FrenchCustomer,
 )
+from examples import factories
 
 try:
     from typing import Annotated
@@ -19,18 +20,20 @@ except ImportError:
 @pytest.fixture
 def regular_container() -> ServiceContainer:
     this_registry = InjectorRegistry()
-    c = this_registry.create_container(context=Customer())
-    injector = Injector(c)
-    c.register_singleton(injector, Injector)
+    this_registry.scan(factories)
+    c = this_registry.create_injectable_container(
+        context=Customer(),
+    )
     return c
 
 
 @pytest.fixture
 def french_container() -> ServiceContainer:
-    this_registry = example_registry()
-    c = this_registry.create_container(context=FrenchCustomer())
-    injector = Injector(c)
-    c.register_singleton(injector, Injector)
+    this_registry = InjectorRegistry()
+    this_registry.scan(factories)
+    c = this_registry.create_injectable_container(
+        context=FrenchCustomer(),
+    )
     return c
 
 

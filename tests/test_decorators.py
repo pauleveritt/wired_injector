@@ -7,12 +7,12 @@ More cumbersome (due to scanner) to copy around so placed into a
 single test.
 
 """
+
 from dataclasses import dataclass
 
 import pytest
-from wired import ServiceRegistry
 from wired.dataclasses import register_dataclass
-from wired_injector import injectable, Injector
+from wired_injector import injectable, Injector, InjectorRegistry
 from wired_injector.operators import Attr, Context, Get
 
 try:
@@ -36,7 +36,6 @@ class ThirdContext:
         self.name = 'Third Context'
 
 
-@injectable()
 @dataclass
 class Settings:
     greeting: str = 'Hello'
@@ -94,22 +93,17 @@ class ThirdHeading:
 
 
 @pytest.fixture
-def registry() -> ServiceRegistry:
-    import sys
-    from venusian import Scanner
-
-    registry = ServiceRegistry()
-    scanner = Scanner(registry=registry)
-    current_module = sys.modules[__name__]
-    scanner.scan(current_module)
+def registry() -> InjectorRegistry:
+    registry = InjectorRegistry()
+    registry.scan()
     register_dataclass(registry, Settings)
     return registry
 
 
 def test_injectable_first(registry):
     context = FirstContext()
-    container = registry.create_container(context=context)
-    injector = Injector(container)
+    container = registry.create_injectable_container(context=context)
+    injector = container.get(Injector)
     props = dict(person='Some Person')
     # TODO Injector.__call__ typing has a challenge with positional
     #   vs. keyword-only, might need to re-think system props
@@ -121,8 +115,8 @@ def test_injectable_first(registry):
 
 def test_injectable_second(registry):
     context = SecondContext()
-    container = registry.create_container(context=context)
-    injector = Injector(container)
+    container = registry.create_injectable_container(context=context)
+    injector = container.get(Injector)
     props = dict(person='Another Person')
     # TODO Injector.__call__ typing has a challenge with positional
     #   vs. keyword-only, might need to re-think system props
@@ -136,8 +130,8 @@ def test_injectable_double(registry):
     """ Ensure double injection works with both injectable and factory """
 
     registry.register_factory(config_factory, Config)
-    container = registry.create_container()
-    injector = Injector(container)
+    container = registry.create_injectable_container()
+    injector = container.get(Injector)
     heading: ThirdHeading = injector(ThirdHeading)
     assert 'Hello' == heading.greeting
     assert '!' == heading.config.punctuation
