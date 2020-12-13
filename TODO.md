@@ -2,8 +2,6 @@
 
 ## Now
 
-- Refactor examples to not be executed immediately on import
-
 ## Next
 
 - Allow `customers: Tuple[Customer]`
@@ -37,5 +35,7 @@
 - Put API into Sphinx docs
   * Improve docstrings and use Napoleon
   * intersphinx
+- Refactor examples to not be executed immediately on import
+
 
   

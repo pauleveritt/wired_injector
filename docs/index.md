@@ -18,17 +18,26 @@ Imagine we have a `wired` app.
 It makes a "registry" at startup, pointed at a Python package to scan for decorators.
 Then, for each "request", it makes a container to generate a results:
 
-```{literalinclude} ../examples/index/simple_factory.py
+```{literalinclude} ../examples/index/simple_factory/__init__.py
 ---
-start-at: from examples import example_registry
-end-before: def test
+start-at: The app
+end-before: return expected, result
+---
+```
+
+It loads some factories:
+
+```{literalinclude} ../examples/index/simple_factory/factories.py
+---
+start-at: service_factory()
+end-at: return cls()
 ---
 ```
 
 This, though, could be simpler, using the [@injectable](wired_injector.injectable) decorator.
 It eliminates `__wired_factory__`:
 
-```{literalinclude} ../examples/index/injectable_view.py
+```{literalinclude} ../examples/index/injectable_view/factories.py
 ---
 start-at: injectable()
 end-at: str =
@@ -53,7 +62,7 @@ For example, `Themester` wires this up for you.
 That's cheating, though: the `View` doesn't really *depend* on anything in the container.
 Let's introduce some `Settings`:
 
-```{literalinclude} ../examples/index/settings_view.py
+```{literalinclude} ../examples/index/settings_view/factories.py
 ---
 start-at: Site settings
 end-at: name=name
@@ -63,7 +72,7 @@ end-at: name=name
 Crap, we brought back `__wired_factory__` and it's a whopper.
 Let's use the injector to make that a little better:
 
-```{literalinclude} ../examples/index/injector_settings.py
+```{literalinclude} ../examples/index/injector_settings/factories.py
 ---
 start-at: Injectable view
 end-at: f'View - {site_name}'
@@ -78,7 +87,7 @@ In the following, the `name` property uses `upper_name` which isn't on `Settings
 It's on `MySettings` which overrides `Settings`.
 You can use Python's `Annotated` to give instructions to the injector:
 
-```{literalinclude} ../examples/index/annotated.py
+```{literalinclude} ../examples/index/annotated/factories.py
 ---
 start-at: class Settings
 end-at: f'View - {site_name}'
@@ -96,7 +105,7 @@ Nope.
 In fact, the switch to `Annotated` was to get beyond dataclass fields.
 Here's a `NamedTuple` implementation:
 
-```{literalinclude} ../examples/index/annotated_namedtuple.py
+```{literalinclude} ../examples/index/annotated_namedtuple/factories.py
 ---
 start-at: Injectable NamedTuple
 end-at: f'View - {site_name}'
@@ -107,7 +116,7 @@ What about plain old functions?
 They have arguments and arguments can have types which can use `Annotated`.
 Sure, why not:
 
-```{literalinclude} ../examples/index/annotated_functions.py
+```{literalinclude} ../examples/index/annotated_functions/factories.py
 ---
 start-at: Injectable function
 end-at: dict(name
@@ -118,7 +127,7 @@ But the injector can do better than just re-mapping types.
 We don't really need -- in some cases like component props, actually don't want -- the entire `Settings`.
 What if we could use the injector pipeline like a little DSL?
 
-```{literalinclude} ../examples/index/operators.py
+```{literalinclude} ../examples/index/operators/factories.py
 ---
 start-at: Injectable view
 end-at: f'View - {self.site_name}'
@@ -128,7 +137,7 @@ end-at: f'View - {self.site_name}'
 That's a pipeline with just one operator.
 It's actually a shorthand form of a pipeline that could explicitly use the `Attr` operator:
 
-```{literalinclude} ../examples/index/pipelines.py
+```{literalinclude} ../examples/index/pipelines/factories.py
 ---
 start-at: Injectable view
 end-at: f'View - {self.site_name}'
