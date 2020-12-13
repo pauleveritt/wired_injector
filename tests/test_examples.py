@@ -14,7 +14,7 @@ from examples.index import (
 
 from examples.registry import (
     regular_registry,
-injector_registry,
+    injector_registry,
 )
 
 

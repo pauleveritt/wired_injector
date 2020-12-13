@@ -1,7 +1,6 @@
-from typing import TypeVar, Callable, Optional, Any, Type
+from typing import TypeVar, Callable, Type
 
 from venusian import Scanner, attach
-from wired import ServiceContainer, ServiceRegistry
 
 protocol = TypeVar("protocol")
 
@@ -16,30 +15,31 @@ def adherent(
     return decor
 
 
-def register_injectable(
-        registry: ServiceRegistry,
-        for_: Callable,
-        target: Callable = None,
-        context: Optional[Any] = None,
-):
-    """Imperative form of the injectable decorator.
-
-    This can be called imperatively instead of using the
-    ``@injectable`` decorator. In fact, the decorator just
-    calls this function.
-
-    Args:
-        registry: The registry to use for this.
-        for_: A for
-        target: A target
-        context: A context
-    """
-
-    def injectable_factory(container: ServiceContainer):
-        return target
-
-    registry.register_factory(injectable_factory, for_, context=context)
-
+#
+# def register_injectable(
+#         registry: ServiceRegistry,
+#         for_: Callable,
+#         target: Callable = None,
+#         context: Optional[Any] = None,
+# ):
+#     """Imperative form of the injectable decorator.
+#
+#     This can be called imperatively instead of using the
+#     ``@injectable`` decorator. In fact, the decorator just
+#     calls this function.
+#
+#     Args:
+#         registry: The registry to use for this.
+#         for_: A for
+#         target: A target
+#         context: A context
+#     """
+#
+#     def injectable_factory(container: ServiceContainer):
+#         return target
+#
+#     registry.register_factory(injectable_factory, for_, context=context)
+#
 
 class injectable:
     """ ``venusian`` decorator to register an injectable factory  """
@@ -55,10 +55,8 @@ class injectable:
     def __call__(self, wrapped):
         def callback(scanner: Scanner, name: str, cls):
             for_ = self.for_ if self.for_ else cls
-            registry: ServiceRegistry = getattr(scanner, 'registry')
-
-            register_injectable(
-                registry,
+            registry = getattr(scanner, 'registry')
+            registry.register_injectable(
                 for_=for_,
                 target=cls,
                 context=self.context,

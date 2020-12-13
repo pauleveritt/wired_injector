@@ -1,17 +1,16 @@
-from wired_injector import Injector
+from wired_injector import Injector, InjectorRegistry
 
-from examples import example_registry
 from .factories import View
 
 
 def test():
     # The app
-    registry = example_registry()
+    registry = InjectorRegistry()
+    registry.scan()
 
     # Per "request"
-    container = registry.create_container()
-    injector = Injector(container)
-    container.register_singleton(injector, Injector)
+    container = registry.create_injectable_container()
+    injector = container.get(Injector)
     view: View = injector(View)
     result = view.name
     expected = 'View - MY SITE'

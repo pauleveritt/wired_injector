@@ -3,9 +3,8 @@ import sys
 
 import pytest
 from wired import ServiceContainer
-from wired_injector import Injector
+from wired_injector import Injector, InjectorRegistry
 
-from examples import example_registry
 from examples.factories import (
     Customer,
     FrenchCustomer,
@@ -19,7 +18,7 @@ except ImportError:
 
 @pytest.fixture
 def regular_container() -> ServiceContainer:
-    this_registry = example_registry()
+    this_registry = InjectorRegistry()
     c = this_registry.create_container(context=Customer())
     injector = Injector(c)
     c.register_singleton(injector, Injector)

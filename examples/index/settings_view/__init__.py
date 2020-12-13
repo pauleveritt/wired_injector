@@ -1,10 +1,12 @@
-from examples import example_registry
+from wired_injector import InjectorRegistry
+
 from .factories import View
 
 
 def test():
     # The app
-    registry = example_registry()
+    registry = InjectorRegistry()
+    registry.scan()
 
     # Per "request"
     container = registry.create_container()
