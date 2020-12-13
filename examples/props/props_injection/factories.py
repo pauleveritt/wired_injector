@@ -5,7 +5,7 @@ from wired_injector import injectable
 
 @dataclass
 class View:
-    name: str = 'View'
+    view_name: str = 'View'
 
 
 class view(injectable):
@@ -16,4 +16,4 @@ class view(injectable):
 @view()
 @dataclass
 class CustomView:
-    name: str = 'Custom View'
+    view_name: str = 'Custom View'

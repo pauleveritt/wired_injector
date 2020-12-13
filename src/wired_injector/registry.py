@@ -1,13 +1,42 @@
 from importlib import import_module
 from types import ModuleType
-from typing import Optional, Union, Callable, Any
+from typing import Optional, Union, Callable, Any, Mapping
 
 from venusian import Scanner
 from wired import ServiceRegistry, ServiceContainer
 from wired_injector import Injector
 from wired_injector.utils import caller_package
+from zope.interface import Interface
 
 PACKAGE = Optional[Union[ModuleType, str]]
+
+
+class InjectorContainer(ServiceContainer):
+    """ A service container that can inject with props.
+
+     We need a separate ``inject`` method that can take keyword
+     args and use as "props" during injection. These props then
+     supersede other values used for a field.
+     """
+
+    def inject(
+            self,
+            iface_or_type=Interface,
+            *,
+            context=None,
+            name='',
+            default=None,
+            system_props: Optional[Mapping[str, Any]] = None,
+            **kwargs,
+
+    ):
+        """ Same as container.get but with props, via injector """
+        klass = self.get(
+            iface_or_type,
+            context=context, name=name, default=default)
+        injector = self.get(Injector)
+        result = injector(klass, system_props, **kwargs)
+        return result
 
 
 class InjectorRegistry(ServiceRegistry):
@@ -28,7 +57,10 @@ class InjectorRegistry(ServiceRegistry):
             pkg = import_module(pkg)
         self.scanner.scan(pkg)
 
-    def create_injectable_container(self, *, context=None) -> ServiceContainer:
+    def create_container(self, *, context=None) -> InjectorContainer:
+        return InjectorContainer(self._factories, context=context)
+
+    def create_injectable_container(self, *, context=None) -> InjectorContainer:
         container = self.create_container(context=context)
         injector = Injector(container)
         container.register_singleton(injector, Injector)
