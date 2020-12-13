@@ -1,16 +1,16 @@
 import pytest
 
-# from examples.index import (
-#     # simple_factory,
-#     # injectable_view,
-#     # settings_view,
-#     # injector_settings,
-#     # annotated,
-#     # annotated_namedtuple,
-#     # annotated_functions,
-#     # operators,
-#     # pipelines,
-# )
+from examples.index import (
+    simple_factory,
+    injectable_view,
+    settings_view,
+    injector_settings,
+    annotated,
+    annotated_namedtuple,
+    annotated_functions,
+    operators,
+    pipelines,
+)
 
 from examples.registry import (
     regular_registry,
@@ -20,15 +20,15 @@ from examples.registry import (
 @pytest.mark.parametrize(
     'target',
     [
-        # simple_factory,
-        # injectable_view,
-        # settings_view,
-        # injector_settings,
-        # annotated,
-        # annotated_namedtuple,
-        # annotated_functions,
-        # operators,
-        # pipelines,
+        simple_factory,
+        injectable_view,
+        settings_view,
+        injector_settings,
+        annotated,
+        annotated_namedtuple,
+        annotated_functions,
+        operators,
+        pipelines,
         regular_registry,
     ],
 )

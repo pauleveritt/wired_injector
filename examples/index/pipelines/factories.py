@@ -1,12 +1,7 @@
-"""
-A pipeline of operators.
-"""
 from dataclasses import dataclass
 
-from wired_injector import injectable, Injector
+from wired_injector import injectable
 from wired_injector.operators import Get, Attr
-
-from examples import example_registry
 
 try:
     from typing import Annotated
@@ -41,19 +36,3 @@ class View:
     @property
     def name(self):
         return f'View - {self.site_name}'
-
-
-# The app
-registry = example_registry(__package__)
-
-# Per "request"
-container = registry.create_container()
-injector = Injector(container)
-container.register_singleton(injector, Injector)
-view: View = injector(View)
-result = view.name
-expected = 'View - MY SITE'
-
-
-def test():
-    return expected, result

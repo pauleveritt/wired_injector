@@ -1,12 +1,7 @@
-"""
-The injector can sniff at function parameters.
-"""
 from typing import NamedTuple
 
-from wired_injector import injectable, Injector
+from wired_injector import injectable
 from wired_injector.operators import Get
-
-from examples import example_registry
 
 try:
     from typing import Annotated
@@ -35,19 +30,3 @@ def View(
 ):
     site_name = settings.upper_name
     return dict(name=f'View - {site_name}')
-
-
-# The app
-registry = example_registry(__package__)
-
-# Per "request"
-container = registry.create_container()
-injector = Injector(container)
-container.register_singleton(injector, Injector)
-view: View = injector(View)
-result = view['name']
-expected = 'View - MY SITE'
-
-
-def test():
-    return expected, result
