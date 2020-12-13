@@ -9,7 +9,7 @@ def test():
     registry.scan()
 
     # Per "request"
-    container = registry.create_container()
+    container = registry.create_injectable_container()
     injector = Injector(container)
     view: View = injector(View)
     result = view.name

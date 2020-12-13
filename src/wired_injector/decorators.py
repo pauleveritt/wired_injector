@@ -45,6 +45,7 @@ class injectable:
     """ ``venusian`` decorator to register an injectable factory  """
 
     for_ = None  # Give subclasses a chance to give default, e.g. view
+    use_props = False
 
     def __init__(self, for_: type = None, context: Type = None):
         if for_ is not None:
@@ -60,6 +61,7 @@ class injectable:
                 for_=for_,
                 target=cls,
                 context=self.context,
+                use_props=self.use_props,
             )
 
         attach(wrapped, callback, category='wired')

@@ -51,7 +51,7 @@ class InjectorRegistry(ServiceRegistry):
             for_: The type or interface to register for
             target: A callable or class to register
             context: A container context
-            use_props This factory should be injected with keyword args
+            use_props: This factory should be injected with keyword args
         """
 
         def injectable_factory(container: ServiceContainer):

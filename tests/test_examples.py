@@ -17,21 +17,24 @@ from examples.registry import (
     injector_registry,
 )
 
+from examples.props import props_injection
+
 
 @pytest.mark.parametrize(
     'target',
     [
-        # simple_factory,
-        # injectable_view,
-        # settings_view,
-        # injector_settings,
+        simple_factory,
+        injectable_view,
+        settings_view,
+        injector_settings,
         annotated,
-        # annotated_namedtuple,
-        # annotated_functions,
-        # operators,
-        # pipelines,
+        annotated_namedtuple,
+        annotated_functions,
+        operators,
+        pipelines,
         # regular_registry,
         # injector_registry,
+        props_injection,
     ],
 )
 def test_examples(target):
