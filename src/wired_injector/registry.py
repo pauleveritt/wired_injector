@@ -31,9 +31,13 @@ class InjectorContainer(ServiceContainer):
 
     ):
         """ Same as container.get but with props, via injector """
+
         klass = self.get(
             iface_or_type,
-            context=context, name=name, default=default)
+            context=context,
+            name=name,
+            default=default,
+        )
         injector = self.get(Injector)
         result = injector(klass, system_props, **kwargs)
         return result
