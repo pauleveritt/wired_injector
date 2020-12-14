@@ -1,4 +1,4 @@
-from typing import TypeVar, Callable, Type
+from typing import TypeVar, Callable, Type, Optional
 
 from venusian import Scanner, attach
 
@@ -15,43 +15,24 @@ def adherent(
     return decor
 
 
-#
-# def register_injectable(
-#         registry: ServiceRegistry,
-#         for_: Callable,
-#         target: Callable = None,
-#         context: Optional[Any] = None,
-# ):
-#     """Imperative form of the injectable decorator.
-#
-#     This can be called imperatively instead of using the
-#     ``@injectable`` decorator. In fact, the decorator just
-#     calls this function.
-#
-#     Args:
-#         registry: The registry to use for this.
-#         for_: A for
-#         target: A target
-#         context: A context
-#     """
-#
-#     def injectable_factory(container: ServiceContainer):
-#         return target
-#
-#     registry.register_factory(injectable_factory, for_, context=context)
-#
-
 class injectable:
     """ ``venusian`` decorator to register an injectable factory  """
 
     for_ = None  # Give subclasses a chance to give default, e.g. view
     use_props = False
 
-    def __init__(self, for_: type = None, context: Type = None):
+    def __init__(
+            self,
+            for_: type = None,
+            context: Type = None,
+            use_props: Optional[bool] = None,
+    ):
         if for_ is not None:
             # Use passed in for_ value, otherwise, use the class attr
             self.for_ = for_
         self.context = context
+        if use_props is not None:
+            self.use_props = use_props
 
     def __call__(self, wrapped):
         def callback(scanner: Scanner, name: str, cls):
