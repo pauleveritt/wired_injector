@@ -20,7 +20,7 @@ def test_injector_registry_scan_caller():
     ds = DummyScan()
     registry.scanner.scan = ds
     registry.scan()
-    assert 'tests' == ds.called_with.__name__
+    assert 'tests' == ds.called_with.__name__  # type: ignore
 
 
 def test_injector_registry_scan_pkg():
@@ -29,7 +29,7 @@ def test_injector_registry_scan_pkg():
     ds = DummyScan()
     registry.scanner.scan = ds
     registry.scan(index)
-    assert 'examples.index' == ds.called_with.__name__
+    assert 'examples.index' == ds.called_with.__name__  # type: ignore
 
 
 def test_injector_registry_scan_string():
@@ -37,4 +37,4 @@ def test_injector_registry_scan_string():
     ds = DummyScan()
     registry.scanner.scan = ds
     registry.scan('examples.index')
-    assert 'examples.index' == ds.called_with.__name__
+    assert 'examples.index' == ds.called_with.__name__  # type: ignore

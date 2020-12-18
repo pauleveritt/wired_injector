@@ -28,7 +28,7 @@ class View:
 
     @property
     def caps_name(self):
-        return self.name.upper()
+        return self.name.upper() if self.name is not None else None
 
     @classmethod
     def __wired_factory__(cls, container):

@@ -100,5 +100,5 @@ class InjectorRegistry(ServiceRegistry):
                 instance = injector(target)
                 return instance
 
-        target.__wired_factory__ = injectable_factory
+        target.__wired_factory__ = injectable_factory  # type: ignore
         self.register_factory(target, for_, context=context)
