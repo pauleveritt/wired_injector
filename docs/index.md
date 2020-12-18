@@ -1,7 +1,7 @@
 # wired_injector
 
 Tired of picking apart the [wired](wired:index) container inside your data classes and services?
-`wired_injector` brings type-based dependency injection, plus operators, to your code.
+`wired_injector` brings type-based dependency injection, plus a pipeline with operators, to your code.
 
 ## Installation
 
@@ -42,21 +42,6 @@ start-at: injectable()
 end-at: str =
 ---
 ```
-
-We do this by making an [Injector](wired_injector.Injector), bound to the container.
-Then, instead of doing `container.get(View)`, we use the injector:
-
-```python
-container = registry.create_container()
-injector = Injector(container)
-container.register_singleton(injector, Injector)
-view: View = injector(View)
-```
-
-:::{note}
-This is a bit of ceremony that gets handled in an app.
-For example, `Themester` wires this up for you.
-:::
 
 That's cheating, though: the `View` doesn't really *depend* on anything in the container.
 Let's introduce some `Settings`:

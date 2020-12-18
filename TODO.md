@@ -5,10 +5,12 @@
 ## Next
 
 - Allow `customers: Tuple[Customer]`
-- Use new examples style
 
 ## Soon
 
+- Document:
+  - custom decorators
+  - use_props
 
 ## Eventually
 
@@ -36,6 +38,7 @@
   * Improve docstrings and use Napoleon
   * intersphinx
 - Refactor examples to not be executed immediately on import
+- Use new examples style
 
 
   

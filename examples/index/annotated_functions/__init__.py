@@ -1,4 +1,4 @@
-from wired_injector import Injector, InjectorRegistry
+from wired_injector import InjectorRegistry
 
 from .factories import View
 
@@ -10,9 +10,7 @@ def test():
 
     # Per "request"
     container = registry.create_injectable_container()
-    injector = Injector(container)
-    container.register_singleton(injector, Injector)
-    view = injector(View)
+    view = container.get(View)
     result = view['name']
     expected = 'View - MY SITE'
 
