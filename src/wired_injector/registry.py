@@ -32,6 +32,8 @@ class InjectorContainer(ServiceContainer):
     ):
         """ Same as container.get but with props, via injector """
 
+        # TODO If your component has a prop of 'name' or 'context'
+        # then those will collide with the .get args of same name.
         klass = self.get(
             iface_or_type,
             context=context,
