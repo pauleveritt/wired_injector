@@ -1,7 +1,7 @@
 project = 'wired_injector'
 html_title = 'wired_injector'
 copyright = '2020, Paul Everitt <pauleveritt@me.com>'
-release = '0.1.0'
+release = '0.2.0'
 extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.autodoc',
