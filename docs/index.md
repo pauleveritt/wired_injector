@@ -13,34 +13,68 @@ Installation follows the normal Python packaging approach:
 
 ## Quick Examples
 
-Imagine we have a `wired` app.
-It makes a "registry" at startup, pointed at a Python package to scan for decorators.
-Then, for each "request", it makes a container to generate a results:
+Make an injectable factory:
 
-
-But the injector can do better than just re-mapping types.
-We don't really need -- in some cases like component props, actually don't want -- the entire `Settings`.
-What if we could use the injector pipeline like a little DSL?
-
-```{literalinclude} ../examples/index/operators/factories.py
+```{literalinclude} ../examples/usage/simple_injectable/factories.py
 ---
-start-at: Injectable view
-end-at: f'View - {self.site_name}'
+start-at: injectable(
 ---
 ```
 
-That's a pipeline with just one operator.
-It's actually a shorthand form of a pipeline that could explicitly use the `Attr` operator:
+You can then make an `InjectorRegistry` that scans for decorators:
 
-```{literalinclude} ../examples/index/pipelines/factories.py
+```{literalinclude} ../examples/usage/simple_injectable/__init__.py
 ---
-start-at: Injectable view
-end-at: f'View - {self.site_name}'
+start-at: InjectorRegistry(
+end-at: scan(
 ---
 ```
 
-Other operators are built-in, and systems and sites can add their own.
-For example, `Themester` has some component-centric operators.
+The inject can construct your instances.
+Maybe you need the container's `Settings`:
+
+```{literalinclude} ../examples/usage/injected_settings/factories.py
+---
+start-after: View that
+end-at: Settings
+---
+```
+
+Want to use `NamedTuple` instead of `dataclass`?
+
+```{literalinclude} ../examples/usage/named_tuples/factories.py
+---
+start-after: View that
+end-at: Settings
+---
+```
+
+Or perhaps functions instead?
+
+```{literalinclude} ../examples/usage/functions/factories.py
+---
+start-after: View that
+end-at: return dict
+---
+```
+
+Use `Annotated` to give instructions to the injector, such as look up one type but expect a return value of another:
+
+```{literalinclude} ../examples/usage/annotations/factories.py
+---
+start-at: Annotated[
+end-at: Annotated[
+---
+```
+
+Use pipelines with operators -- even custom -- to narrow down the injection to the smallest surface area:
+
+```{literalinclude} ../examples/usage/pipelines/factories.py
+---
+start-at: Annotated[
+end-before: property
+---
+```
 
 ```{toctree}
 ---

@@ -26,7 +26,7 @@ class MySettings:
 @dataclass
 class View:
     site_name: Annotated[
-        MySettings,
+        str,
         Get(BaseSettings, attr='site_name'),
     ]
 

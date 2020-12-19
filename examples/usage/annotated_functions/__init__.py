@@ -9,8 +9,8 @@ def test():
 
     # Per "request"
     container = registry.create_injectable_container()
-    view: View = container.get(View)
-    result = view.name
+    view = container.get(View)
+    result = view['name']
     expected = 'View - Another Site'
 
     return expected, result
