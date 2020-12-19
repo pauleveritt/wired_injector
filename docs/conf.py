@@ -35,5 +35,6 @@ myst_enable_extensions = [
 myst_url_schemes = ['http', 'https', 'mailto']
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3.7', None),
+    'venusian': ('https://docs.pylonsproject.org/projects/venusian/en/latest', None),
     'wired': ('https://wired.readthedocs.io/en/stable', None),
 }

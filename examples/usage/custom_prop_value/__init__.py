@@ -4,14 +4,13 @@ from .factories import View
 
 
 def test():
-    # The app
     registry = InjectorRegistry()
-    registry.scan()
+    registry.scan()  # Look for decorators in/below current package
 
     # Per "request"
     container = registry.create_injectable_container()
-    view: View = container.get(View)
+    view: View = container.inject(View, site_name='Prop Site')
     result = view.name
-    expected = 'View'
+    expected = 'View - Prop Site'
 
     return expected, result

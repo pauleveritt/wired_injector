@@ -1,40 +1,57 @@
 import pytest
 
-from examples.index import (
-    simple_factory,
-    injectable_view,
-    settings_view,
-    injector_settings,
-    annotated,
-    annotated_namedtuple,
-    annotated_functions,
-    operators,
-    pipelines,
-)
-
+# from examples.index import (
+#     # pipelines,
+# )
+from examples.props import props_injection
 from examples.registry import (
     regular_registry,
     injector_registry,
 )
-
-from examples.props import props_injection
+from examples.usage import (
+    simple_factory,
+    wired_factory,
+    scanner,
+    simple_injectable,
+    settings_manual,
+    injected_settings,
+    named_tuples,
+    functions,
+    replace,
+    annotations,
+    annotated_nametuples,
+    annotated_functions,
+    props,
+    custom_prop_value,
+    pipelines,
+    context,
+    context_override,
+)
 
 
 @pytest.mark.parametrize(
     'target',
     [
-        simple_factory,
-        injectable_view,
-        settings_view,
-        injector_settings,
-        annotated,
-        annotated_namedtuple,
-        annotated_functions,
-        operators,
-        pipelines,
         regular_registry,
         injector_registry,
         props_injection,
+        simple_factory,
+        wired_factory,
+        scanner,
+        simple_injectable,
+        settings_manual,
+        injected_settings,
+        named_tuples,
+        functions,
+        replace,
+        annotations,
+        annotated_nametuples,
+        annotated_functions,
+        props,
+        custom_prop_value,
+        pipelines,
+        context,
+        context_override,
     ],
 )
 def test_examples(target):

@@ -6,5 +6,6 @@ Here.
 ---
 hidden: true
 ---
+usage
 registry
 ```
