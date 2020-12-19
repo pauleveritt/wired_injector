@@ -9,25 +9,21 @@ except ImportError:
     from typing_extensions import Annotated  # type: ignore
 
 
-class Settings:
-    site_name: str
-
-
-@injectable(for_=Settings)
-class MySettings(NamedTuple):
+@injectable()
+class BaseSettings(NamedTuple):
     site_name: str = 'My Site'
 
-    @property
-    def upper_name(self):
-        return self.site_name.upper()
+
+@injectable(for_=BaseSettings)
+class MySettings(NamedTuple):
+    site_name: str = 'Another Site'
 
 
-# Injectable NamedTuple
 @injectable()
 class View(NamedTuple):
-    settings: Annotated[MySettings, Get(Settings)]
+    settings: Annotated[MySettings, Get(BaseSettings)]
 
     @property
     def name(self):
-        site_name = self.settings.upper_name
+        site_name = self.settings.site_name
         return f'View - {site_name}'

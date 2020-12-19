@@ -151,7 +151,7 @@ Here's the view, but as an injectable function that returns a dict:
 ```{literalinclude} ../../examples/usage/functions/factories.py
 ---
 start-after: View that uses site settings
-end-at: return f'
+end-at: return dict
 ---
 ```
 
@@ -202,8 +202,6 @@ Here's a `NamedTuple` implementation:
 
 ```{literalinclude} ../../examples/usage/annotated_namedtuples/factories.py
 ---
-start-at: Injectable NamedTuple
-end-at: f'View - {site_name}'
 ---
 ```
 
@@ -257,8 +255,8 @@ First, we need to say our `@injectable` behaves a little differently: it wants t
 ```{literalinclude} ../../examples/usage/custom_prop_value/factories.py
 ---
 start-after: View
-end-at: return f'
-emphasize-lines: 1
+end-at: return f
+emphasize-lines: 1-1
 ---
 ```
 
@@ -280,10 +278,10 @@ We currently have a "pipeline" with one operator: `Get`.
 You actually can string together multiple operators:
 Let's break the `attr` argument into its own pipeline usage:
 
-```{literalinclude} ../../examples/usage/pipeline/factories.py
+```{literalinclude} ../../examples/usage/pipelines/factories.py
 ---
 start-at: View
-end-at: ]
+end-before: property
 ---
 ```
 
@@ -322,8 +320,6 @@ Let's make a `View` that will be used when the container has a `FrenchCustomer`:
 
 ```{literalinclude} ../../examples/usage/context_override/factories.py
 ---
-start-at: View
-end-at: return f
 emphasize-lines: 36-36
 ---
 ```

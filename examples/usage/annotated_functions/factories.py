@@ -19,11 +19,9 @@ class MySettings(NamedTuple):
     site_name: str = 'Another Site'
 
 
+# Injectable function
 @injectable()
-class View(NamedTuple):
-    settings: Annotated[MySettings, Get(BaseSettings)]
-
-    @property
-    def name(self):
-        site_name = self.settings.site_name
-        return f'View - {site_name}'
+def View(settings: Annotated[MySettings, Get(BaseSettings)]):
+    site_name = settings.site_name
+    name = f'View - {site_name}'
+    return dict(name=name)
