@@ -24,9 +24,6 @@ class MySettings(NamedTuple):
 
 # Injectable function
 @injectable()
-def View(
-        settings: Annotated[MySettings, Get(Settings)]
-
-):
+def View(settings: Annotated[MySettings, Get(Settings)]):
     site_name = settings.upper_name
     return dict(name=f'View - {site_name}')

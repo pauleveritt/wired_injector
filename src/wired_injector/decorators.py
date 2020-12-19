@@ -7,7 +7,7 @@ protocol = TypeVar("protocol")
 
 # TODO: This is all speculative from Glyph's approach
 def adherent(
-        c: Callable[[], protocol]
+    c: Callable[[], protocol]
 ) -> Callable[[Type[protocol]], Type[protocol]]:  # pragma: no cover
     def decor(input_value: Type[protocol]) -> Type[protocol]:
         return input_value
@@ -22,10 +22,10 @@ class injectable:
     use_props = False
 
     def __init__(
-            self,
-            for_: type = None,
-            context: Type = None,
-            use_props: Optional[bool] = None,
+        self,
+        for_: type = None,
+        context: Type = None,
+        use_props: Optional[bool] = None,
     ):
         if for_ is not None:
             # Use passed in for_ value, otherwise, use the class attr

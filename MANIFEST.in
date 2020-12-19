@@ -2,6 +2,7 @@ graft src/wired_injector
 graft tests
 graft docs
 prune docs/_build
+prune examples
 graft .github
 
 include README.md
@@ -14,5 +15,5 @@ include tox.ini readthedocs.yml
 include mypy.ini pytest.ini
 recursive-include src py.typed
 recursive-exclude * __pycache__ *.py[cod]
-exclude TODO.md
+exclude TODO.md bs-config.json
 exclude .pre-commit-config.yaml

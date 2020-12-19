@@ -39,6 +39,3 @@
   * intersphinx
 - Refactor examples to not be executed immediately on import
 - Use new examples style
-
-
-  

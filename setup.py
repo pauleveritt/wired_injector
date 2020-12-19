@@ -55,7 +55,9 @@ setup(
     python_requires='>=3.6',
     install_requires=requires,
     extras_require=dict(
-        docs=docs_require, tests=tests_require, dev=dev_require,
+        docs=docs_require,
+        tests=tests_require,
+        dev=dev_require,
     ),
     zip_safe=False,
     keywords=','.join(

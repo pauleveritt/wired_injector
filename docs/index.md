@@ -135,6 +135,6 @@ For example, `Themester` has some component-centric operators.
 ---
 hidden: true
 ---
-usage/index
+examples/index
 api
 ```

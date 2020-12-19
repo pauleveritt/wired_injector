@@ -12,23 +12,22 @@ PACKAGE = Optional[Union[ModuleType, str]]
 
 
 class InjectorContainer(ServiceContainer):
-    """ A service container that can inject with props.
+    """A service container that can inject with props.
 
-     We need a separate ``inject`` method that can take keyword
-     args and use as "props" during injection. These props then
-     supersede other values used for a field.
-     """
+    We need a separate ``inject`` method that can take keyword
+    args and use as "props" during injection. These props then
+    supersede other values used for a field.
+    """
 
     def inject(
-            self,
-            iface_or_type=Interface,
-            *,
-            context=None,
-            name='',
-            default=None,
-            system_props: Optional[Mapping[str, Any]] = None,
-            **kwargs,
-
+        self,
+        iface_or_type=Interface,
+        *,
+        context=None,
+        name='',
+        default=None,
+        system_props: Optional[Mapping[str, Any]] = None,
+        **kwargs,
     ):
         """ Same as container.get but with props, via injector """
 
@@ -66,18 +65,20 @@ class InjectorRegistry(ServiceRegistry):
     def create_container(self, *, context=None) -> InjectorContainer:
         return InjectorContainer(self._factories, context=context)
 
-    def create_injectable_container(self, *, context=None) -> InjectorContainer:
+    def create_injectable_container(
+        self, *, context=None
+    ) -> InjectorContainer:
         container = self.create_container(context=context)
         injector = Injector(container)
         container.register_singleton(injector, Injector)
         return container
 
     def register_injectable(
-            self,
-            for_: Callable,
-            target: Callable = None,
-            context: Optional[Any] = None,
-            use_props: bool = False,
+        self,
+        for_: Callable,
+        target: Callable = None,
+        context: Optional[Any] = None,
+        use_props: bool = False,
     ):
         """Imperative form of the injectable decorator.
 

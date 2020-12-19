@@ -19,10 +19,7 @@ class Settings:
 @injectable()
 @dataclass
 class View:
-    site_name: Annotated[
-        str,
-        Get(Settings, attr='site_name')
-    ]
+    site_name: Annotated[str, Get(Settings, attr='site_name')]
 
     @property
     def name(self):

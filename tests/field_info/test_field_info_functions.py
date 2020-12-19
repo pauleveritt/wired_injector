@@ -80,9 +80,7 @@ def test_annotation():
 
 
 def test_annotation_optional():
-    def target(
-        customer: Optional[Annotated[Customer, Get(FrenchCustomer)]]
-    ):
+    def target(customer: Optional[Annotated[Customer, Get(FrenchCustomer)]]):
         return 99
 
     field_infos = _get_field_infos(target)

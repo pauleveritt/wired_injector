@@ -53,6 +53,7 @@ def test_injector_registry_scan_caller():
 
 def test_injector_registry_scan_pkg():
     from examples import index
+
     registry = InjectorRegistry()
     ds = DummyScan()
     registry.scanner.scan = ds

@@ -19,4 +19,3 @@ def caller_package(level=2, caller_module=caller_module):
     # Go up one level to get package
     package_name = module.__name__.rsplit('.', 1)[0]
     return sys.modules[package_name]
-

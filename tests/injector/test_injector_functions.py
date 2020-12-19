@@ -51,10 +51,10 @@ def test_one_parameter_field_type(regular_container):
 
 def test_one_parameter_annotated(french_container):
     def target(
-            french_view: Annotated[
-                FrenchView,
-                Get(View),
-            ]
+        french_view: Annotated[
+            FrenchView,
+            Get(View),
+        ]
     ):
         return french_view
 
@@ -74,11 +74,11 @@ def test_two_parameters_unannotated(regular_container):
 
 def test_two_parameters_annotated(french_container):
     def target(
-            container: ServiceContainer,
-            french_customer: Annotated[
-                FrenchView,
-                Get(View),
-            ],
+        container: ServiceContainer,
+        french_customer: Annotated[
+            FrenchView,
+            Get(View),
+        ],
     ):
         return french_customer
 
@@ -102,12 +102,12 @@ def test_optional_unannotated(regular_container):
 
 def test_optional_annotated(french_container):
     def target(
-            french_view: Optional[
-                Annotated[
-                    FrenchView,
-                    Get(View),
-                ]
-            ],
+        french_view: Optional[
+            Annotated[
+                FrenchView,
+                Get(View),
+            ]
+        ],
     ):
         return french_view
 
@@ -138,11 +138,11 @@ def test_get_then_attr(regular_container):
     """ Pipeline: Get, Attr """
 
     def target(
-            view_name: Annotated[
-                str,
-                Get(View),
-                Attr('name'),
-            ],
+        view_name: Annotated[
+            str,
+            Get(View),
+            Attr('name'),
+        ],
     ):
         return view_name
 
@@ -170,11 +170,11 @@ def test_default_value_annotated(regular_container):
         pass
 
     def target(
-            view_name: Annotated[
-                str,
-                Get(Foo),
-                Attr('name'),
-            ] = 'View Name'
+        view_name: Annotated[
+            str,
+            Get(Foo),
+            Attr('name'),
+        ] = 'View Name'
     ):
         return view_name
 
@@ -187,11 +187,11 @@ def test_context_then_attr(regular_container):
     """ Pipeline: Context, Attr """
 
     def target(
-            customer_name: Annotated[
-                str,
-                Context(),
-                Attr('name'),
-            ],
+        customer_name: Annotated[
+            str,
+            Context(),
+            Attr('name'),
+        ],
     ):
         return customer_name
 

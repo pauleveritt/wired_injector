@@ -9,7 +9,7 @@ from wired_injector import injectable, InjectorRegistry
 try:
     from typing import Annotated
 except ImportError:
-    from typing_extensions import Annotated  # type: ignore
+    from typing_extensions import Annotated  # type: ignore  # noqa: F401
 
 
 @dataclass
@@ -52,9 +52,7 @@ def test_injectable_customer_context(registry):
     """ Lookup with Customer context should get View """
 
     context = Customer()
-    container = registry.create_injectable_container(
-        context=context
-    )
+    container = registry.create_injectable_container(context=context)
     view: View = container.get(View)
     assert 'View' == view.name
 
@@ -63,8 +61,6 @@ def test_injectable_french_context(registry):
     """ Custom context gets custom View"""
 
     context = FrenchCustomer()
-    container = registry.create_injectable_container(
-        context=context
-    )
+    container = registry.create_injectable_container(context=context)
     view: View = container.get(View)
     assert 'French View' == view.name

@@ -14,7 +14,7 @@ from examples import factories
 try:
     from typing import Annotated
 except ImportError:
-    from typing_extensions import Annotated  # type: ignore
+    from typing_extensions import Annotated  # type: ignore  # noqa: F401
 
 
 @pytest.fixture
@@ -52,7 +52,5 @@ def french_injector(french_container):
 @pytest.fixture(scope="session", autouse=True)
 def examples_path():
     """ Automatically add the root of the repo to path """
-    ep = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), '..')
-    )
+    ep = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     sys.path.insert(0, ep)

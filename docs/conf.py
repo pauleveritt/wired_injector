@@ -15,7 +15,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 html_static_path = ['_static']
 html_theme_options = dict(
     extra_footer='Theme by the <a href="https://ebp.jupyterbook.org">'
-                 + 'Executable Book Project</a>.',
+    + 'Executable Book Project</a>.',
     repository_url='https://github.com/pauleveritt/wired_injector',
     use_repository_button=True,
 )
@@ -23,10 +23,16 @@ html_css_files = [
     'custom.css',
 ]
 html_sidebars = {
-    "**": ['subtitle.html', 'sidebar-search-bs.html', 'sbt-sidebar-nav.html', ]
+    "**": [
+        'subtitle.html',
+        'sidebar-search-bs.html',
+        'sbt-sidebar-nav.html',
+    ]
 }
-myst_admonition_enable = True
-myst_url_schemes=['http', 'https', 'mailto']
+myst_enable_extensions = [
+    'colon_fence',
+]
+myst_url_schemes = ['http', 'https', 'mailto']
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3.7', None),
     'wired': ('https://wired.readthedocs.io/en/stable', None),
