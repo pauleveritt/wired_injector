@@ -2,6 +2,8 @@
 
 ## Now
 
+- Prevent the collision of `name` passed in as a prop and also used as the `container.get` param
+
 ## Next
 
 - Allow `customers: Tuple[Customer]`

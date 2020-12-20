@@ -23,21 +23,26 @@ class InjectorContainer(ServiceContainer):
         self,
         iface_or_type=Interface,
         *,
-        context=None,
-        name='',
-        default=None,
+        cget_props: Optional[Mapping[str, Any]] = None,
         system_props: Optional[Mapping[str, Any]] = None,
         **kwargs,
     ):
         """ Same as container.get but with props, via injector """
 
+        # cget_props is a way to prevent container.get keywords, such as
+        # context/name/default, from getting trampled on by regular props.
+        # If "the system" wants those passed into the underlying .get(),
+        # then put them in cget_props.
+        if cget_props is None:
+            cget_props = {}
+
         # TODO If your component has a prop of 'name' or 'context'
         # then those will collide with the .get args of same name.
         klass = self.get(
             iface_or_type,
-            context=context,
-            name=name,
-            default=default,
+            context=cget_props.get('context', None),
+            name=cget_props.get('name', ''),
+            default=cget_props.get('default', None),
         )
         injector = self.get(Injector)
         result = injector(klass, system_props, **kwargs)
