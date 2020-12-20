@@ -76,7 +76,7 @@ class InjectorRegistry(ServiceRegistry):
     def register_injectable(
         self,
         for_: Callable,
-        target: Callable = None,
+        target: Optional[Callable] = None,
         context: Optional[Any] = None,
         use_props: bool = False,
     ):
@@ -92,6 +92,13 @@ class InjectorRegistry(ServiceRegistry):
             context: A container context
             use_props: This factory should be injected with keyword args
         """
+
+        # To avoid doing:
+        #   registry.register_injectable(Heading, Heading)
+        # ...allow target to be optional. In that case, assign
+        # target to equal for_.
+        if target is None:
+            target = for_
 
         def injectable_factory(container: ServiceContainer):
             if use_props:

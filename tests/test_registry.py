@@ -24,7 +24,7 @@ def test_injector_container_get():
         name: str = 'Default Name'
 
     registry = InjectorRegistry()
-    registry.register_injectable(Heading, Heading, use_props=True)
+    registry.register_injectable(Heading, use_props=True)
     container = registry.create_injectable_container()
     heading: Heading = container.get(Heading)
     assert 'Default Name' == heading.name
@@ -37,7 +37,7 @@ def test_injector_container_inject_props():
         first_name: str = 'Default Name'
 
     registry = InjectorRegistry()
-    registry.register_injectable(Heading, Heading, use_props=True)
+    registry.register_injectable(Heading, use_props=True)
     container = registry.create_injectable_container()
     heading: Heading = container.inject(Heading, first_name='Injected Name')
     assert 'Injected Name' == heading.first_name
@@ -67,3 +67,17 @@ def test_injector_registry_scan_string():
     registry.scanner.scan = ds
     registry.scan('examples.index')
     assert 'examples.index' == ds.called_with.__name__  # type: ignore
+
+
+def test_injector_target_none():
+    # The target argument is optional and defaults to None
+    @dataclass
+    class Heading:
+        name: str = 'Default Name'
+
+    registry = InjectorRegistry()
+    registry.register_injectable(Heading, use_props=True)
+    container = registry.create_injectable_container()
+    heading: Heading = container.get(Heading)
+    assert 'Default Name' == heading.name
+

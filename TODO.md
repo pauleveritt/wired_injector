@@ -39,3 +39,4 @@
   * intersphinx
 - Refactor examples to not be executed immediately on import
 - Use new examples style
+- Allow register_injectable to only supply `for_` and `target` then defaults to it
