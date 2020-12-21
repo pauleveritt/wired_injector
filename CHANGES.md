@@ -4,6 +4,8 @@
 
 - Change `InjectorContainer.inject` to accept `cget_props` as a way of avoiding clashes between props and underlying `.get()` args
 
+- Put `InjectorContainer` in top-level exports
+
 ## 0.3.0
 
 - Allow register_injectable to only supply `for_` and `target` then defaults to it
