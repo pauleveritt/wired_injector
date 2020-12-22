@@ -65,6 +65,22 @@ class Config:
     punctuation: str
 
 
+@injectable()
+@dataclass
+class ScannableConfig:
+    """ Injectable with no venusian scan category """
+
+    punctuation: str = '!'
+
+
+@injectable(category='config')
+@dataclass
+class ScannableConfig2:
+    """ Provide a venusian scan category """
+
+    punctuation: str = '!'
+
+
 def config_factory(container):
     return Config(punctuation='!')
 
@@ -135,3 +151,45 @@ def test_injectable_double(registry):
     heading: ThirdHeading = injector(ThirdHeading)
     assert 'Hello' == heading.greeting
     assert '!' == heading.config.punctuation
+
+
+def test_injectable_scan_category_default():
+    """ Use the decorator default for the venusian scan category """
+
+    registry = InjectorRegistry()
+    registry.scan()
+    container = registry.create_injectable_container()
+    config: ScannableConfig = container.get(ScannableConfig)
+    assert '!' == config.punctuation
+
+
+def test_injectable_scan_category_wired():
+    """ Scan for the value of the default category (wired) """
+
+    registry = InjectorRegistry()
+    registry.scan(categories=('wired',))
+    container = registry.create_injectable_container()
+    config: Config = container.get(ScannableConfig)
+    assert '!' == config.punctuation
+
+
+def test_injectable_scan_category_custom():
+    """ Provide a venusian scan category """
+
+    registry = InjectorRegistry()
+    registry.scan(categories=('config',))
+    container = registry.create_injectable_container()
+    config: ScannableConfig2 = container.get(ScannableConfig2)
+    assert '!' == config.punctuation
+
+
+def test_injectable_scan_category_not_found():
+    """ Scan for something bogus and fail """
+
+    registry = InjectorRegistry()
+    registry.scan(categories=('BOGUS',))
+    container = registry.create_injectable_container()
+    with pytest.raises(LookupError):
+        # Fails because this decorator registered under a
+        # category not matching what we scanned for
+        container.get(ScannableConfig2)

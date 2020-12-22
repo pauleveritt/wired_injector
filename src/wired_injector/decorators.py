@@ -7,7 +7,7 @@ protocol = TypeVar("protocol")
 
 # TODO: This is all speculative from Glyph's approach
 def adherent(
-    c: Callable[[], protocol]
+        c: Callable[[], protocol]
 ) -> Callable[[Type[protocol]], Type[protocol]]:  # pragma: no cover
     def decor(input_value: Type[protocol]) -> Type[protocol]:
         return input_value
@@ -20,19 +20,25 @@ class injectable:
 
     for_ = None  # Give subclasses a chance to give default, e.g. view
     use_props = False
+    category = 'wired'  # venusian scan category
 
     def __init__(
-        self,
-        for_: type = None,
-        context: Type = None,
-        use_props: Optional[bool] = None,
+            self,
+            for_: type = None,
+            context: Type = None,
+            use_props: Optional[bool] = None,
+            category: Optional[str] = None,
     ):
         if for_ is not None:
-            # Use passed in for_ value, otherwise, use the class attr
+            # Use passed in value, otherwise, use the class attr
             self.for_ = for_
         self.context = context
         if use_props is not None:
+            # Use passed in value, otherwise, use the class attr
             self.use_props = use_props
+        if category is not None:
+            # Use passed in value, otherwise, use the class attr
+            self.category = category
 
     def __call__(self, wrapped):
         def callback(scanner: Scanner, name: str, cls):
@@ -45,5 +51,5 @@ class injectable:
                 use_props=self.use_props,
             )
 
-        attach(wrapped, callback, category='wired')
+        attach(wrapped, callback, category=self.category)
         return wrapped

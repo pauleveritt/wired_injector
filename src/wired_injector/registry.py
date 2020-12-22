@@ -1,6 +1,6 @@
 from importlib import import_module
 from types import ModuleType
-from typing import Optional, Union, Callable, Any, Mapping
+from typing import Optional, Union, Callable, Any, Mapping, Tuple
 
 from venusian import Scanner
 from wired import ServiceRegistry, ServiceContainer
@@ -20,12 +20,12 @@ class InjectorContainer(ServiceContainer):
     """
 
     def inject(
-        self,
-        iface_or_type=Interface,
-        *,
-        cget_props: Optional[Mapping[str, Any]] = None,
-        system_props: Optional[Mapping[str, Any]] = None,
-        **kwargs,
+            self,
+            iface_or_type=Interface,
+            *,
+            cget_props: Optional[Mapping[str, Any]] = None,
+            system_props: Optional[Mapping[str, Any]] = None,
+            **kwargs,
     ):
         """ Same as container.get but with props, via injector """
 
@@ -58,20 +58,23 @@ class InjectorRegistry(ServiceRegistry):
         super().__init__(factory_registry=factory_registry)
         self.scanner = Scanner(registry=self)
 
-    def scan(self, pkg: PACKAGE = None):
+    def scan(self,
+             pkg: PACKAGE = None,
+             categories: Tuple[str, ...] = None,
+             ):
         if pkg is None:
             # Get the caller module and import it
             pkg = caller_package()
         elif isinstance(pkg, str):
             # importlib.resource package specification
             pkg = import_module(pkg)
-        self.scanner.scan(pkg)
+        self.scanner.scan(pkg, categories=categories)
 
     def create_container(self, *, context=None) -> InjectorContainer:
         return InjectorContainer(self._factories, context=context)
 
     def create_injectable_container(
-        self, *, context=None
+            self, *, context=None
     ) -> InjectorContainer:
         container = self.create_container(context=context)
         injector = Injector(container)
@@ -79,11 +82,11 @@ class InjectorRegistry(ServiceRegistry):
         return container
 
     def register_injectable(
-        self,
-        for_: Callable,
-        target: Optional[Callable] = None,
-        context: Optional[Any] = None,
-        use_props: bool = False,
+            self,
+            for_: Callable,
+            target: Optional[Callable] = None,
+            context: Optional[Any] = None,
+            use_props: bool = False,
     ):
         """Imperative form of the injectable decorator.
 

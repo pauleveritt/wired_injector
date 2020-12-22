@@ -2,8 +2,6 @@
 
 ## Now
 
-- `attr` support on `Context`
-
 ## Next
 
 ## Soon
@@ -39,3 +37,7 @@
 - Use new examples style
 - Allow register_injectable to only supply `for_` and `target` then defaults to it
 - Prevent the collision of `name` passed in as a prop and also used as the `container.get` param
+- `attr` support on `Context`
+- Decorator and scanner support a category option for scanner
+
+

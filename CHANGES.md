@@ -8,6 +8,8 @@
 
 - `attr` support on `Context`
 
+- Decorator and scanner support a category option for scanner
+
 ## 0.3.0
 
 - Allow register_injectable to only supply `for_` and `target` then defaults to it
