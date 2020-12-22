@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+import pytest
+from wired_injector.injector import SkipField
 from wired_injector.operators import Get, Attr, process_pipeline, Context
 
 from examples.factories import (
@@ -19,23 +21,25 @@ def test_get(french_container):
 
 def test_get_injectable_attr(regular_container):
     get = Get(Greeting)
-    previous = Greeting
+    previous = str
     result: Greeting = get(previous, regular_container)
     assert result() == 'Hello VIEW'
 
 
 def test_get_attr(french_container):
     get = Get(View, attr='name')
-    previous = FrenchView
+    previous = str
     result: FrenchView = get(previous, french_container)
     assert result == 'French View'
 
 
 def test_get_failed(french_container):
-    get = Get(View)
-    previous = FrenchView
-    result: FrenchView = get(previous, french_container)
-    assert result.name == 'French View'
+    class NotFound:
+        pass
+
+    previous = FrenchCustomer
+    with pytest.raises(SkipField):
+        Get(NotFound)(previous, french_container)
 
 
 def test_attr(regular_container):
@@ -100,3 +104,18 @@ def test_context(regular_container):
         start=View,
     )
     assert result == regular_container.context
+
+
+def test_context_attr(regular_container):
+    context = Context(attr='name')
+    previous = str
+    result = context(previous, regular_container)
+    assert result == 'Customer'
+
+
+def test_context_none_attr(regular_container):
+    regular_container.context = None
+    context = Context(attr='name')
+    previous = str
+    with pytest.raises(SkipField):
+        context(previous, regular_container)

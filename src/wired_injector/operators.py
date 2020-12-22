@@ -63,14 +63,27 @@ class Attr(Operator):
 class Context(Operator):
     """ Get the current container's context object. """
 
+    attr: Optional[str] = None
+
     def __call__(self, previous: Any, container: ServiceContainer):
-        return container.context
+        context = container.context
+        if self.attr is not None:
+            if context is not None:
+                return getattr(context, self.attr)
+            else:
+                # Asking for an attr when the container.context
+                # is None is an error, perhaps this field has a
+                # default.
+                from wired_injector.injector import SkipField
+                raise SkipField()
+
+        return context
 
 
 def process_pipeline(
-    container: ServiceContainer,
-    pipeline: Tuple[Operator, ...],
-    start: Any,
+        container: ServiceContainer,
+        pipeline: Tuple[Operator, ...],
+        start: Any,
 ):
     iter_pipeline = iter(pipeline)
     result = start

@@ -6,6 +6,8 @@
 
 - Put `InjectorContainer` in top-level exports
 
+- `attr` support on `Context`
+
 ## 0.3.0
 
 - Allow register_injectable to only supply `for_` and `target` then defaults to it

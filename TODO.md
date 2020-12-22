@@ -2,11 +2,9 @@
 
 ## Now
 
-- Prevent the collision of `name` passed in as a prop and also used as the `container.get` param
+- `attr` support on `Context`
 
 ## Next
-
-- Allow `customers: Tuple[Customer]`
 
 ## Soon
 
@@ -16,11 +14,9 @@
 
 ## Eventually
 
+- Allow `customers: Tuple[Customer]`, `Union[Foo, str]`
 - Very friendly exceptions that tell the field and target very specifically
 - Operators: `Key`, `Call`, `AsDict`
-- Ensure mypy is happy
-- Handle Union[Foo, str]
-- Tests that cover TypeDict, regular classes
 - InitVar and postinit ideas
 
 ## Done
@@ -42,3 +38,4 @@
 - Refactor examples to not be executed immediately on import
 - Use new examples style
 - Allow register_injectable to only supply `for_` and `target` then defaults to it
+- Prevent the collision of `name` passed in as a prop and also used as the `container.get` param
