@@ -16,6 +16,10 @@ from wired_injector.operators import Get
 from examples.factories import View
 
 
+class Target:
+    pass
+
+
 def test_is_init_false(regular_container):
     fi = FieldInfo('foo', str, None, False, ())
     field_is_init = FieldIsInit(fi, {}, regular_container)
@@ -81,7 +85,7 @@ def test_is_in_system_props_not_in(regular_container):
 def test_is_in_system_props_in_props(regular_container):
     # There are system props passed in and the field_value is in it
     fi = FieldInfo('foo', str, None, True, ())
-    props: Dict[Any, Any] = {}
+    props = {}
     system_props = dict(foo=9999)
     field_is_props = FieldIsInProps(fi, props, regular_container, system_props)
     with pytest.raises(FoundValueField) as exc:

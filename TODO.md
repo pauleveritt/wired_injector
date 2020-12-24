@@ -2,6 +2,7 @@
 
 ## Now
 
+
 ## Next
 
 ## Soon
@@ -39,5 +40,7 @@
 - Prevent the collision of `name` passed in as a prop and also used as the `container.get` param
 - `attr` support on `Context`
 - Decorator and scanner support a category option for scanner
+- Make `target` available in an operator, to go get fields
+- Create a `Field` operator that can fetch the default value from the target
 
 

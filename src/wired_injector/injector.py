@@ -2,7 +2,7 @@ import sys
 import typing
 from dataclasses import dataclass, is_dataclass, fields
 from inspect import signature, getmodule, isclass
-from typing import Dict, NamedTuple, Tuple, Type, Any, Optional
+from typing import Dict, NamedTuple, Tuple, Type, Any, Optional, TypeVar
 
 from wired import ServiceContainer
 from wired_injector.field_info import (
@@ -11,6 +11,8 @@ from wired_injector.field_info import (
     FieldInfo,
 )
 from wired_injector.operators import process_pipeline
+
+Target = TypeVar('Target')
 
 # get_type_hints is augmented in Python 3.9. We need to use
 # typing_extensions if not running on an older version
@@ -50,6 +52,7 @@ class FieldIsInit(NamedTuple):
     props: Dict
     container: ServiceContainer
     system_props: Optional[Dict] = None
+    target: Optional[Target] = None
 
     def __call__(self):
         if self.field_info.init is False:
@@ -63,6 +66,7 @@ class FieldIsInProps(NamedTuple):
     props: Dict
     container: ServiceContainer
     system_props: Optional[Dict] = None
+    target: Optional[Target] = None
 
     def __call__(self):
         if self.props and self.field_info.field_name in self.props:
@@ -85,6 +89,7 @@ class FieldIsContainer(NamedTuple):
     props: Dict
     container: ServiceContainer
     system_props: Optional[Dict] = None
+    target: Optional[Target] = None
 
     def __call__(self):
         if self.field_info.field_type is ServiceContainer:
@@ -98,6 +103,7 @@ class FieldMakePipeline(NamedTuple):
     props: Dict
     container: ServiceContainer
     system_props: Optional[Dict] = None
+    target: Optional[Target] = None
 
     def __call__(self):
         fi = self.field_info
@@ -115,7 +121,7 @@ class FieldMakePipeline(NamedTuple):
                 # we might have a default value, let's skip this.
                 raise SkipField()
         else:
-            fv = process_pipeline(c, fi.pipeline, fi.field_type)
+            fv = process_pipeline(c, fi.pipeline, fi.field_type, self.target)
         raise FoundValueField(fv)
 
 
@@ -169,7 +175,7 @@ class Injector:
             try:
                 for rule in self.rules:
                     # noinspection PyArgumentList
-                    r = rule(field_info, props, self.container, system_props)
+                    r = rule(field_info, props, self.container, system_props, target)
                     # noinspection PyCallingNonCallable
                     r()
             except SkipField:

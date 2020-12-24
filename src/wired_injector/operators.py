@@ -1,8 +1,10 @@
 from dataclasses import dataclass
-from inspect import isclass
-from typing import Type, Any, Tuple, Optional
+from inspect import isclass, signature
+from typing import Type, Any, Tuple, Optional, TypeVar
 
 from wired import ServiceContainer
+
+Target = TypeVar('Target')
 
 
 # TODO Operator should be a Protocol but the typechecker then says a usage
@@ -12,7 +14,11 @@ from wired import ServiceContainer
 class Operator:  # pragma: no cover
     """ Part of a pipeline for field construction """
 
-    def __call__(self, previous: Any, container: ServiceContainer) -> Any:
+    def __call__(self,
+                 previous: Any,
+                 container: ServiceContainer,
+                 target: Target,
+                 ) -> Any:
         ...
 
 
@@ -24,7 +30,12 @@ class Get(Operator):
     lookup_type: Type
     attr: Optional[str] = None
 
-    def __call__(self, previous: Type, container: ServiceContainer):
+    def __call__(
+            self,
+            previous: Type,
+            container: ServiceContainer,
+            target: Target,
+    ):
         try:
             service = container.get(self.lookup_type)
             if isclass(service):
@@ -55,7 +66,12 @@ class Attr(Operator):
     __slots__ = ('name',)
     name: str
 
-    def __call__(self, previous: Any, container: ServiceContainer):
+    def __call__(
+            self,
+            previous: Any,
+            container: ServiceContainer,
+            target: Target,
+    ):
         return getattr(previous, self.name)
 
 
@@ -65,7 +81,12 @@ class Context(Operator):
 
     attr: Optional[str] = None
 
-    def __call__(self, previous: Any, container: ServiceContainer):
+    def __call__(
+            self,
+            previous: Any,
+            container: ServiceContainer,
+            target: Target,
+    ):
         context = container.context
         if self.attr is not None:
             if context is not None:
@@ -80,16 +101,39 @@ class Context(Operator):
         return context
 
 
+@dataclass(frozen=True)
+class Field(Operator):
+    """ Get default value field in dataclass/namedtuple being constructed """
+
+    __slots__ = ('name',)
+    name: str
+
+    def __call__(
+            self,
+            previous: Any,
+            container: ServiceContainer,
+            target: Target,
+    ):
+        sig = signature(target)
+        try:
+            param = sig.parameters[self.name]
+        except KeyError:
+            msg = f'No field "{self.name}" on target "{target.__name__}"'
+            raise KeyError(msg)
+        return param.default
+
+
 def process_pipeline(
         container: ServiceContainer,
         pipeline: Tuple[Operator, ...],
         start: Any,
+        target,
 ):
     iter_pipeline = iter(pipeline)
     result = start
     while iter_pipeline:
         try:
             operator = next(iter_pipeline)
-            result = operator(result, container)
+            result = operator(result, container, target)
         except StopIteration:
             return result
