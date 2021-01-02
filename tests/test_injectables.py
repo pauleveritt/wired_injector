@@ -18,12 +18,19 @@ def test_add_injectable(full_injectables):
 
 def test_find_all(full_injectables):
     results = full_injectables.find()
-    assert results == full_injectables.items
+    assert list(results) == list(full_injectables.items)
 
 
-def test_find_area(full_injectables, system_init_one):
+def test_find_area(full_injectables):
     results = full_injectables.find(area='system')
-    assert results == {system_init_one}
+    first = list(results)[0]
+    assert 'postinit' == first.phase
+
+
+def test_find_area_phase(full_injectables):
+    results = full_injectables.find(area='system', by_phase=True)
+    first = list(results)[0]
+    assert 'init' == first.phase
 
 
 @pytest.fixture
@@ -31,6 +38,14 @@ def system_init_one():
     return Injectable(
         for_=DummyTarget, target=DummyTarget, context=DummyTarget,
         use_props=False, area='system', phase='init',
+    )
+
+
+@pytest.fixture
+def system_postinit():
+    return Injectable(
+        for_=DummyTarget, target=DummyTarget, context=DummyTarget,
+        use_props=False, area='system', phase='postinit',
     )
 
 
@@ -51,11 +66,12 @@ def empty_injectables() -> Injectables:
 
 @pytest.fixture
 def full_injectables(
-        system_init_one,
+        system_init_one, system_postinit,
         app_init_one,
 ) -> Injectables:
     ir = InjectorRegistry()
     i = Injectables(ir)
+    i.add(system_postinit)
     i.add(system_init_one)
     i.add(app_init_one)
     return i

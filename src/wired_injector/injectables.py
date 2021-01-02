@@ -36,6 +36,7 @@ class Injectables:
     def find(
             self,
             area: Optional[str] = None,
+            by_phase: Optional[bool] = False,
     ) -> Optional[Set[Injectable]]:
         if area is None:
             return self.items
@@ -45,4 +46,7 @@ class Injectables:
             for injectable in self.items
             if injectable.area == area
         }
+
+        if by_phase:
+            results = set(sorted(results, key=lambda v: v.phase))
         return results
