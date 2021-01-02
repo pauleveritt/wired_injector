@@ -2,6 +2,17 @@
 
 ## Now
 
+Config system which can record all the injectables, apply them, then report on them for uses such as generation of Sphinx config directives.
+- ``Injectables`` dataclass, stored as optional on the registry
+  * `system` field which records registrations
+  * Change `register_injectable` to add to `system`
+  * Change decorator if needed (or at least write a test)
+  * Don't apply until later
+- Kind
+- Phase
+- Area (system, app, plugins, site)
+- Info (extra metadata for kind)
+- Context manager
 
 ## Next
 
