@@ -1,3 +1,4 @@
+from enum import Enum
 from importlib import import_module
 from types import ModuleType
 from typing import Optional, Union, Callable, Any, Mapping, Tuple
@@ -5,8 +6,9 @@ from typing import Optional, Union, Callable, Any, Mapping, Tuple
 from venusian import Scanner
 from wired import ServiceRegistry, ServiceContainer
 from wired_injector import Injector
-from wired_injector.utils import caller_package
 from zope.interface import Interface
+
+from .utils import caller_package
 
 PACKAGE = Optional[Union[ModuleType, str]]
 
@@ -54,9 +56,19 @@ class InjectorRegistry(ServiceRegistry):
 
     scanner: Scanner
 
-    def __init__(self, factory_registry=None):
+    def __init__(
+            self,
+            factory_registry=None,
+            use_injectables: bool = False,
+    ):
         super().__init__(factory_registry=factory_registry)
         self.scanner = Scanner(registry=self)
+        from .injectables import Injectables
+
+        if use_injectables:
+            self.injectables = Injectables(registry=self)
+        else:
+            self.injectables = None
 
     def scan(self,
              pkg: PACKAGE = None,
@@ -87,6 +99,10 @@ class InjectorRegistry(ServiceRegistry):
             target: Optional[Callable] = None,
             context: Optional[Any] = None,
             use_props: bool = False,
+            area: Optional[Enum] = None,
+            phase: Optional[Enum] = None,
+            info: Optional[Mapping[Any, Any]] = None,
+            defer: bool = False,
     ):
         """Imperative form of the injectable decorator.
 
@@ -99,6 +115,9 @@ class InjectorRegistry(ServiceRegistry):
             target: A callable or class to register
             context: A container context
             use_props: This factory should be injected with keyword args
+            area: Which area such as ``Area.system`` currently in
+            phase: Which phase such as ``Phase.init`` currently in
+            info: Extra info a particular ``Kind`` might want such as ``config.shortname``
         """
 
         # To avoid doing:
@@ -118,5 +137,23 @@ class InjectorRegistry(ServiceRegistry):
                 instance = injector(target)
                 return instance
 
-        target.__wired_factory__ = injectable_factory  # type: ignore
-        self.register_factory(target, for_, context=context)
+        setattr(target, '__wired_factory__', injectable_factory)
+
+        if self.injectables is None or not defer:
+            # self.injectables is None means we aren't using Injectables
+            # defer is False when injectables comes back later and
+            #   does ``apply_injectables``
+            self.register_factory(target, for_, context=context)
+        else:
+            # If using Injectables, defer the registration until later
+            from .injectables import Injectable
+            injectable = Injectable(
+                for_=for_,
+                target=target,
+                context=context,
+                use_props=use_props,
+                area=area,
+                phase=phase,
+                info=info,
+            )
+            self.injectables.add(injectable)

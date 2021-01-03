@@ -84,13 +84,6 @@ def test_find_area_phase(full_injectables):
     assert Phase.init == first.phase
 
 
-def test_apply_injectable(empty_injectables, system_init_one):
-    empty_injectables.apply_injectable(system_init_one)
-    container = empty_injectables.registry.create_injectable_container()
-    result: DummyTarget = container.get(DummyTarget)
-    assert 'Dummy Target' == result.title
-
-
 def test_get_grouped_injectables(full_injectables):
     results = full_injectables.get_grouped_injectables()
     assert [Phase.init, Phase.postinit] == list(results.keys())
@@ -229,7 +222,7 @@ def app_init_three():
 
 @pytest.fixture
 def empty_injectables() -> Injectables:
-    ir = InjectorRegistry()
+    ir = InjectorRegistry(use_injectables=True)
     i = Injectables(ir)
     return i
 
@@ -240,7 +233,7 @@ def full_injectables(
         system_postinit_one, system_postinit_two, system_postinit_three,
         app_init_one, app_init_two, app_init_three, app_postinit_last,
 ) -> Injectables:
-    ir = InjectorRegistry()
+    ir = InjectorRegistry(use_injectables=True)
     i = Injectables(ir)
     i.add(system_init_two)
     i.commit(Area.system)

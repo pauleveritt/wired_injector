@@ -51,7 +51,7 @@ by the caller.
 The ``phase``, though, *is* something each decorator/register_injectable
 should determine. Only it knows if the information it is providing or
 consuming should be at a certain point in registration. This is simplified
-by a reasonable default: unless you ask to go early, you go late.
+by a reasonable default: you can go first and don't depend on anything else.
 
 - ``register_injectable`` (and thus ``@injectable`` and all derived decorators)
   defer their registration until a second ``apply_injectables`` step
@@ -131,14 +131,6 @@ class Injectables:
             results = sorted(results, key=lambda v: v.phase.value)
         return results
 
-    def apply_injectable(self, injectable: Injectable):
-        self.registry.register_injectable(
-            for_=injectable.for_,
-            target=injectable.target,
-            context=injectable.context,
-            use_props=injectable.use_props,
-        )
-
     def get_grouped_injectables(self) -> GroupedInjectablesT:
         """ Grouped and sorted by area then phase """
 
@@ -166,8 +158,8 @@ class Injectables:
             for area in phase.values():
                 for injectable in area:
                     self.registry.register_injectable(
-                        for_=injectable.for_,
-                        target=injectable.target,
+                        injectable.for_,
+                        injectable.target,
                         context=injectable.context,
                         use_props=injectable.use_props,
                     )
