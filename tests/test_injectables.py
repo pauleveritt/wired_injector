@@ -77,27 +77,6 @@ def test_apply_injectable(empty_injectables, system_init_one):
     assert 'Dummy Target' == result.title
 
 
-#
-# def test_foo():
-#     people = (
-#         dict(name='D', age=20),
-#         dict(name='A', age=21),
-#         dict(name='E', age=22),
-#         dict(name='F', age=18),
-#         dict(name='B', age=17),
-#         dict(name='A', age=16),
-#         dict(name='D', age=30),
-#     )
-#     sorted_people = sorted(people, key=lambda v: v['name'])
-#     results = {}
-#     for k, grouped_people in groupby(sorted_people, key=lambda v: v['name']):
-#         results[k] = []
-#         for person in grouped_people:
-#             results[k].append(person)
-#
-#     assert 9 == results.keys()
-
-
 def test_get_grouped_injectables(full_injectables):
     results = full_injectables.get_grouped_injectables()
     assert [Area.system, Area.app] == list(results.keys())
@@ -107,14 +86,25 @@ def test_get_grouped_injectables(full_injectables):
     assert [Phase.init, Phase.postinit] == list(system.keys())
     system_values = list(system.values())
     assert 2 == len(system_values)
-    # assert 9 == [i.]
+    system_phase_init = [i.info['title'] for i in system[Phase.init]]
+    expected = ['system_init_two', 'system_init_one', 'system_init_three']
+    assert expected == system_phase_init
+    system_phase_postinit = [i.info['title'] for i in system[Phase.postinit]]
+    expected = ['system_postinit_two', 'system_postinit_one', 'system_postinit_three']
+    assert expected == system_phase_postinit
 
     # App
     app = results[Area.app]
     assert [Phase.init, ] == list(app.keys())
     app_values = list(app.values())
     assert 1 == len(app_values)
+    app_phase_postinit = [i.info['title'] for i in app[Phase.init]]
+    expected = ['app_init_three', 'app_init_one', 'app_init_two']
+    assert expected == app_phase_postinit
 
+
+def test_apply_injectables():
+    pass
     # container = full_injectables.registry.create_injectable_container()
     # result: DummyTarget = container.get(DummyTarget)
     # assert 'Dummy Target' == result.title
@@ -125,6 +115,7 @@ def system_init_one():
     return Injectable(
         for_=DummyTarget, target=DummyTarget, context=None,
         use_props=False, area=Area.system, phase=Phase.init,
+        info=dict(title='system_init_one'),
     )
 
 
@@ -133,6 +124,7 @@ def system_init_two():
     return Injectable(
         for_=DummyTarget, target=DummyTarget, context=None,
         use_props=False, area=Area.system, phase=Phase.init,
+        info=dict(title='system_init_two'),
     )
 
 
@@ -141,6 +133,7 @@ def system_init_three():
     return Injectable(
         for_=DummyTarget, target=DummyTarget, context=None,
         use_props=False, area=Area.system, phase=Phase.init,
+        info=dict(title='system_init_three'),
     )
 
 
@@ -149,6 +142,7 @@ def system_postinit_one():
     return Injectable(
         for_=DummyTarget, target=DummyTarget, context=None,
         use_props=False, area=Area.system, phase=Phase.postinit,
+        info=dict(title='system_postinit_one'),
     )
 
 
@@ -157,6 +151,7 @@ def system_postinit_two():
     return Injectable(
         for_=DummyTarget, target=DummyTarget, context=None,
         use_props=False, area=Area.system, phase=Phase.postinit,
+        info=dict(title='system_postinit_two'),
     )
 
 
@@ -165,6 +160,7 @@ def system_postinit_three():
     return Injectable(
         for_=DummyTarget, target=DummyTarget, context=None,
         use_props=False, area=Area.system, phase=Phase.postinit,
+        info=dict(title='system_postinit_three'),
     )
 
 
@@ -173,6 +169,7 @@ def app_init_one():
     return Injectable(
         for_=DummyTarget, target=DummyTarget, context=None,
         use_props=False, area=Area.app, phase=Phase.init,
+        info=dict(title='app_init_one'),
     )
 
 
@@ -181,6 +178,7 @@ def app_init_two():
     return Injectable(
         for_=DummyTarget, target=DummyTarget, context=None,
         use_props=False, area=Area.app, phase=Phase.init,
+        info=dict(title='app_init_two'),
     )
 
 
@@ -189,6 +187,7 @@ def app_init_three():
     return Injectable(
         for_=DummyTarget, target=DummyTarget, context=None,
         use_props=False, area=Area.app, phase=Phase.init,
+        info=dict(title='app_init_three'),
     )
 
 
