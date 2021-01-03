@@ -1,5 +1,8 @@
 import pytest
 
+from examples.injectables import (
+    hello_injectables,
+)
 # from examples.index import (
 #     # pipelines,
 # )
@@ -55,5 +58,16 @@ from examples.usage import (
     ],
 )
 def test_examples(target):
+    expected, actual = target.test()
+    assert expected == actual
+
+
+@pytest.mark.parametrize(
+    'target',
+    [
+        hello_injectables,
+    ],
+)
+def test_examples_injectables(target):
     expected, actual = target.test()
     assert expected == actual
