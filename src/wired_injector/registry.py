@@ -102,7 +102,7 @@ class InjectorRegistry(ServiceRegistry):
             area: Optional[Enum] = None,
             phase: Optional[Enum] = None,
             info: Optional[Mapping[Any, Any]] = None,
-            defer: bool = False,
+            defer: bool = True,
     ):
         """Imperative form of the injectable decorator.
 
@@ -118,6 +118,7 @@ class InjectorRegistry(ServiceRegistry):
             area: Which area such as ``Area.system`` currently in
             phase: Which phase such as ``Phase.init`` currently in
             info: Extra info a particular ``Kind`` might want such as ``config.shortname``
+            defer: The flag that signifies Injectables is applying the injectables.
         """
 
         # To avoid doing:
@@ -139,8 +140,11 @@ class InjectorRegistry(ServiceRegistry):
 
         setattr(target, '__wired_factory__', injectable_factory)
 
-        if self.injectables is None or not defer:
+        if self.injectables is None:
             # self.injectables is None means we aren't using Injectables
+            # so immediately register.
+            self.register_factory(target, for_, context=context)
+        elif not defer:
             # defer is False when injectables comes back later and
             #   does ``apply_injectables``
             self.register_factory(target, for_, context=context)

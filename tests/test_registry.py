@@ -19,19 +19,6 @@ def test_injector_registry_construction():
     assert hasattr(registry, 'scan')
 
 
-def test_injector_register_injectable_category():
-    # Register an injectable that should
-    @dataclass
-    class Heading:
-        name: str = 'Default Name'
-
-    registry = InjectorRegistry()
-    registry.register_injectable(Heading, use_props=True)
-    container = registry.create_injectable_container()
-    heading: Heading = container.get(Heading)
-    assert 'Default Name' == heading.name
-
-
 def test_injector_container_get():
     # Use .get and the wired factory that is stamped on the callable
     @dataclass

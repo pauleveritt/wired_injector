@@ -93,6 +93,33 @@ class Injectable:
 GroupedInjectablesT = Dict[Enum, Dict[Enum, List[Injectable]]]
 
 
+@dataclass(frozen=True)
+class SortedValue:
+    """
+    Used to sort on enum values if present
+
+    ``target_attribute`` will be ``phase`` or ``area``.
+    """
+    __slots__ = ['target_attribute']
+
+    target_attribute: str
+
+    def __call__(self, injectable: Injectable):
+        """
+        Return the target attribute from the injectable or None.
+
+        This is used for sorting during grouping.
+        """
+        a = getattr(injectable, self.target_attribute)
+        if a is None:
+            # There are no phases/areas etc. on this value, so
+            # just sort on None
+            return
+
+        # Get the enum's value
+        return getattr(a, 'value')
+
+
 @dataclass
 class Injectables:
     registry: InjectorRegistry
@@ -143,10 +170,10 @@ class Injectables:
         # Remember, Python 3.7+ orders dicts, allowing us to collect
         # entries in the order we will then process them
         results: GroupedInjectablesT = {}
-        sorted_phases = sorted(self.items, key=lambda v: v.phase.value)
+        sorted_phases = sorted(self.items, key=SortedValue('phase'))
         for k1, phase in groupby(sorted_phases, key=lambda v: v.phase):
             results[k1] = {}
-            sorted_areas = sorted(phase, key=lambda v: v.area.value)
+            sorted_areas = sorted(phase, key=SortedValue('area'))
             for k2, area in groupby(sorted_areas, key=lambda v: v.area):
                 results[k1][k2] = []
                 for injectable in area:
@@ -155,9 +182,12 @@ class Injectables:
 
     def apply_injectables(
             self,
-            grouped_injectables,
+            grouped_injectables: Optional[GroupedInjectablesT] = None,
     ):
         """ Apply the injectables in groups """
+
+        if grouped_injectables is None:
+            grouped_injectables = self.get_grouped_injectables()
 
         # Process in order of: phase, then area
         for phase in grouped_injectables.values():
@@ -168,4 +198,5 @@ class Injectables:
                         injectable.target,
                         context=injectable.context,
                         use_props=injectable.use_props,
+                        defer=False,
                     )
