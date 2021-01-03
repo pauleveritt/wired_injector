@@ -128,7 +128,6 @@ def test_apply_injectables_by_area(full_injectables):
     assert isinstance(result, DummyTarget2)
 
 
-@pytest.mark.skip
 def test_injectable_registry_defer_true():
     # When using Injectables, regular calls to register_injectable
     # are not applied immediately. This is signalled through the
@@ -137,16 +136,25 @@ def test_injectable_registry_defer_true():
     class Heading:
         name: str = 'Default Name'
 
-    # First pass through, injectable not added to registry
+    # First pass through, injectable not added to registry and
+    # we don't commit/apply.
     registry = InjectorRegistry(use_injectables=True)
-    registry.register_injectable(Heading, use_props=True, defer=True)
-    registry.injectables.commit(area=Area.system)
-    registry.injectables.apply_injectables()
+    registry.register_injectable(Heading, use_props=True)
+    # No commit
+    # No apply
     container = registry.create_injectable_container()
     with pytest.raises(LookupError):
         container.get(Heading)
 
-    # Later, registrations are applied because defer defaults to false.
+
+def test_injectable_registry_commit_apply():
+    # Use the imperative ``register_injectable`` to queue up some
+    # registrations. Then commit them using an ``Area``. Apply
+    # the registrations and do a lookup.
+    @dataclass
+    class Heading:
+        name: str = 'Default Name'
+
     registry = InjectorRegistry(use_injectables=True)
     registry.register_injectable(Heading)
     registry.injectables.commit(area=Area.system)
@@ -156,24 +164,6 @@ def test_injectable_registry_defer_true():
     assert 'Default Name' == heading.name
 
 
-@pytest.mark.skip
-def test_injectable_registry_commit_apply():
-    # Use the imperative ``register_injectable`` to queue up some
-    # registrations. Then commit them using an ``Area``. Apply
-    # the registrations and do a lookup.
-    @dataclass
-    class Heading:
-        name: str = 'Default Name'
-
-    # First pass through, injectable not added to registry
-    registry = InjectorRegistry(use_injectables=True)
-    registry.register_injectable(Heading, use_props=True)
-    container = registry.create_injectable_container()
-    heading: Heading = container.get(Heading)
-    assert 'Default Name' == heading.name
-
-
-@pytest.mark.skip
 def test_injectable_registry_multiple():
     # Multiple registrations usually obey "last registration wins."
     # With ``phases`` we can control the ordering.
@@ -192,12 +182,18 @@ def test_injectable_registry_multiple():
     registry = InjectorRegistry(use_injectables=True)
 
     # Use phases to control the registration order
-    registry.register_injectable(SiteHeading, defer=True)
-    registry.register_injectable(for_=Heading, target=AppHeading, defer=True)
-    registry.register_injectable(for_=Heading, target=SiteHeading, defer=True)
+    registry.register_injectable(SiteHeading, phase=Phase.init)
+    registry.register_injectable(
+        for_=Heading, target=AppHeading, phase=Phase.postinit,
+    )
+    registry.register_injectable(
+        for_=Heading, target=SiteHeading, phase=Phase.postinit
+    )
+    registry.injectables.commit(area=Area.system)
+    registry.injectables.apply_injectables()
     container = registry.create_injectable_container()
     heading: Heading = container.get(Heading)
-    assert heading.name == 'Default Name'
+    assert heading.name == 'Site Name'
 
 
 @pytest.fixture

@@ -113,8 +113,8 @@ class SortedValue:
         a = getattr(injectable, self.target_attribute)
         if a is None:
             # There are no phases/areas etc. on this value, so
-            # just sort on None
-            return
+            # just sort on 0
+            return 0
 
         # Get the enum's value
         return getattr(a, 'value')
