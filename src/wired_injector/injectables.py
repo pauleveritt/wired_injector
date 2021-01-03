@@ -7,7 +7,8 @@ then report on them for uses such as generation of Sphinx config directives.
 """
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Callable, Optional, Any, List
+from itertools import groupby
+from typing import Callable, Optional, Any, List, Type
 
 from wired_injector import InjectorRegistry
 
@@ -60,7 +61,24 @@ class Injectables:
             use_props=injectable.use_props,
         )
 
-    def apply_injectables(self, areas: Enum, phases: Enum):
+    def get_grouped_injectables(self):
+        """ Grouped and sorted by area then phase """
+
+        results = {}
+        sorted_areas = sorted(self.items, key=lambda v: v.area.value)
+        for k1, area in groupby(sorted_areas, key=lambda v: v.area):
+            results[k1] = {}
+            sorted_phases = sorted(area, key=lambda v: v.phase.value)
+            for k2, phase in groupby(sorted_phases, key=lambda v: v.phase):
+                results[k1][k2] = []
+                for injectable in phase:
+                    results[k1][k2].append(injectable)
+        return results
+
+    def apply_injectables(
+            self,
+            grouped_injectables,
+    ):
         """ Apply the injectables in groups """
 
         pass

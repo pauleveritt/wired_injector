@@ -5,12 +5,33 @@ import pytest
 from wired_injector import InjectorRegistry
 from wired_injector.injectables import Injectables, Injectable
 
+"""
+
+NEXT
+- Change items to be a dict of:
+
+dict(
+    Area.system = dict(
+        Kind.config = dict(
+            Phase.init = [
+                injectable,
+                injectable
+
+"""
+
 
 class Area(Enum):
     system = 1
     app = 2
     plugins = 3
     site = 4
+
+
+class Kind(Enum):
+    config = 1
+    component = 2
+    view = 3
+    injectable = 4
 
 
 class Phase(Enum):
@@ -37,10 +58,10 @@ def test_find_all(full_injectables):
     assert results == full_injectables.items
 
 
-def test_find_area(full_injectables):
+def test_find_area(full_injectables, system_init_two):
     results = full_injectables.find(area=Area.system)
     first = results[0]
-    assert Phase.postinit == first.phase
+    assert system_init_two == first
 
 
 def test_find_area_phase(full_injectables):
@@ -49,15 +70,74 @@ def test_find_area_phase(full_injectables):
     assert Phase.init == first.phase
 
 
-def test_apply_injectables(empty_injectables, system_init_one):
+def test_apply_injectable(empty_injectables, system_init_one):
     empty_injectables.apply_injectable(system_init_one)
     container = empty_injectables.registry.create_injectable_container()
     result: DummyTarget = container.get(DummyTarget)
     assert 'Dummy Target' == result.title
 
 
+#
+# def test_foo():
+#     people = (
+#         dict(name='D', age=20),
+#         dict(name='A', age=21),
+#         dict(name='E', age=22),
+#         dict(name='F', age=18),
+#         dict(name='B', age=17),
+#         dict(name='A', age=16),
+#         dict(name='D', age=30),
+#     )
+#     sorted_people = sorted(people, key=lambda v: v['name'])
+#     results = {}
+#     for k, grouped_people in groupby(sorted_people, key=lambda v: v['name']):
+#         results[k] = []
+#         for person in grouped_people:
+#             results[k].append(person)
+#
+#     assert 9 == results.keys()
+
+
+def test_get_grouped_injectables(full_injectables):
+    results = full_injectables.get_grouped_injectables()
+    assert [Area.system, Area.app] == list(results.keys())
+
+    # System
+    system = results[Area.system]
+    assert [Phase.init, Phase.postinit] == list(system.keys())
+    system_values = list(system.values())
+    assert 2 == len(system_values)
+    # assert 9 == [i.]
+
+    # App
+    app = results[Area.app]
+    assert [Phase.init, ] == list(app.keys())
+    app_values = list(app.values())
+    assert 1 == len(app_values)
+
+    # container = full_injectables.registry.create_injectable_container()
+    # result: DummyTarget = container.get(DummyTarget)
+    # assert 'Dummy Target' == result.title
+
+
 @pytest.fixture
 def system_init_one():
+    return Injectable(
+        for_=DummyTarget, target=DummyTarget, context=None,
+        use_props=False, area=Area.system, phase=Phase.init,
+    )
+
+
+@pytest.fixture
+def system_init_two():
+    return Injectable(
+        for_=DummyTarget, target=DummyTarget, context=None,
+        use_props=False, area=Area.system, phase=Phase.init,
+    )
+
+
+@pytest.fixture
+def system_init_three():
     return Injectable(
         for_=DummyTarget, target=DummyTarget, context=None,
         use_props=False, area=Area.system, phase=Phase.init,
@@ -73,7 +153,39 @@ def system_postinit_one():
 
 
 @pytest.fixture
+def system_postinit_two():
+    return Injectable(
+        for_=DummyTarget, target=DummyTarget, context=None,
+        use_props=False, area=Area.system, phase=Phase.postinit,
+    )
+
+
+@pytest.fixture
+def system_postinit_three():
+    return Injectable(
+        for_=DummyTarget, target=DummyTarget, context=None,
+        use_props=False, area=Area.system, phase=Phase.postinit,
+    )
+
+
+@pytest.fixture
 def app_init_one():
+    return Injectable(
+        for_=DummyTarget, target=DummyTarget, context=None,
+        use_props=False, area=Area.app, phase=Phase.init,
+    )
+
+
+@pytest.fixture
+def app_init_two():
+    return Injectable(
+        for_=DummyTarget, target=DummyTarget, context=None,
+        use_props=False, area=Area.app, phase=Phase.init,
+    )
+
+
+@pytest.fixture
+def app_init_three():
     return Injectable(
         for_=DummyTarget, target=DummyTarget, context=None,
         use_props=False, area=Area.app, phase=Phase.init,
@@ -89,12 +201,19 @@ def empty_injectables() -> Injectables:
 
 @pytest.fixture
 def full_injectables(
-        system_init_one, system_postinit_one,
-        app_init_one,
+        system_init_one, system_init_two, system_init_three,
+        system_postinit_one, system_postinit_two, system_postinit_three,
+        app_init_one, app_init_two, app_init_three,
 ) -> Injectables:
     ir = InjectorRegistry()
     i = Injectables(ir)
+    i.add(system_init_two)
+    i.add(system_postinit_two)
+    i.add(app_init_three)
     i.add(system_postinit_one)
     i.add(system_init_one)
     i.add(app_init_one)
+    i.add(system_init_three)
+    i.add(system_postinit_three)
+    i.add(app_init_two)
     return i
