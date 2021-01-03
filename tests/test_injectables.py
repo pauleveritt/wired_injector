@@ -68,18 +68,18 @@ def test_commit(empty_injectables, system_init_one):
 
 
 def test_find_all(full_injectables):
-    results = full_injectables.find()
+    results = full_injectables.find_by_area()
     assert results == full_injectables.items
 
 
 def test_find_area(full_injectables, system_init_two):
-    results = full_injectables.find(area=Area.system)
+    results = full_injectables.find_by_area(area=Area.system)
     first = results[0]
     assert system_init_two == first
 
 
 def test_find_area_phase(full_injectables):
-    results = full_injectables.find(area=Area.system, by_phase=True)
+    results = full_injectables.find_by_area(area=Area.system, by_phase=True)
     first = results[0]
     assert Phase.init == first.phase
 
@@ -133,7 +133,7 @@ def system_init_one():
     return Injectable(
         for_=DummyTarget, target=DummyTarget, context=None,
         use_props=False, area=Area.system, phase=Phase.init,
-        info=dict(title='system_init_one'),
+        kind=Kind.config, info=dict(title='system_init_one'),
     )
 
 
@@ -142,7 +142,7 @@ def system_init_two():
     return Injectable(
         for_=DummyTarget, target=DummyTarget, context=None,
         use_props=False, area=Area.system, phase=Phase.init,
-        info=dict(title='system_init_two'),
+        kind=Kind.config, info=dict(title='system_init_two'),
     )
 
 
@@ -151,7 +151,7 @@ def system_init_three():
     return Injectable(
         for_=DummyTarget, target=DummyTarget, context=None,
         use_props=False, area=Area.system, phase=Phase.init,
-        info=dict(title='system_init_three'),
+        kind=Kind.component, info=dict(title='system_init_three'),
     )
 
 
@@ -160,7 +160,7 @@ def system_postinit_one():
     return Injectable(
         for_=DummyTarget, target=DummyTarget, context=None,
         use_props=False, area=Area.system, phase=Phase.postinit,
-        info=dict(title='system_postinit_one'),
+        kind=Kind.component, info=dict(title='system_postinit_one'),
     )
 
 
@@ -169,7 +169,7 @@ def system_postinit_two():
     return Injectable(
         for_=DummyTarget, target=DummyTarget, context=None,
         use_props=False, area=Area.system, phase=Phase.postinit,
-        info=dict(title='system_postinit_two'),
+        kind=Kind.view, info=dict(title='system_postinit_two'),
     )
 
 
@@ -178,7 +178,7 @@ def system_postinit_three():
     return Injectable(
         for_=DummyTarget, target=DummyTarget, context=None,
         use_props=False, area=Area.system, phase=Phase.postinit,
-        info=dict(title='system_postinit_three'),
+        kind=Kind.view, info=dict(title='system_postinit_three'),
     )
 
 
@@ -187,7 +187,7 @@ def app_init_one():
     return Injectable(
         for_=DummyTarget, target=DummyTarget, context=None,
         use_props=False, area=Area.app, phase=Phase.init,
-        info=dict(title='app_init_one'),
+        kind=Kind.config, info=dict(title='app_init_one'),
     )
 
 
@@ -198,7 +198,7 @@ def app_postinit_last():
     return Injectable(
         for_=DummyTarget, target=DummyTarget2, context=None,
         use_props=False, area=Area.app, phase=Phase.postinit,
-        info=dict(title='app_init_one'),
+        kind=Kind.view, info=dict(title='app_init_one'),
     )
 
 
@@ -207,7 +207,7 @@ def app_init_two():
     return Injectable(
         for_=DummyTarget, target=DummyTarget, context=None,
         use_props=False, area=Area.app, phase=Phase.init,
-        info=dict(title='app_init_two'),
+        kind=Kind.component, info=dict(title='app_init_two'),
     )
 
 
@@ -216,7 +216,7 @@ def app_init_three():
     return Injectable(
         for_=DummyTarget, target=DummyTarget, context=None,
         use_props=False, area=Area.app, phase=Phase.init,
-        info=dict(title='app_init_three'),
+        kind=Kind.config, info=dict(title='app_init_three'),
     )
 
 

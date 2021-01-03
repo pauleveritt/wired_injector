@@ -85,6 +85,7 @@ class Injectable:
     context: Optional[Any] = field(repr=False)
     use_props: bool = field(repr=False)
     area: Optional[Enum] = None
+    kind: Optional[Enum] = None
     phase: Optional[Enum] = None
     info: Optional[Mapping[Any, Any]] = None
 
@@ -113,12 +114,17 @@ class Injectables:
         # Now reset the pending_items
         self.pending_items.clear()
 
-    def find(
+    def find_by_area(
             self,
             area: Optional[Enum] = None,
             by_phase: Optional[bool] = False,
     ) -> Optional[List[Injectable]]:
+        """ Return the results by area, optionally sorted by phase """
         if area is None:
+            if by_phase:
+                results = sorted(self.items, key=lambda v: v.phase.value)
+                return results
+
             return self.items
 
         results = [
