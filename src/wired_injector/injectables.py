@@ -99,4 +99,13 @@ class Injectables:
     ):
         """ Apply the injectables in groups """
 
-        # Process in order of: area, then phase
+        # Process in order of: phase, then area
+        for phase in grouped_injectables.values():
+            for area in phase.values():
+                for injectable in area:
+                    self.registry.register_injectable(
+                        for_=injectable.for_,
+                        target=injectable.target,
+                        context=injectable.context,
+                        use_props=injectable.use_props,
+                    )

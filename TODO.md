@@ -6,6 +6,7 @@ Config system which can record all the injectables, apply them, then report on t
 - ``Injectables`` dataclass, stored as optional on the registry
   * `system` field which records registrations
   * `add_injectables` applies the registrations at end
+    
   * Optional instance on `InjectorRegistry`
   * Write some examples that exercise it
   * Processing is done in batches to implement the "area" part

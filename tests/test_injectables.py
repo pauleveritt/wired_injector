@@ -44,6 +44,11 @@ class DummyTarget:
     title: str = 'Dummy Target'
 
 
+@dataclass
+class DummyTarget2:
+    title: str = 'Dummy Target2'
+
+
 def test_construction(empty_injectables):
     assert empty_injectables.items == []
 
@@ -105,11 +110,12 @@ def test_get_grouped_injectables(full_injectables):
     assert expected == postinit_area_app
 
 
-def test_apply_injectables():
-    pass
-    # container = full_injectables.registry.create_injectable_container()
-    # result: DummyTarget = container.get(DummyTarget)
-    # assert 'Dummy Target' == result.title
+def test_apply_injectables(full_injectables):
+    results = full_injectables.get_grouped_injectables()
+    full_injectables.apply_injectables(results)
+    container = full_injectables.registry.create_injectable_container()
+    result: DummyTarget2 = container.get(DummyTarget)
+    assert isinstance(result, DummyTarget2)
 
 
 @pytest.fixture
@@ -174,10 +180,13 @@ def app_init_one():
         info=dict(title='app_init_one'),
     )
 
+
 @pytest.fixture
-def app_postinit_one():
+def app_postinit_last():
+    # This is the last registration, should override all the others.
+    # Let's signify that registering it for a different target.
     return Injectable(
-        for_=DummyTarget, target=DummyTarget, context=None,
+        for_=DummyTarget, target=DummyTarget2, context=None,
         use_props=False, area=Area.app, phase=Phase.postinit,
         info=dict(title='app_init_one'),
     )
@@ -212,7 +221,7 @@ def empty_injectables() -> Injectables:
 def full_injectables(
         system_init_one, system_init_two, system_init_three,
         system_postinit_one, system_postinit_two, system_postinit_three,
-        app_init_one, app_init_two, app_init_three, app_postinit_one,
+        app_init_one, app_init_two, app_init_three, app_postinit_last,
 ) -> Injectables:
     ir = InjectorRegistry()
     i = Injectables(ir)
@@ -225,5 +234,5 @@ def full_injectables(
     i.add(system_init_three)
     i.add(system_postinit_three)
     i.add(app_init_two)
-    i.add(app_postinit_one)
+    i.add(app_postinit_last)
     return i
