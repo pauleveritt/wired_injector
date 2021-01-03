@@ -4,8 +4,57 @@ Record then apply all the registrations.
 Configurator-like system which can record all the injectables, apply them,
 then report on them for uses such as generation of Sphinx config directives.
 
-- `register_injectable` (and thus `@injectable` and all derived decorators)
-  defer their registration until a second `apply_injectables` step
+A system based on ``Injectables`` works in 4 phases:
+
+Find
+====
+
+Go look in the system, the app, plugins, and the site for injectables
+that want to be registered.
+
+Record
+======
+
+Instead of directly calling ``registry.register_factory``, record the
+registration info into ``Injectables.pending_items``.
+
+Commit
+======
+
+When finished with each area, e.g. ``system``, "commit" the
+``pending_items`` with the enum value of the area, e.g. ``system``.
+This does nothing more than:
+
+- Remove each ``Injectable`` in ``pending_items``
+
+- Change its ``area`` field from ``None`` to the value being committed
+
+- Append it to the permanent ``items`` list
+
+Apply
+=====
+
+After all the injectables have been collected, iterate through each,
+in "order", and call ``InjectorRegistry.register_factory``.
+
+What is the "order"? For each "phase" (in order), then each "area"
+(in order). Thus, the system might register all ``phase=init`` injectables
+first, and with those, ``area=system`` first. It's possible that, later,
+a third level grouping is implemented, to allow register ``kind=config``
+before other kinds of injectables.
+
+The ``area`` is something under the control of the caller. We don't
+demand that each usage of a decorator/register_injectable says whether
+it is in the system, the app, or a plugin. That info can be determined
+by the caller.
+
+The ``phase``, though, *is* something each decorator/register_injectable
+should determine. Only it knows if the information it is providing or
+consuming should be at a certain point in registration. This is simplified
+by a reasonable default: unless you ask to go early, you go late.
+
+- ``register_injectable`` (and thus ``@injectable`` and all derived decorators)
+  defer their registration until a second ``apply_injectables`` step
 - Group the injectables by phase, then "area" (e.g. system, app, plugin,
   site), then apply them
 - Keep track of the injectables to allow instrospection and other special
@@ -17,7 +66,7 @@ then report on them for uses such as generation of Sphinx config directives.
   can be put to some use
 - Rely on Python 3.7 or later ordering of dicts
 """
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from enum import Enum
 from itertools import groupby
 from typing import Callable, Optional, Any, List, Mapping, Dict
@@ -47,9 +96,22 @@ GroupedInjectablesT = Dict[Enum, Dict[Enum, List[Injectable]]]
 class Injectables:
     registry: InjectorRegistry
     items: List[Injectable] = field(default_factory=list)
+    pending_items: List[Injectable] = field(default_factory=list)
 
     def add(self, injectable: Injectable):
-        self.items.append(injectable)
+        """ Queue up an injectable for later handling """
+        self.pending_items.append(injectable)
+
+    def commit(self, area: Enum):
+        """ Move all pending, changing their area along the way """
+
+        # Make sure to preserve order
+        for injectable in self.pending_items:
+            new_injectable = replace(injectable, area=area)
+            self.items.append(new_injectable)
+
+        # Now reset the pending_items
+        self.pending_items.clear()
 
     def find(
             self,
@@ -77,7 +139,7 @@ class Injectables:
             use_props=injectable.use_props,
         )
 
-    def get_grouped_injectables(self):
+    def get_grouped_injectables(self) -> GroupedInjectablesT:
         """ Grouped and sorted by area then phase """
 
         # Remember, Python 3.7+ orders dicts, allowing us to collect

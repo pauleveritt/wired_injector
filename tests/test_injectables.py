@@ -51,11 +51,20 @@ class DummyTarget2:
 
 def test_construction(empty_injectables):
     assert empty_injectables.items == []
+    assert empty_injectables.pending_items == []
 
 
-def test_add_injectable(full_injectables):
-    first = full_injectables.items[0]
+def test_add_injectable(empty_injectables, system_init_one):
+    empty_injectables.add(system_init_one)
+    first = empty_injectables.pending_items[0]
     assert DummyTarget == first.for_
+
+
+def test_commit(empty_injectables, system_init_one):
+    empty_injectables.add(system_init_one)
+    empty_injectables.commit(Area.system)
+    first = empty_injectables.items[0]
+    assert Area.system == first.area
 
 
 def test_find_all(full_injectables):
@@ -110,7 +119,15 @@ def test_get_grouped_injectables(full_injectables):
     assert expected == postinit_area_app
 
 
-def test_apply_injectables(full_injectables):
+def test_apply_injectables_all(full_injectables):
+    results = full_injectables.get_grouped_injectables()
+    full_injectables.apply_injectables(results)
+    container = full_injectables.registry.create_injectable_container()
+    result: DummyTarget2 = container.get(DummyTarget)
+    assert isinstance(result, DummyTarget2)
+
+
+def test_apply_injectables_by_area(full_injectables):
     results = full_injectables.get_grouped_injectables()
     full_injectables.apply_injectables(results)
     container = full_injectables.registry.create_injectable_container()
@@ -226,13 +243,23 @@ def full_injectables(
     ir = InjectorRegistry()
     i = Injectables(ir)
     i.add(system_init_two)
+    i.commit(Area.system)
     i.add(system_postinit_two)
+    i.commit(Area.system)
     i.add(app_init_three)
+    i.commit(Area.app)
     i.add(system_postinit_one)
+    i.commit(Area.system)
     i.add(system_init_one)
+    i.commit(Area.system)
     i.add(app_init_one)
+    i.commit(Area.app)
     i.add(system_init_three)
+    i.commit(Area.system)
     i.add(system_postinit_three)
+    i.commit(Area.system)
     i.add(app_init_two)
+    i.commit(Area.app)
     i.add(app_postinit_last)
+    i.commit(Area.app)
     return i
