@@ -79,28 +79,30 @@ def test_apply_injectable(empty_injectables, system_init_one):
 
 def test_get_grouped_injectables(full_injectables):
     results = full_injectables.get_grouped_injectables()
-    assert [Area.system, Area.app] == list(results.keys())
+    assert [Phase.init, Phase.postinit] == list(results.keys())
 
-    # System
-    system = results[Area.system]
-    assert [Phase.init, Phase.postinit] == list(system.keys())
-    system_values = list(system.values())
-    assert 2 == len(system_values)
-    system_phase_init = [i.info['title'] for i in system[Phase.init]]
+    # Init -> System, App
+    init = results[Phase.init]
+    assert [Area.system, Area.app] == list(init.keys())
+    init_values = list(init.values())
+    assert 2 == len(init_values)
+    init_area_system = [i.info['title'] for i in init[Area.system]]
     expected = ['system_init_two', 'system_init_one', 'system_init_three']
-    assert expected == system_phase_init
-    system_phase_postinit = [i.info['title'] for i in system[Phase.postinit]]
-    expected = ['system_postinit_two', 'system_postinit_one', 'system_postinit_three']
-    assert expected == system_phase_postinit
-
-    # App
-    app = results[Area.app]
-    assert [Phase.init, ] == list(app.keys())
-    app_values = list(app.values())
-    assert 1 == len(app_values)
-    app_phase_postinit = [i.info['title'] for i in app[Phase.init]]
+    assert expected == init_area_system
+    init_area_app = [i.info['title'] for i in init[Area.app]]
     expected = ['app_init_three', 'app_init_one', 'app_init_two']
-    assert expected == app_phase_postinit
+    assert expected == init_area_app
+
+    # Postinit -> System, App
+    postinit = results[Phase.postinit]
+    assert [Area.system, Area.app] == list(postinit.keys())
+    postinit_values = list(init.values())
+    assert 2 == len(postinit_values)
+    postinit_area_system = [i.info['title'] for i in postinit[Area.app]]
+    expected = ['app_init_one']
+    assert expected == postinit_area_system
+    postinit_area_app = [i.info['title'] for i in postinit[Area.app]]
+    assert expected == postinit_area_app
 
 
 def test_apply_injectables():
@@ -172,6 +174,14 @@ def app_init_one():
         info=dict(title='app_init_one'),
     )
 
+@pytest.fixture
+def app_postinit_one():
+    return Injectable(
+        for_=DummyTarget, target=DummyTarget, context=None,
+        use_props=False, area=Area.app, phase=Phase.postinit,
+        info=dict(title='app_init_one'),
+    )
+
 
 @pytest.fixture
 def app_init_two():
@@ -202,7 +212,7 @@ def empty_injectables() -> Injectables:
 def full_injectables(
         system_init_one, system_init_two, system_init_three,
         system_postinit_one, system_postinit_two, system_postinit_three,
-        app_init_one, app_init_two, app_init_three,
+        app_init_one, app_init_two, app_init_three, app_postinit_one,
 ) -> Injectables:
     ir = InjectorRegistry()
     i = Injectables(ir)
@@ -215,4 +225,5 @@ def full_injectables(
     i.add(system_init_three)
     i.add(system_postinit_three)
     i.add(app_init_two)
+    i.add(app_postinit_one)
     return i
