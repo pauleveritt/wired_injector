@@ -3,26 +3,48 @@
 ## Now
 
 Config system which can record all the injectables, apply them, then report on them for uses such as generation of Sphinx config directives.
-- ``Injectables`` dataclass, stored as optional on the registry
-  * `system` field which records registrations
-  * `add_injectables` applies the registrations at end
-  * Processing is done in batches to implement the "area" part
-  * Optional instance on `InjectorRegistry`
 
-  * Write some examples that exercise it
+- Write some examples that exercise it
+  * Multi-area, multi-phase, multi-kind system (e.g. themester)
+  * Custom decorator (e.g. `config`) which sets default: phase, kind, info
+  * Get a listing of info['shortname'] after apply
+- Change decorator to have default kind (but the class and invocation can pass it in)
 
-  * Change `register_injectable` to add to `system`
-  * Change decorator if needed (or at least write a test)
-  * Don't apply until later
-- Kind
-- Phase
-- Area (system, app, plugins, site)
-- Info (extra metadata for kind)
-- Context manager
+- Example issues that I'm trying to solve with `Injectables`
+  * Themester, Sphinx, app might all want to set `_static` output target
+  * Nice autocomplete on config attrs/values for site admin
+  * Is `ThemeConfig` protocol really needed?
+  * Single `ThemabasterConfig` winds up as a garbage barge
+  
+- Injectables To-Do from whiteboard
+  * Setup in phases: pre/post/neither, system/app/plugins/site
+  * Sphinx app gets setup from conf.py
+    - But can scan for decorators in conf.py or packages below
+  * Make static root a first class part of Themester config
+    - Other config can reference it
+  * Config field values can depend on other field values
+  * Slim down `make_registry` and friends
+    - Inline into storytime, no need to be separate
+  * Ensure `@config` can do `__wired_factory__` for special cases
+  * Use `Injectable.info` to collect stuff like `shortname` that can be used for Sphinx config directives
+
+
 
 ## Next
 
+- Pipeline, PipelineField, PipelineStep
+  * Handle common exceptions more gracefully
+  * Provide access to props and system_props
+  * Write a `Props('propname')` operator
+  * Introduce logging to help debugging
+  * Research PyCharm breakpoints (doesn't stop on a return)  
+  * Put a specific plug-point to enable debugging breakpoints
+- Make an example showing plain-old-class, perhaps even typed-dict
+
 ## Soon
+
+- Context manager
+  * https://medium.com/swlh/python-coding-tip-using-the-with-statement-instead-try-finally-f45a645c6008
 
 - Document:
   - custom decorators

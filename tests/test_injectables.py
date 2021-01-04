@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 
 import pytest
-from wired_injector import InjectorRegistry
+from wired_injector import InjectorRegistry, injectable
 from wired_injector.injectables import Injectables, Injectable
 
 """
@@ -42,6 +42,12 @@ class Phase(Enum):
 @dataclass
 class DummyTarget:
     title: str = 'Dummy Target'
+
+
+@injectable()
+@dataclass
+class InjectableHeading:
+    name: str = 'Injectable Heading'
 
 
 def test_construction(empty_injectables):
@@ -157,6 +163,18 @@ def test_injectable_registry_commit_apply():
     container = registry.create_injectable_container()
     heading: Heading = container.get(Heading)
     assert 'Default Name' == heading.name
+
+
+def test_injectable_registry_decorators():
+    # Use the decorator to do `register_injectable`.
+
+    registry = InjectorRegistry(use_injectables=True)
+    registry.scan()
+    registry.injectables.commit(area=Area.system)
+    registry.injectables.apply_injectables()
+    container = registry.create_injectable_container()
+    heading: InjectableHeading = container.get(InjectableHeading)
+    assert 'Injectable Heading' == heading.name
 
 
 def test_injectable_registry_multiple():

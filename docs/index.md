@@ -80,6 +80,7 @@ end-before: property
 ---
 hidden: true
 ---
+injectables
 examples/index
 api
 ```

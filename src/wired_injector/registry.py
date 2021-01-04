@@ -149,7 +149,8 @@ class InjectorRegistry(ServiceRegistry):
             #   does ``apply_injectables``
             self.register_factory(target, for_, context=context)
         else:
-            # If using Injectables, defer the registration until later
+            # If using Injectables, defer the registration until later.
+            # Doing import here because of (surprise) circular import.
             from .injectables import Injectable
             injectable = Injectable(
                 for_=for_,

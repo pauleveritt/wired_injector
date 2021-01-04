@@ -62,7 +62,6 @@ def test_examples(target):
     assert expected == actual
 
 
-@pytest.mark.skip
 @pytest.mark.parametrize(
     'target',
     [
