@@ -197,7 +197,6 @@ class Injectables:
         for phase in grouped_injectables.values():
             for area in phase.values():
                 for injectable in area:
-                    setattr(injectable.target, '__injectable__', injectable)
                     self.registry.register_injectable(
                         injectable.for_,
                         injectable.target,

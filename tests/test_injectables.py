@@ -44,11 +44,6 @@ class DummyTarget:
     title: str = 'Dummy Target'
 
 
-@dataclass
-class DummyTarget2:
-    title: str = 'Dummy Target2'
-
-
 def test_construction(empty_injectables):
     assert empty_injectables.items == []
     assert empty_injectables.pending_items == []
@@ -57,7 +52,7 @@ def test_construction(empty_injectables):
 def test_add_injectable(empty_injectables, system_init_one):
     empty_injectables.add(system_init_one)
     first = empty_injectables.pending_items[0]
-    assert DummyTarget == first.for_
+    assert SystemInitOne == first.target
 
 
 def test_commit(empty_injectables, system_init_one):
@@ -116,16 +111,16 @@ def test_get_grouped_injectables(full_injectables):
 def test_apply_injectables_all(full_injectables):
     full_injectables.apply_injectables()
     container = full_injectables.registry.create_injectable_container()
-    result: DummyTarget2 = container.get(DummyTarget)
-    assert isinstance(result, DummyTarget2)
+    result = container.get(DummyTarget)
+    assert isinstance(result, SystemInitTwo)
 
 
 def test_apply_injectables_by_area(full_injectables):
     results = full_injectables.get_grouped_injectables()
     full_injectables.apply_injectables(results)
     container = full_injectables.registry.create_injectable_container()
-    result: DummyTarget2 = container.get(DummyTarget)
-    assert isinstance(result, DummyTarget2)
+    result = container.get(DummyTarget)
+    assert isinstance(result, SystemInitTwo)
 
 
 def test_injectable_registry_defer_true():
@@ -188,7 +183,7 @@ def test_injectable_registry_multiple():
         for_=Heading, target=SiteHeading, phase=Phase.postinit, info=dict(title='site heading')
     )
     registry.register_injectable(
-        SiteHeading, phase=Phase.init, info=dict(title='system heading')
+        for_=Heading, target=Heading, phase=Phase.init, info=dict(title='system heading')
     )
     registry.register_injectable(
         for_=Heading, target=AppHeading, phase=Phase.init, info=dict(title='app heading')
@@ -197,13 +192,63 @@ def test_injectable_registry_multiple():
     registry.injectables.apply_injectables()
     container = registry.create_injectable_container()
     heading: Heading = container.get(Heading)
-    assert heading.name == 'Site Name'
+    assert heading.__class__.__name__ == Heading.__name__
+
+
+@dataclass()
+class SystemInitOne:
+    title: str = 'System Init One'
+
+
+@dataclass()
+class SystemInitTwo:
+    title: str = 'System Init Two'
+
+
+@dataclass()
+class SystemInitThree:
+    title: str = 'System Init Three'
+
+
+@dataclass()
+class SystemPostInitOne:
+    title: str = 'System PostInit One'
+
+
+@dataclass()
+class SystemPostInitTwo:
+    title: str = 'System PostInit Two'
+
+
+@dataclass()
+class AppInitOne:
+    title: str = 'App Init One'
+
+
+@dataclass()
+class SystemInitThree:
+    title: str = 'System Init Three'
+
+
+@dataclass()
+class AppPostInitThree:
+    title: str = 'App PostInit Three'
+
+
+@dataclass()
+class AppInitTwo:
+    title: str = 'App Init Two'
+
+
+@dataclass()
+class AppInitThree:
+    title: str = 'App Init Three'
 
 
 @pytest.fixture
 def system_init_one():
     return Injectable(
-        for_=DummyTarget, target=DummyTarget, context=None,
+        for_=DummyTarget, target=SystemInitOne, context=None,
         use_props=False, area=None, phase=Phase.init,
         kind=Kind.config, info=dict(title='system_init_one'),
     )
@@ -212,7 +257,7 @@ def system_init_one():
 @pytest.fixture
 def system_init_two():
     return Injectable(
-        for_=DummyTarget, target=DummyTarget, context=None,
+        for_=DummyTarget, target=SystemInitTwo, context=None,
         use_props=False, area=None, phase=Phase.init,
         kind=Kind.config, info=dict(title='system_init_two'),
     )
@@ -221,7 +266,7 @@ def system_init_two():
 @pytest.fixture
 def system_init_three():
     return Injectable(
-        for_=DummyTarget, target=DummyTarget2, context=None,
+        for_=DummyTarget, target=SystemInitThree, context=None,
         use_props=False, area=None, phase=Phase.init,
         kind=Kind.component, info=dict(title='system_init_three'),
     )
@@ -230,7 +275,7 @@ def system_init_three():
 @pytest.fixture
 def system_postinit_one():
     return Injectable(
-        for_=DummyTarget, target=DummyTarget, context=None,
+        for_=DummyTarget, target=SystemPostInitOne, context=None,
         use_props=False, area=None, phase=Phase.postinit,
         kind=Kind.component, info=dict(title='system_postinit_one'),
     )
@@ -239,7 +284,7 @@ def system_postinit_one():
 @pytest.fixture
 def system_postinit_two():
     return Injectable(
-        for_=DummyTarget, target=DummyTarget, context=None,
+        for_=DummyTarget, target=SystemPostInitTwo, context=None,
         use_props=False, area=None, phase=Phase.postinit,
         kind=Kind.view, info=dict(title='system_postinit_two'),
     )
@@ -248,7 +293,7 @@ def system_postinit_two():
 @pytest.fixture
 def system_postinit_three():
     return Injectable(
-        for_=DummyTarget, target=DummyTarget, context=None,
+        for_=DummyTarget, target=SystemInitThree, context=None,
         use_props=False, area=None, phase=Phase.postinit,
         kind=Kind.view, info=dict(title='system_postinit_three'),
     )
@@ -257,18 +302,16 @@ def system_postinit_three():
 @pytest.fixture
 def app_init_one():
     return Injectable(
-        for_=DummyTarget, target=DummyTarget, context=None,
+        for_=DummyTarget, target=AppInitOne, context=None,
         use_props=False, area=None, phase=Phase.init,
         kind=Kind.config, info=dict(title='app_init_one'),
     )
 
 
 @pytest.fixture
-def app_postinit_last():
-    # This is the last registration, should override all the others.
-    # Let's signify that registering it for a different target.
+def app_postinit_three():
     return Injectable(
-        for_=DummyTarget, target=DummyTarget, context=None,
+        for_=DummyTarget, target=AppPostInitThree, context=None,
         use_props=False, area=None, phase=Phase.postinit,
         kind=Kind.view, info=dict(title='app_init_one'),
     )
@@ -277,7 +320,7 @@ def app_postinit_last():
 @pytest.fixture
 def app_init_two():
     return Injectable(
-        for_=DummyTarget, target=DummyTarget, context=None,
+        for_=DummyTarget, target=AppInitTwo, context=None,
         use_props=False, area=None, phase=Phase.init,
         kind=Kind.component, info=dict(title='app_init_two'),
     )
@@ -286,7 +329,7 @@ def app_init_two():
 @pytest.fixture
 def app_init_three():
     return Injectable(
-        for_=DummyTarget, target=DummyTarget, context=None,
+        for_=DummyTarget, target=AppInitThree, context=None,
         use_props=False, area=Area.app, phase=Phase.init,
         kind=Kind.config, info=dict(title='app_init_three'),
     )
@@ -303,7 +346,7 @@ def empty_injectables() -> Injectables:
 def full_injectables(
         system_init_one, system_init_two, system_init_three,
         system_postinit_one, system_postinit_two, system_postinit_three,
-        app_init_one, app_init_two, app_init_three, app_postinit_last,
+        app_init_one, app_init_two, app_init_three, app_postinit_three,
 ) -> Injectables:
     ir = InjectorRegistry(use_injectables=True)
     i = Injectables(ir)
@@ -325,6 +368,6 @@ def full_injectables(
     i.commit(Area.system)
     i.add(app_init_two)
     i.commit(Area.app)
-    i.add(app_postinit_last)
+    i.add(app_postinit_three)
     i.commit(Area.app)
     return i
