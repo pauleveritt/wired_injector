@@ -2,11 +2,11 @@ import pytest
 
 from examples.injectables import (
     hello_injectables,
+    second_injectable,
 )
-# from examples.index import (
-#     # pipelines,
-# )
-from examples.props import props_injection
+from examples.props import (
+    props_injection,
+)
 from examples.registry import (
     regular_registry,
     injector_registry,
@@ -62,10 +62,12 @@ def test_examples(target):
     assert expected == actual
 
 
+@pytest.mark.skip
 @pytest.mark.parametrize(
     'target',
     [
         hello_injectables,
+        # second_injectable,
     ],
 )
 def test_examples_injectables(target):
