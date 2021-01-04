@@ -192,7 +192,42 @@ def test_injectable_registry_multiple():
     registry.injectables.apply_injectables()
     container = registry.create_injectable_container()
     heading: Heading = container.get(Heading)
-    assert heading.__class__.__name__ == Heading.__name__
+    assert heading.__class__.__name__ == 'Heading'
+
+
+def test_injectable_registry_areas():
+    # Organize the universe into areas
+    @dataclass
+    class Heading:
+        name: str = 'System Name'
+
+    @dataclass
+    class AppHeading:
+        name: str = 'App Name'
+
+    @dataclass
+    class SiteHeading:
+        name: str = 'Site Name'
+
+    registry = InjectorRegistry(use_injectables=True)
+
+    # Use areas to control the registration order. The order
+    # of registration is actually backwards from how they will
+    # be applied, due to areas. Meaning, Area.site is applied last.
+    registry.register_injectable(
+        for_=Heading, target=SiteHeading, area=Area.site, info=dict(title='site heading')
+    )
+    registry.register_injectable(
+        for_=Heading, target=AppHeading, area=Area.app, info=dict(title='app heading')
+    )
+    registry.register_injectable(
+        for_=Heading, target=Heading, area=Area.system, info=dict(title='system heading')
+    )
+    registry.injectables.commit(area=Area.system)
+    registry.injectables.apply_injectables()
+    container = registry.create_injectable_container()
+    heading: Heading = container.get(Heading)
+    assert heading.__class__.__name__ == 'SiteHeading'
 
 
 @dataclass()
