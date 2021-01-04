@@ -170,13 +170,17 @@ class Injectables:
         # Remember, Python 3.7+ orders dicts, allowing us to collect
         # entries in the order we will then process them
         results: GroupedInjectablesT = {}
-        sorted_phases = sorted(self.items, key=SortedValue('phase'))
+
+        # Reverse the sort, so higher-priority are registered last.
+        sorted_phases = sorted(self.items, key=SortedValue('phase'), reverse=True)
         for k1, phase in groupby(sorted_phases, key=lambda v: v.phase):
             results[k1] = {}
-            sorted_areas = sorted(phase, key=SortedValue('area'))
+            # Reverse the sort, so higher-priority are registered last.
+            sorted_areas = sorted(phase, key=SortedValue('area'), reverse=True)
             for k2, area in groupby(sorted_areas, key=lambda v: v.area):
                 results[k1][k2] = []
-                for injectable in area:
+                # Reverse the sort, so higher-priority are registered last.
+                for injectable in reversed(list(area)):
                     results[k1][k2].append(injectable)
         return results
 
@@ -193,6 +197,7 @@ class Injectables:
         for phase in grouped_injectables.values():
             for area in phase.values():
                 for injectable in area:
+                    setattr(injectable.target, '__injectable__', injectable)
                     self.registry.register_injectable(
                         injectable.for_,
                         injectable.target,

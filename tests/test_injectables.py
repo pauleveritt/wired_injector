@@ -87,23 +87,23 @@ def test_find_area_phase(full_injectables):
 
 def test_get_grouped_injectables(full_injectables):
     results = full_injectables.get_grouped_injectables()
-    assert [Phase.init, Phase.postinit] == list(results.keys())
+    assert [Phase.postinit, Phase.init] == list(results.keys())
 
     # Init -> System, App
     init = results[Phase.init]
-    assert [Area.system, Area.app] == list(init.keys())
+    assert [Area.app, Area.system] == list(init.keys())
     init_values = list(init.values())
     assert 2 == len(init_values)
     init_area_system = [i.info['title'] for i in init[Area.system]]
-    expected = ['system_init_two', 'system_init_one', 'system_init_three']
+    expected = ['system_init_three', 'system_init_one', 'system_init_two']
     assert expected == init_area_system
     init_area_app = [i.info['title'] for i in init[Area.app]]
-    expected = ['app_init_three', 'app_init_one', 'app_init_two']
+    expected = ['app_init_two', 'app_init_one', 'app_init_three']
     assert expected == init_area_app
 
     # Postinit -> System, App
     postinit = results[Phase.postinit]
-    assert [Area.system, Area.app] == list(postinit.keys())
+    assert [Area.app, Area.system] == list(postinit.keys())
     postinit_values = list(init.values())
     assert 2 == len(postinit_values)
     postinit_area_system = [i.info['title'] for i in postinit[Area.app]]
@@ -139,7 +139,7 @@ def test_injectable_registry_defer_true():
     # First pass through, injectable not added to registry and
     # we don't commit/apply.
     registry = InjectorRegistry(use_injectables=True)
-    registry.register_injectable(Heading, use_props=True)
+    registry.register_injectable(Heading)
     # No commit
     # No apply
     container = registry.create_injectable_container()
@@ -181,13 +181,17 @@ def test_injectable_registry_multiple():
 
     registry = InjectorRegistry(use_injectables=True)
 
-    # Use phases to control the registration order
-    registry.register_injectable(SiteHeading, phase=Phase.init)
+    # Use phases to control the registration order. Even though this one is
+    # registered first (and thus would be overridden later), it winds up
+    # being used because it is in a later phase.
     registry.register_injectable(
-        for_=Heading, target=AppHeading, phase=Phase.postinit,
+        for_=Heading, target=SiteHeading, phase=Phase.postinit, info=dict(title='site heading')
     )
     registry.register_injectable(
-        for_=Heading, target=SiteHeading, phase=Phase.postinit
+        SiteHeading, phase=Phase.init, info=dict(title='system heading')
+    )
+    registry.register_injectable(
+        for_=Heading, target=AppHeading, phase=Phase.init, info=dict(title='app heading')
     )
     registry.injectables.commit(area=Area.system)
     registry.injectables.apply_injectables()
@@ -217,7 +221,7 @@ def system_init_two():
 @pytest.fixture
 def system_init_three():
     return Injectable(
-        for_=DummyTarget, target=DummyTarget, context=None,
+        for_=DummyTarget, target=DummyTarget2, context=None,
         use_props=False, area=None, phase=Phase.init,
         kind=Kind.component, info=dict(title='system_init_three'),
     )
@@ -264,7 +268,7 @@ def app_postinit_last():
     # This is the last registration, should override all the others.
     # Let's signify that registering it for a different target.
     return Injectable(
-        for_=DummyTarget, target=DummyTarget2, context=None,
+        for_=DummyTarget, target=DummyTarget, context=None,
         use_props=False, area=None, phase=Phase.postinit,
         kind=Kind.view, info=dict(title='app_init_one'),
     )
