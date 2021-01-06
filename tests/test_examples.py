@@ -4,6 +4,7 @@ from examples.injectables import (
     hello_injectables,
     phases,
     areas,
+    areas_and_phases,
 )
 from examples.props import (
     props_injection,
@@ -69,6 +70,7 @@ def test_examples(target):
         hello_injectables,
         phases,
         areas,
+        areas_and_phases,
     ],
 )
 def test_examples_injectables(target):

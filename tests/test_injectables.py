@@ -27,16 +27,16 @@ class Area(Enum):
     site = 4
 
 
+class Phase(Enum):
+    init = 1
+    postinit = 2
+
+
 class Kind(Enum):
     config = 1
     component = 2
     view = 3
     injectable = 4
-
-
-class Phase(Enum):
-    init = 1
-    postinit = 2
 
 
 @dataclass
