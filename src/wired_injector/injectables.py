@@ -109,16 +109,14 @@ class Injectables:
         # entries in the order we will then process them
         results: GroupedInjectablesT = {}
 
-        # Reverse the sort, so higher-priority are registered last.
-        sorted_phases = sorted(self.items, key=SortedValue('phase'), reverse=True)
+        sorted_phases = sorted(self.items, key=SortedValue('phase'))
         for k1, phase in groupby(sorted_phases, key=lambda v: v.phase):
             results[k1] = {}
             # Reverse the sort, so higher-priority are registered last.
-            sorted_areas = sorted(phase, key=SortedValue('area'), reverse=True)
+            sorted_areas = sorted(phase, key=SortedValue('area'))
             for k2, area in groupby(sorted_areas, key=lambda v: v.area):
                 results[k1][k2] = []
-                # Reverse the sort, so higher-priority are registered last.
-                for injectable in reversed(list(area)):
+                for injectable in list(area):
                     results[k1][k2].append(injectable)
         return results
 

@@ -88,23 +88,23 @@ def test_find_area_phase(full_injectables):
 
 def test_get_grouped_injectables(full_injectables):
     results = full_injectables.get_grouped_injectables()
-    assert [Phase.postinit, Phase.init] == list(results.keys())
+    assert [Phase.init, Phase.postinit] == list(results.keys())
 
     # Init -> System, App
     init = results[Phase.init]
-    assert [Area.app, Area.system] == list(init.keys())
+    assert [Area.system, Area.app] == list(init.keys())
     init_values = list(init.values())
     assert 2 == len(init_values)
     init_area_system = [i.info['title'] for i in init[Area.system]]
-    expected = ['system_init_three', 'system_init_one', 'system_init_two']
+    expected = ['system_init_two', 'system_init_one', 'system_init_three']
     assert expected == init_area_system
     init_area_app = [i.info['title'] for i in init[Area.app]]
-    expected = ['app_init_two', 'app_init_one', 'app_init_three']
+    expected = ['app_init_three', 'app_init_one', 'app_init_two']
     assert expected == init_area_app
 
     # Postinit -> System, App
     postinit = results[Phase.postinit]
-    assert [Area.app, Area.system] == list(postinit.keys())
+    assert [Area.system, Area.app] == list(postinit.keys())
     postinit_values = list(init.values())
     assert 2 == len(postinit_values)
     postinit_area_system = [i.info['title'] for i in postinit[Area.app]]
@@ -118,15 +118,7 @@ def test_apply_injectables_all(full_injectables):
     full_injectables.apply_injectables()
     container = full_injectables.registry.create_injectable_container()
     result = container.get(DummyTarget)
-    assert isinstance(result, SystemInitTwo)
-
-
-def test_apply_injectables_by_area(full_injectables):
-    results = full_injectables.get_grouped_injectables()
-    full_injectables.apply_injectables(results)
-    container = full_injectables.registry.create_injectable_container()
-    result = container.get(DummyTarget)
-    assert isinstance(result, SystemInitTwo)
+    assert result.__class__.__name__ == 'AppPostInitThree'
 
 
 def test_injectable_registry_defer_true():
@@ -210,7 +202,7 @@ def test_injectable_registry_multiple():
     registry.injectables.apply_injectables()
     container = registry.create_injectable_container()
     heading: Heading = container.get(Heading)
-    assert heading.__class__.__name__ == 'Heading'
+    assert heading.__class__.__name__ == 'SiteHeading'
 
 
 def test_injectable_registry_areas():
@@ -229,19 +221,30 @@ def test_injectable_registry_areas():
 
     registry = InjectorRegistry(use_injectables=True)
 
-    # Use areas to control the registration order. The order
-    # of registration is actually backwards from how they will
-    # be applied, due to areas. Meaning, Area.site is applied last.
+    # Register for Area.site
+    # Ordinarily we woudld do this last, but the order the areas
+    # go in doesn't matter.
     registry.register_injectable(
-        for_=Heading, target=SiteHeading, area=Area.site, info=dict(title='site heading')
+        for_=Heading, target=SiteHeading, area=Area.site,
+        info=dict(title='site heading')
     )
+    registry.injectables.commit(area=Area.site)
+
+    # Register for Area.system
     registry.register_injectable(
-        for_=Heading, target=AppHeading, area=Area.app, info=dict(title='app heading')
-    )
-    registry.register_injectable(
-        for_=Heading, target=Heading, area=Area.system, info=dict(title='system heading')
+        for_=Heading, target=Heading, area=Area.system,
+        info=dict(title='system heading')
     )
     registry.injectables.commit(area=Area.system)
+
+    # Register for Area.app
+    registry.register_injectable(
+        for_=Heading, target=AppHeading, area=Area.app,
+        info=dict(title='app heading')
+    )
+    registry.injectables.commit(area=Area.app)
+
+    # Now apply all the injectables
     registry.injectables.apply_injectables()
     container = registry.create_injectable_container()
     heading: Heading = container.get(Heading)
@@ -399,7 +402,8 @@ def empty_injectables() -> Injectables:
 def full_injectables(
         system_init_one, system_init_two, system_init_three,
         system_postinit_one, system_postinit_two, system_postinit_three,
-        app_init_one, app_init_two, app_init_three, app_postinit_three,
+        app_init_one, app_init_two, app_init_three,
+        app_postinit_three,
 ) -> Injectables:
     ir = InjectorRegistry(use_injectables=True)
     i = Injectables(ir)

@@ -13,25 +13,8 @@ except ImportError:
 @injectable()
 @dataclass
 class Settings:
+    """ The system defines something called ``Settings`` """
     site_name: str = 'System Site'
-
-
-@injectable()
-@dataclass
-class Settings:
-    """ This is the one that should go last """
-    site_name: str = 'My Site'
-
-@injectable()
-@dataclass
-class Settings:
-    site_name: str = 'App Site'
-
-
-@injectable()
-@dataclass
-class Settings:
-    site_name: str = 'Plugin Site'
 
 
 @injectable()

@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import TypeVar, Callable, Type, Optional
 
 from venusian import Scanner, attach
@@ -25,20 +26,22 @@ class injectable:
     def __init__(
             self,
             for_: type = None,
-            context: Type = None,
-            use_props: Optional[bool] = None,
             category: Optional[str] = None,
+            context: Optional[Type] = None,
+            phase: Optional[Enum] = None,
+            use_props: Optional[bool] = None,
     ):
         if for_ is not None:
             # Use passed in value, otherwise, use the class attr
             self.for_ = for_
-        self.context = context
-        if use_props is not None:
-            # Use passed in value, otherwise, use the class attr
-            self.use_props = use_props
         if category is not None:
             # Use passed in value, otherwise, use the class attr
             self.category = category
+        self.context = context
+        self.phase = phase
+        if use_props is not None:
+            # Use passed in value, otherwise, use the class attr
+            self.use_props = use_props
 
     def __call__(self, wrapped):
         def callback(scanner: Scanner, name: str, cls):
@@ -48,6 +51,7 @@ class injectable:
                 for_=for_,
                 target=cls,
                 context=self.context,
+                phase=self.phase,
                 use_props=self.use_props,
             )
 

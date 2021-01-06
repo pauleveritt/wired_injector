@@ -2,7 +2,8 @@ import pytest
 
 from examples.injectables import (
     hello_injectables,
-    second_injectable,
+    phases,
+    areas,
 )
 from examples.props import (
     props_injection,
@@ -66,7 +67,8 @@ def test_examples(target):
     'target',
     [
         hello_injectables,
-        # second_injectable,
+        phases,
+        areas,
     ],
 )
 def test_examples_injectables(target):

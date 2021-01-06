@@ -4,6 +4,7 @@
 
 Config system which can record all the injectables, apply them, then report on them for uses such as generation of Sphinx config directives.
 
+- Allow `commit(area=Enum)` to be optional on the `area` part
 - Write some examples that exercise it
   * Multi-area, multi-phase, multi-kind system (e.g. themester)
   * Custom decorator (e.g. `config`) which sets default: phase, kind, info
@@ -27,8 +28,8 @@ Config system which can record all the injectables, apply them, then report on t
     - Inline into storytime, no need to be separate
   * Ensure `@config` can do `__wired_factory__` for special cases
   * Use `Injectable.info` to collect stuff like `shortname` that can be used for Sphinx config directives
-
-
+  * Decide whether to get rid of customizable venusian scan `category = 'wired'` on decorator
+  
 
 ## Next
 
