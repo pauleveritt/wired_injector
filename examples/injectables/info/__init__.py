@@ -9,7 +9,7 @@ along with a "shortname" from an info structure.
 from wired_injector import InjectorRegistry
 
 from . import factories
-from .contants import Area
+from .constants import Area, Kind
 from .factories import View
 
 
@@ -24,10 +24,14 @@ def test():
     # All done, write the injectables to the registry
     registry.injectables.apply_injectables()
 
-    # Per "request"
-    container = registry.create_injectable_container()
-    view: View = container.get(View)
-    result = view.name
-    expected = 'View - System Site'
+    # Get all the kind=config that have a shortname
+    injectables = registry.injectables.get_info(kind=Kind.config)
+    results = [
+        (injectable.info['shortname'], injectable.for_)
+        for injectable in injectables
+        if 'shortname' in injectable.info
+    ]
+    result = results[0][0]
+    expected = 'bob'
 
     return result, expected

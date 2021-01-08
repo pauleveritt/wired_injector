@@ -100,6 +100,7 @@ class InjectorRegistry(ServiceRegistry):
             context: Optional[Any] = None,
             use_props: bool = False,
             area: Optional[Enum] = None,
+            kind: Optional[Enum] = None,
             phase: Optional[Enum] = None,
             info: Optional[Mapping[Any, Any]] = None,
             defer: bool = True,
@@ -116,6 +117,7 @@ class InjectorRegistry(ServiceRegistry):
             context: A container context
             use_props: This factory should be injected with keyword args
             area: Which area such as ``Area.system`` currently in
+            kind: Extra info to organize by "kinds" of injectables, not used in actual factory
             phase: Which phase such as ``Phase.init`` currently in
             info: Extra info a particular ``Kind`` might want such as ``config.shortname``
             defer: The flag that signifies Injectables is applying the injectables.
@@ -158,6 +160,7 @@ class InjectorRegistry(ServiceRegistry):
                 context=context,
                 use_props=use_props,
                 area=area,
+                kind=kind,
                 phase=phase,
                 info=info,
             )

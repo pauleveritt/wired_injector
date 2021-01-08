@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import TypeVar, Callable, Type, Optional
+from typing import TypeVar, Callable, Type, Optional, Mapping
 
 from venusian import Scanner, attach
 
@@ -20,6 +20,8 @@ class injectable:
     """ ``venusian`` decorator to register an injectable factory  """
 
     for_ = None  # Give subclasses a chance to give default, e.g. view
+    info: Optional[Mapping] = None
+    kind: Optional[Enum] = None
     phase: Optional[Enum] = None
     use_props = False
     category = 'wired'  # venusian scan category
@@ -29,6 +31,8 @@ class injectable:
             for_: type = None,
             category: Optional[str] = None,
             context: Optional[Type] = None,
+            info: Optional[Mapping] = None,
+            kind: Optional[Enum] = None,
             phase: Optional[Enum] = None,
             use_props: Optional[bool] = None,
     ):
@@ -39,6 +43,12 @@ class injectable:
             # Use passed in value, otherwise, use the class attr
             self.category = category
         self.context = context
+        if info is not None:
+            # Use passed in value, otherwise, use the class attr
+            self.info = info
+        if kind is not None:
+            # Use passed in value, otherwise, use the class attr
+            self.kind = kind
         if phase is not None:
             # Use passed in value, otherwise, use the class attr
             self.phase = phase
@@ -54,6 +64,8 @@ class injectable:
                 for_=for_,
                 target=cls,
                 context=self.context,
+                info=self.info,
+                kind=self.kind,
                 phase=self.phase,
                 use_props=self.use_props,
             )
