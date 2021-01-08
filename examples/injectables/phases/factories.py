@@ -6,8 +6,8 @@ from wired_injector.operators import Get
 
 
 class Phase(Enum):
-    init = 1
-    postinit = 2
+    init = 10
+    postinit = 20
 
 
 try:

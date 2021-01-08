@@ -2,12 +2,12 @@ from enum import Enum
 
 
 class Area(Enum):
-    system = 1
-    app = 2
-    plugins = 3
-    site = 4
+    system = 10
+    app = 20
+    plugins = 30
+    site = 40
 
 
 class Phase(Enum):
-    init = 1
-    postinit = 2
+    init = 10
+    postinit = 20
