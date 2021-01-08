@@ -4,30 +4,6 @@
 
 Config system which can record all the injectables, apply them, then report on them for uses such as generation of Sphinx config directives.
 
-- Write some examples that exercise it
-  * Get a listing of info['shortname'] after apply
-- Change decorator to have default kind (but the class and invocation can pass it in)
-
-- Example issues that I'm trying to solve with `Injectables`
-  * Themester, Sphinx, app might all want to set `_static` output target
-  * Nice autocomplete on config attrs/values for site admin
-  * Is `ThemeConfig` protocol really needed?
-  * Single `ThemabasterConfig` winds up as a garbage barge
-  
-- Injectables To-Do from whiteboard
-  * Setup in phases: pre/post/neither, system/app/plugins/site
-  * Sphinx app gets setup from conf.py
-    - But can scan for decorators in conf.py or packages below
-  * Make static root a first class part of Themester config
-    - Other config can reference it
-  * Config field values can depend on other field values
-  * Slim down `make_registry` and friends
-    - Inline into storytime, no need to be separate
-  * Ensure `@config` can do `__wired_factory__` for special cases
-  * Use `Injectable.info` to collect stuff like `shortname` that can be used for Sphinx config directives
-  * Decide whether to get rid of customizable venusian scan `category = 'wired'` on decorator
-  
-
 ## Next
 
 - Pipeline, PipelineField, PipelineStep
