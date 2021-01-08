@@ -175,7 +175,9 @@ class Injector:
             try:
                 for rule in self.rules:
                     # noinspection PyArgumentList
-                    r = rule(field_info, props, self.container, system_props, target)
+                    r = rule(
+                        field_info, props, self.container, system_props, target
+                    )
                     # noinspection PyCallingNonCallable
                     r()
             except SkipField:

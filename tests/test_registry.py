@@ -41,9 +41,7 @@ def test_injector_container_inject_props():
     registry = InjectorRegistry()
     registry.register_injectable(Heading, use_props=True)
     container = registry.create_injectable_container()
-    heading: Heading = container.inject(
-        Heading, first_name='Injected Name'
-    )
+    heading: Heading = container.inject(Heading, first_name='Injected Name')
     assert 'Injected Name' == heading.first_name
 
 
@@ -57,9 +55,7 @@ def test_injector_container_inject_name_prop():
     registry = InjectorRegistry()
     registry.register_injectable(Heading, use_props=True)
     container = registry.create_injectable_container()
-    heading: Heading = container.inject(
-        Heading, name='Injected Name'
-    )
+    heading: Heading = container.inject(Heading, name='Injected Name')
     assert 'Injected Name' == heading.name
 
 
@@ -89,7 +85,10 @@ def test_injector_registry_scan_categories():
     registry = InjectorRegistry()
     ds = DummyScan()
     registry.scanner.scan = ds
-    categories = ('a', 'b',)
+    categories = (
+        'a',
+        'b',
+    )
     registry.scan(index, categories=categories)
     assert categories == ds.called_with_categories
 

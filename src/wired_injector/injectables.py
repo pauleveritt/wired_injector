@@ -38,6 +38,7 @@ class SortedValue:
 
     ``target_attribute`` will be ``phase`` or ``area``.
     """
+
     __slots__ = ['target_attribute']
 
     target_attribute: str
@@ -80,22 +81,20 @@ class Injectables:
         self.pending_items.clear()
 
     def find_by_area(
-            self,
-            area: Optional[Enum] = None,
-            by_phase: Optional[bool] = False,
+        self,
+        area: Optional[Enum] = None,
+        by_phase: Optional[bool] = False,
     ) -> Optional[List[Injectable]]:
         """ Return the results by area, optionally sorted by phase """
         if area is None:
-            if by_phase:
+            if by_phase is not None:
                 results = sorted(self.items, key=lambda v: v.phase.value)
                 return results
 
             return self.items
 
         results = [
-            injectable
-            for injectable in self.items
-            if injectable.area == area
+            injectable for injectable in self.items if injectable.area == area
         ]
 
         if by_phase:
@@ -121,8 +120,8 @@ class Injectables:
         return results
 
     def apply_injectables(
-            self,
-            grouped_injectables: Optional[GroupedInjectablesT] = None,
+        self,
+        grouped_injectables: Optional[GroupedInjectablesT] = None,
     ):
         """ Apply the injectables in groups """
 
@@ -153,9 +152,7 @@ class Injectables:
         # If filtering by kind, do so
         if kind is not None:
             results = [
-                injectable
-                for injectable in results
-                if injectable.kind == kind
+                injectable for injectable in results if injectable.kind == kind
             ]
 
         return list(results)

@@ -14,6 +14,7 @@ except ImportError:
 @dataclass
 class Settings:
     """ The system defines something called ``Settings`` """
+
     site_name: str = 'System Site'
 
 

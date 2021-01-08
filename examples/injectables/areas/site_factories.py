@@ -14,6 +14,7 @@ except ImportError:
 @dataclass
 class SiteSettings:
     """ This is the one that should go last """
+
     site_name: str = 'My Site'
 
     @property

@@ -17,6 +17,7 @@ except ImportError:
 @dataclass
 class Settings:
     """ The system defines something called ``Settings`` """
+
     site_name: str = 'System Site'
 
 
@@ -36,6 +37,7 @@ class SomePluginSettings:
 @dataclass
 class SiteSettings:
     """ This is the one that should go last """
+
     site_name: str = 'My Site'
 
 

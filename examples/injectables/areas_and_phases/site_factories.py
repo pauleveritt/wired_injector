@@ -18,6 +18,7 @@ except ImportError:
 @dataclass
 class SiteSettings1:
     """ This is the one that should go last """
+
     site_name: str = 'My Site 1'
 
     @property
@@ -29,6 +30,7 @@ class SiteSettings1:
 @dataclass
 class SiteSettings2:
     """ This is the one that should go last """
+
     site_name: str = 'My Site 2'
 
     @property
@@ -40,6 +42,7 @@ class SiteSettings2:
 @dataclass
 class SiteSettings3:
     """ This is the one that should go last """
+
     site_name: str = 'My Site 3'
 
     @property

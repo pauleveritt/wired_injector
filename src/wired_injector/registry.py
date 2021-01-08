@@ -22,12 +22,12 @@ class InjectorContainer(ServiceContainer):
     """
 
     def inject(
-            self,
-            iface_or_type=Interface,
-            *,
-            cget_props: Optional[Mapping[str, Any]] = None,
-            system_props: Optional[Mapping[str, Any]] = None,
-            **kwargs,
+        self,
+        iface_or_type=Interface,
+        *,
+        cget_props: Optional[Mapping[str, Any]] = None,
+        system_props: Optional[Mapping[str, Any]] = None,
+        **kwargs,
     ):
         """ Same as container.get but with props, via injector """
 
@@ -57,9 +57,9 @@ class InjectorRegistry(ServiceRegistry):
     scanner: Scanner
 
     def __init__(
-            self,
-            factory_registry=None,
-            use_injectables: bool = False,
+        self,
+        factory_registry=None,
+        use_injectables: bool = False,
     ):
         super().__init__(factory_registry=factory_registry)
         self.scanner = Scanner(registry=self)
@@ -70,10 +70,11 @@ class InjectorRegistry(ServiceRegistry):
         else:
             self.injectables = None
 
-    def scan(self,
-             pkg: PACKAGE = None,
-             categories: Tuple[str, ...] = None,
-             ):
+    def scan(
+        self,
+        pkg: PACKAGE = None,
+        categories: Tuple[str, ...] = None,
+    ):
         if pkg is None:
             # Get the caller module and import it
             pkg = caller_package()
@@ -86,7 +87,7 @@ class InjectorRegistry(ServiceRegistry):
         return InjectorContainer(self._factories, context=context)
 
     def create_injectable_container(
-            self, *, context=None
+        self, *, context=None
     ) -> InjectorContainer:
         container = self.create_container(context=context)
         injector = Injector(container)
@@ -94,16 +95,16 @@ class InjectorRegistry(ServiceRegistry):
         return container
 
     def register_injectable(
-            self,
-            for_: Callable,
-            target: Optional[Callable] = None,
-            context: Optional[Any] = None,
-            use_props: bool = False,
-            area: Optional[Enum] = None,
-            kind: Optional[Enum] = None,
-            phase: Optional[Enum] = None,
-            info: Optional[Mapping[Any, Any]] = None,
-            defer: bool = True,
+        self,
+        for_: Callable,
+        target: Optional[Callable] = None,
+        context: Optional[Any] = None,
+        use_props: bool = False,
+        area: Optional[Enum] = None,
+        kind: Optional[Enum] = None,
+        phase: Optional[Enum] = None,
+        info: Optional[Mapping[Any, Any]] = None,
+        defer: bool = True,
     ):
         """Imperative form of the injectable decorator.
 
@@ -154,6 +155,7 @@ class InjectorRegistry(ServiceRegistry):
             # If using Injectables, defer the registration until later.
             # Doing import here because of (surprise) circular import.
             from .injectables import Injectable
+
             injectable = Injectable(
                 for_=for_,
                 target=target,
