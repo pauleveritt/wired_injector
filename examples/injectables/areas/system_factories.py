@@ -9,7 +9,7 @@ except ImportError:
     from typing_extensions import Annotated  # type: ignore
 
 
-# Site settings
+# System settings
 @injectable()
 @dataclass
 class Settings:

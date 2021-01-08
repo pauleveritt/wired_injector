@@ -4,9 +4,7 @@
 
 Config system which can record all the injectables, apply them, then report on them for uses such as generation of Sphinx config directives.
 
-- Allow `commit(area=Enum)` to be optional on the `area` part
 - Write some examples that exercise it
-  * Custom decorator (e.g. `config`) which sets default: phase, kind, info
   * Get a listing of info['shortname'] after apply
 - Change decorator to have default kind (but the class and invocation can pass it in)
 
@@ -52,6 +50,7 @@ Config system which can record all the injectables, apply them, then report on t
 
 ## Eventually
 
+- Allow `commit(area=Enum)` to be optional on the `area` part
 - Allow `customers: Tuple[Customer]`, `Union[Foo, str]`
 - Very friendly exceptions that tell the field and target very specifically
 - Operators: `Key`, `Call`, `AsDict`

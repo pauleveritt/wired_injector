@@ -4,7 +4,7 @@ from wired import service_factory
 from wired_injector import injectable
 
 
-# Site settings
+# System settings
 @injectable()
 @dataclass
 class Settings:

@@ -3,7 +3,6 @@ from dataclasses import dataclass
 from wired_injector import injectable
 from wired_injector.operators import Get
 
-from .constants import Phase
 from .decorators import config
 
 try:
@@ -20,23 +19,12 @@ class Settings:
     site_name: str = 'System Site'
 
 
-@config(for_=Settings, phase=Phase.postinit)
-@dataclass
-class AppSettings:
-    site_name: str = 'App Site'
-
-
-@config(for_=Settings)
-@dataclass
-class SomePluginSettings:
-    site_name: str = 'Some Plugin Site'
-
-
-@config(for_=Settings)
+# Site settings
+@config()
 @dataclass
 class SiteSettings:
-    """ This is the one that should go last """
-    site_name: str = 'My Site'
+    """ The system defines something called ``Settings`` """
+    site_name: str = 'System Site'
 
 
 @injectable()

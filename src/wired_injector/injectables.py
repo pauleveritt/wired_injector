@@ -7,7 +7,7 @@ then report on them for uses such as generation of Sphinx config directives.
 from dataclasses import dataclass, field, replace
 from enum import Enum
 from itertools import groupby
-from typing import Callable, Optional, Any, List, Mapping, Dict
+from typing import Callable, Optional, Any, List, Mapping, Dict, Iterator
 
 from wired_injector import InjectorRegistry
 
@@ -140,3 +140,22 @@ class Injectables:
                         use_props=injectable.use_props,
                         defer=False,
                     )
+
+    def get_info(self, kind: Optional[Enum] = None):
+        """ Return injectables that have attached info."""
+
+        results: Iterator[Injectable] = [
+            injectable
+            for injectable in self.items
+            if injectable.info is not None
+        ]
+
+        # If filtering by kind, do so
+        if kind is not None:
+            results = [
+                injectable
+                for injectable in results
+                if injectable.kind == kind
+            ]
+
+        return list(results)

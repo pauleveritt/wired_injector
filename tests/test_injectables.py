@@ -5,20 +5,6 @@ import pytest
 from wired_injector import InjectorRegistry, injectable
 from wired_injector.injectables import Injectables, Injectable
 
-"""
-
-NEXT
-- Change items to be a dict of:
-
-dict(
-    Area.system = dict(
-        Kind.config = dict(
-            Phase.init = [
-                injectable,
-                injectable
-
-"""
-
 
 class Area(Enum):
     system = 1
@@ -98,7 +84,7 @@ def test_get_grouped_injectables(full_injectables):
     init_area_system = [i.info['title'] for i in init[Area.system]]
     expected = ['system_init_two', 'system_init_one', 'system_init_three']
     assert expected == init_area_system
-    init_area_app = [i.info['title'] for i in init[Area.app]]
+    init_area_app = [i.info.get('title') for i in init[Area.app] if hasattr(i, 'info') and i.info is not None]
     expected = ['app_init_three', 'app_init_one', 'app_init_two']
     assert expected == init_area_app
 
@@ -251,6 +237,20 @@ def test_injectable_registry_areas():
     assert heading.__class__.__name__ == 'SiteHeading'
 
 
+def test_all_info(full_injectables):
+    # Get any injectables that had an info structure
+
+    results = full_injectables.get_info()
+    assert len(results) == 9
+
+
+def test_info_for_kind(full_injectables):
+    # Get info for matching kind
+
+    results = full_injectables.get_info(kind=Kind.config)
+    assert len(results) == 4
+
+
 @dataclass()
 class SystemInitOne:
     title: str = 'System Init One'
@@ -351,7 +351,7 @@ def system_postinit_three():
     return Injectable(
         for_=DummyTarget, target=SystemInitThree, context=None,
         use_props=False, area=None, phase=Phase.postinit,
-        kind=Kind.view, info=dict(title='system_postinit_three'),
+        kind=Kind.view,
     )
 
 

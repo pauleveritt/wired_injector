@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 
 from wired_injector import injectable
-from wired_injector.operators import Get
+
+from .factories import Settings
 
 try:
     from typing import Annotated
@@ -9,17 +10,11 @@ except ImportError:
     from typing_extensions import Annotated  # type: ignore
 
 
-# System settings
-@injectable()
+@injectable(for_=Settings)
 @dataclass
-class Settings:
+class SiteSettings:
+    """ This is the one that should go last """
     site_name: str = 'My Site'
-
-
-@injectable()
-@dataclass
-class View:
-    site_name: Annotated[str, Get(Settings, attr='site_name')]
 
     @property
     def name(self):
