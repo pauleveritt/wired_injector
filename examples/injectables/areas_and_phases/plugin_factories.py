@@ -13,4 +13,4 @@ except ImportError:
 @injectable(for_=Settings)
 @dataclass
 class SomePluginSettings:
-    site_name: str = 'Some Plugin Plugin Site'
+    site_name: str = 'Some Plugin Site'

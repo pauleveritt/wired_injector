@@ -1,19 +1,20 @@
 """
-Change order of registrations.
+Custom decorator that sets a default "phase".
 
-Usually the last registration overrides previous one. Things
-are usually just scanned top to bottom. Instead, use *phases* to
-control ordering.
+Here we make a ``@config`` directive as an alias for
+``@injectable(phase=Phase.init)``. Thus, instead of
+``phase=None``, all their injectables get
+``phase=Phase.init``.
+
+To kind of see it in action, we change the injectable for
+``.factories.AppSettings`` to "win" by passing in a
+higher-priority.
 """
-from enum import Enum
 
 from wired_injector import InjectorRegistry
 
+from .constants import Area
 from .factories import View
-
-
-class Area(Enum):
-    system = 1
 
 
 def test():
@@ -27,6 +28,6 @@ def test():
     container = registry.create_injectable_container()
     view: View = container.get(View)
     result = view.name
-    expected = 'View - Some Plugin Site'
+    expected = 'View - App Site'
 
     return result, expected

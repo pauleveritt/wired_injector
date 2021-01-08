@@ -6,7 +6,6 @@ Config system which can record all the injectables, apply them, then report on t
 
 - Allow `commit(area=Enum)` to be optional on the `area` part
 - Write some examples that exercise it
-  * Multi-area, multi-phase, multi-kind system (e.g. themester)
   * Custom decorator (e.g. `config`) which sets default: phase, kind, info
   * Get a listing of info['shortname'] after apply
 - Change decorator to have default kind (but the class and invocation can pass it in)

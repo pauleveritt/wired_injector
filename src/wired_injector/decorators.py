@@ -20,6 +20,7 @@ class injectable:
     """ ``venusian`` decorator to register an injectable factory  """
 
     for_ = None  # Give subclasses a chance to give default, e.g. view
+    phase: Optional[Enum] = None
     use_props = False
     category = 'wired'  # venusian scan category
 
@@ -38,7 +39,9 @@ class injectable:
             # Use passed in value, otherwise, use the class attr
             self.category = category
         self.context = context
-        self.phase = phase
+        if phase is not None:
+            # Use passed in value, otherwise, use the class attr
+            self.phase = phase
         if use_props is not None:
             # Use passed in value, otherwise, use the class attr
             self.use_props = use_props

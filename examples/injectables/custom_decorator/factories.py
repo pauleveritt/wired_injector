@@ -1,14 +1,10 @@
 from dataclasses import dataclass
-from enum import Enum
 
 from wired_injector import injectable
 from wired_injector.operators import Get
 
-
-class Phase(Enum):
-    init = 1
-    postinit = 2
-
+from .constants import Phase
+from .decorators import config
 
 try:
     from typing import Annotated
@@ -17,27 +13,26 @@ except ImportError:
 
 
 # Site settings
-@injectable()
+@config()
 @dataclass
 class Settings:
     """ The system defines something called ``Settings`` """
     site_name: str = 'System Site'
 
 
-@injectable(for_=Settings, phase=Phase.init)
+@config(for_=Settings, phase=Phase.postinit)
 @dataclass
 class AppSettings:
     site_name: str = 'App Site'
 
 
-# This is the one that wins due to Phase.postinit
-@injectable(for_=Settings, phase=Phase.postinit)
+@config(for_=Settings)
 @dataclass
 class SomePluginSettings:
     site_name: str = 'Some Plugin Site'
 
 
-@injectable(for_=Settings, phase=Phase.init)
+@config(for_=Settings)
 @dataclass
 class SiteSettings:
     """ This is the one that should go last """
