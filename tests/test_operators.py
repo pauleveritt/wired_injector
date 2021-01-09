@@ -9,7 +9,6 @@ from wired_injector.operators import (
     Context,
     Field,
 )
-from wired_injector.pipeline import process_pipeline
 
 from examples.factories import (
     FrenchCustomer,
@@ -70,58 +69,6 @@ def test_get_then_attr(french_container):
     assert 'French View' == result
 
 
-def test_pipeline_one(french_container):
-    pipeline = (Get(View),)
-    result: FrenchView = process_pipeline(
-        french_container,
-        pipeline,
-        start=View,
-        target=View,
-    )
-    assert result.name == 'French View'
-
-
-def test_pipeline_two(french_container):
-    pipeline = (Get(View), Attr('name'))
-    result = process_pipeline(
-        french_container,
-        pipeline,
-        start=View,
-        target=Target,
-    )
-    assert result == 'French View'
-
-
-def test_pipeline_two_attr_attr(french_container):
-    @dataclass
-    class Customer:
-        name: str = 'Some Customer'
-
-    @dataclass
-    class Config:
-        customer: Customer = Customer()
-
-    pipeline = (Attr('customer'), Attr('name'))
-    result = process_pipeline(
-        french_container,
-        pipeline,
-        start=Config(),
-        target=Target,
-    )
-    assert result == 'Some Customer'
-
-
-def test_context(regular_container):
-    pipeline = (Context(),)
-    result = process_pipeline(
-        regular_container,
-        pipeline,
-        start=View,
-        target=Target,
-    )
-    assert result == regular_container.context
-
-
 def test_context_attr(regular_container):
     context = Context(attr='name')
     previous = str
@@ -170,9 +117,3 @@ def test_field_target_missing_field(regular_container):
     with pytest.raises(KeyError) as exc:
         field(previous, regular_container, Target)
     assert str(exc.value.args[0]) == 'No field "bogus" on target "Target"'
-
-
-def test_process_pipeline(regular_container):
-    pipeline = (Context(attr='name'),)
-    start = str
-    process_pipeline(regular_container, pipeline, start, Target)
