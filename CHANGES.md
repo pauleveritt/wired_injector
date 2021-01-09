@@ -16,6 +16,8 @@
 
 - Create a `Field` operator that can fetch the default value from the target
 
+- Add an example of using just plain classes
+
 ## 0.3.0
 
 - Allow register_injectable to only supply `for_` and `target` then defaults to it
