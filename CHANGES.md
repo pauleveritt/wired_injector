@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- `Injectables` system which can collect all registrations before applying them, apply in a controllable order, and provide querying afterwards.
+  
 - Change `InjectorContainer.inject` to accept `cget_props` as a way of avoiding clashes between props and underlying `.get()` args
 
 - Put `InjectorContainer` in top-level exports

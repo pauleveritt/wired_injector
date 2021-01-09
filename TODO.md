@@ -2,7 +2,6 @@
 
 ## Now
 
-Config system which can record all the injectables, apply them, then report on them for uses such as generation of Sphinx config directives.
 
 ## Next
 
@@ -56,3 +55,4 @@ Config system which can record all the injectables, apply them, then report on t
 - Decorator and scanner support a category option for scanner
 - Make `target` available in an operator, to go get fields
 - Create a `Field` operator that can fetch the default value from the target
+- Config system which can record all the injectables, apply them, then report on them for uses such as generation of Sphinx config directives.
