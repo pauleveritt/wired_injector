@@ -55,6 +55,7 @@ class InjectorRegistry(ServiceRegistry):
     """ A registry with a venusian Scanner and injector"""
 
     scanner: Scanner
+    use_injectables: bool
 
     def __init__(
         self,
@@ -62,12 +63,11 @@ class InjectorRegistry(ServiceRegistry):
         use_injectables: bool = False,
     ):
         super().__init__(factory_registry=factory_registry)
+        self.use_injectables = use_injectables
         self.scanner = Scanner(registry=self)
         from .injectables import Injectables
 
-        self.injectables: Optional[Injectables] = None
-        if use_injectables:
-            self.injectables = Injectables(registry=self)
+        self.injectables = Injectables(registry=self)
 
     def scan(
         self,
@@ -142,9 +142,8 @@ class InjectorRegistry(ServiceRegistry):
 
         setattr(target, '__wired_factory__', injectable_factory)
 
-        if self.injectables is None:
-            # self.injectables is None means we aren't using Injectables
-            # so immediately register.
+        if self.use_injectables is False:
+            # We aren't using Injectables so immediately register.
             self.register_factory(target, for_, context=context)
         elif not defer:
             # defer is False when injectables comes back later and
