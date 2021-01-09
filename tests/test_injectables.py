@@ -301,11 +301,6 @@ class AppInitOne:
 
 
 @dataclass()
-class SystemInitThree:
-    title: str = 'System Init Three'
-
-
-@dataclass()
 class AppPostInitThree:
     title: str = 'App PostInit Three'
 

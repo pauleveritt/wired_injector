@@ -85,7 +85,7 @@ def test_is_in_system_props_not_in(regular_container):
 def test_is_in_system_props_in_props(regular_container):
     # There are system props passed in and the field_value is in it
     fi = FieldInfo('foo', str, None, True, ())
-    props = {}
+    props: Dict = {}
     system_props = dict(foo=9999)
     field_is_props = FieldIsInProps(fi, props, regular_container, system_props)
     with pytest.raises(FoundValueField) as exc:
