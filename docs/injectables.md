@@ -68,7 +68,7 @@ by a reasonable default: you can go first and don't depend on anything else.
   * Nice autocomplete on config attrs/values for site admin
   * Is `ThemeConfig` protocol really needed?
   * Single `ThemabasterConfig` winds up as a garbage barge
-  
+
 - Injectables To-Do from whiteboard
   * Setup in phases: pre/post/neither, system/app/plugins/site
   * Sphinx app gets setup from conf.py
@@ -81,7 +81,7 @@ by a reasonable default: you can go first and don't depend on anything else.
   * Ensure `@config` can do `__wired_factory__` for special cases
   * Use `Injectable.info` to collect stuff like `shortname` that can be used for Sphinx config directives
   * Decide whether to get rid of customizable venusian scan `category = 'wired'` on decorator
-  
+
 ## Work Done
 
 * ``Injectables`` dataclass, stored as optional on the registry

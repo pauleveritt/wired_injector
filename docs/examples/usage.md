@@ -133,7 +133,7 @@ We then added a `name` property to combine the default value with `site_name`.
 
 ## Named Tuples
 
-Allergic to dataclasses? 
+Allergic to dataclasses?
 How about injectable `typing.NamedTuple` classes?
 
 ```{literalinclude} ../../examples/usage/named_tuples/factories.py
@@ -230,7 +230,7 @@ It makes our injectable sign up for a bigger outside surface area, while making 
 If you want components such as `<View/>`, then this works: the injector gets `Settings`.
 But if you want other templates to be able to pass in an override value..they don't want to do `<View settings={settings} />`.
 That's too big a promise.
-They want to do `<View site_name="Custom Name" />`. 
+They want to do `<View site_name="Custom Name" />`.
 This story also applies to testing, etc.
 
 Let's refactor to make this injectable be more props-oriented:
@@ -312,7 +312,7 @@ Context-driven registration is one of the key benefits of `wired`.
 
 ## Context Override
 
-We saw in `Replace` how a new implementation could register as a replacement of an existing one. 
+We saw in `Replace` how a new implementation could register as a replacement of an existing one.
 `wired` has an even better feature: *multiple*, context-dependent registrations using the container *context*.
 
 We have a `View` that can handle any kind of context.
@@ -340,4 +340,3 @@ start-at: customer =
 end-at: customer =
 ---
 ```
-

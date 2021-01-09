@@ -12,11 +12,12 @@ from wired import ServiceContainer
 class Operator:  # pragma: no cover
     """ Part of a pipeline for field construction """
 
-    def __call__(self,
-                 previous: Any,
-                 container: ServiceContainer,
-                 target: Callable,
-                 ) -> Any:
+    def __call__(
+        self,
+        previous: Any,
+        container: ServiceContainer,
+        target: Callable,
+    ) -> Any:
         ...
 
 
@@ -29,10 +30,10 @@ class Get(Operator):
     attr: Optional[str] = None
 
     def __call__(
-            self,
-            previous: Type,
-            container: ServiceContainer,
-            target: Callable,
+        self,
+        previous: Type,
+        container: ServiceContainer,
+        target: Callable,
     ):
         try:
             service = container.get(self.lookup_type)
@@ -65,10 +66,10 @@ class Attr(Operator):
     name: str
 
     def __call__(
-            self,
-            previous: Any,
-            container: ServiceContainer,
-            target: Callable,
+        self,
+        previous: Any,
+        container: ServiceContainer,
+        target: Callable,
     ):
         return getattr(previous, self.name)
 
@@ -80,10 +81,10 @@ class Context(Operator):
     attr: Optional[str] = None
 
     def __call__(
-            self,
-            previous: Any,
-            container: ServiceContainer,
-            target: Callable,
+        self,
+        previous: Any,
+        container: ServiceContainer,
+        target: Callable,
     ):
         context = container.context
         if self.attr is not None:
@@ -94,6 +95,7 @@ class Context(Operator):
                 # is None is an error, perhaps this field has a
                 # default.
                 from wired_injector.injector import SkipField
+
                 raise SkipField()
 
         return context
@@ -107,10 +109,10 @@ class Field(Operator):
     name: str
 
     def __call__(
-            self,
-            previous: Any,
-            container: ServiceContainer,
-            target: Callable,
+        self,
+        previous: Any,
+        container: ServiceContainer,
+        target: Callable,
     ):
         sig = signature(target)
         try:
@@ -122,10 +124,10 @@ class Field(Operator):
 
 
 def process_pipeline(
-        container: ServiceContainer,
-        pipeline: Tuple[Operator, ...],
-        start: Any,
-        target,
+    container: ServiceContainer,
+    pipeline: Tuple[Operator, ...],
+    start: Any,
+    target,
 ):
     iter_pipeline = iter(pipeline)
     result = start

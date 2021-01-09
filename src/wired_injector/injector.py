@@ -72,8 +72,8 @@ class FieldIsInProps(NamedTuple):
             prop_value = self.props[self.field_info.field_name]
             raise FoundValueField(prop_value)
         elif (
-                self.system_props
-                and self.field_info.field_name in self.system_props
+            self.system_props
+            and self.field_info.field_name in self.system_props
         ):
             # If the "system" passes in props behind the scenes, use it
             prop_value = self.system_props[self.field_info.field_name]
@@ -109,7 +109,7 @@ class FieldMakePipeline(NamedTuple):
         if not fi.pipeline:
             if getmodule(fi.field_type) is typing:
                 # Test this because, when you have a field like:
-                #   names: Tuple[str, ...] = ('Name 1',)
+                #   names: Tuple[str, ...] = ('Name 1',)  # noqa: E800
                 # ...then wired tries to do obj.__qualname__ and fails
                 raise SkipField()
             try:
@@ -143,10 +143,10 @@ class Injector:
     )
 
     def __call__(
-            self,
-            target: Any,
-            system_props: Optional[typing.Mapping[str, Any]] = None,
-            **kwargs,
+        self,
+        target: Any,
+        system_props: Optional[typing.Mapping[str, Any]] = None,
+        **kwargs,
     ) -> Any:
 
         args = {}

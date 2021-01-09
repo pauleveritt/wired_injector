@@ -117,14 +117,17 @@ class InjectorRegistry(ServiceRegistry):
             context: A container context
             use_props: This factory should be injected with keyword args
             area: Which area such as ``Area.system`` currently in
-            kind: Extra info to organize by "kinds" of injectables, not used in actual factory
+            kind: Extra info to organize by "kinds" of injectables, not used
+                   in actual factory
             phase: Which phase such as ``Phase.init`` currently in
-            info: Extra info a particular ``Kind`` might want such as ``config.shortname``
-            defer: The flag that signifies Injectables is applying the injectables.
+            info: Extra info a particular ``Kind`` might want such as
+                   ``config.shortname``
+            defer: The flag that signifies Injectables is applying the
+                    injectables.
         """
 
         # To avoid doing:
-        #   registry.register_injectable(Heading, Heading)
+        #   registry.register_injectable(Heading, Heading)  # noqa: E800
         # ...allow target to be optional. In that case, assign
         # target to equal for_.
         if target is None:

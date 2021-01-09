@@ -124,7 +124,7 @@ def test_is_container(regular_container):
 def test_is_pipeline_no_pipeline_registered_type(regular_container):
     # We don't have a pipeline but we do have a container with the type
     # registered, such as:
-    # view: View
+    # view: View  # noqa: E800
     fi = FieldInfo('foo', View, None, True, ())
     field_make_pipeline = FieldMakePipeline(fi, {}, regular_container)
     with pytest.raises(FoundValueField) as exc:
@@ -145,7 +145,7 @@ def test_is_pipeline_get(regular_container):
 def test_is_pipeline_no_pipeline_type_error(regular_container):
     # No pipeline but looking up a type that is built-in and
     # trying to look it up causes a TypeError in wired, e.g.
-    # customer_name: str = 'Customer Name'
+    # customer_name: str = 'Customer Name'  # noqa: E800
     pipeline = ()
     fi = FieldInfo('foo', str, None, True, pipeline)
     field_make_pipeline = FieldMakePipeline(fi, {}, regular_container)

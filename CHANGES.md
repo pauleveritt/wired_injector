@@ -11,7 +11,7 @@
 - Decorator and scanner support a category option for scanner
 
 - Make `target` available in an operator, to go get fields
-  
+
 - Create a `Field` operator that can fetch the default value from the target
 
 ## 0.3.0

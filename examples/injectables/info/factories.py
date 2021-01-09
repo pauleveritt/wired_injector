@@ -8,7 +8,7 @@ from .decorators import config
 try:
     from typing import Annotated
 except ImportError:
-    from typing_extensions import Annotated  # type: ignore
+    from typing_extensions import Annotated  # type: ignore # noqa: F401
 
 
 # System settings

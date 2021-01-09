@@ -11,7 +11,7 @@ Config system which can record all the injectables, apply them, then report on t
   * Provide access to props and system_props
   * Write a `Props('propname')` operator
   * Introduce logging to help debugging
-  * Research PyCharm breakpoints (doesn't stop on a return)  
+  * Research PyCharm breakpoints (doesn't stop on a return)
   * Put a specific plug-point to enable debugging breakpoints
 - Make an example showing plain-old-class, perhaps even typed-dict
 
@@ -42,7 +42,7 @@ Config system which can record all the injectables, apply them, then report on t
 - What should happen when `Get` fails? Fallback to default, or fail?
 - System props
 - Make a `@injectable` decorator
-- Allow the injectable class-based decorator to be subclassed 
+- Allow the injectable class-based decorator to be subclassed
   to gain a default `for_`
 - myst for docs
 - Put API into Sphinx docs
@@ -56,5 +56,3 @@ Config system which can record all the injectables, apply them, then report on t
 - Decorator and scanner support a category option for scanner
 - Make `target` available in an operator, to go get fields
 - Create a `Field` operator that can fetch the default value from the target
-
-

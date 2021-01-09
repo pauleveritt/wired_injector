@@ -10,7 +10,6 @@ from wired_injector import InjectorRegistry
 
 from . import factories
 from .constants import Area, Kind
-from .factories import View
 
 
 def test():

@@ -7,7 +7,7 @@ from .system_factories import Settings
 try:
     from typing import Annotated
 except ImportError:
-    from typing_extensions import Annotated  # type: ignore
+    from typing_extensions import Annotated  # type: ignore # noqa: F401
 
 
 @injectable(for_=Settings)
