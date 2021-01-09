@@ -1,10 +1,8 @@
 from dataclasses import dataclass
 from inspect import isclass, signature
-from typing import Type, Any, Tuple, Optional, TypeVar
+from typing import Type, Any, Tuple, Optional, Callable
 
 from wired import ServiceContainer
-
-Target = TypeVar('Target')
 
 
 # TODO Operator should be a Protocol but the typechecker then says a usage
@@ -17,7 +15,7 @@ class Operator:  # pragma: no cover
     def __call__(self,
                  previous: Any,
                  container: ServiceContainer,
-                 target: Target,
+                 target: Callable,
                  ) -> Any:
         ...
 
@@ -34,7 +32,7 @@ class Get(Operator):
             self,
             previous: Type,
             container: ServiceContainer,
-            target: Target,
+            target: Callable,
     ):
         try:
             service = container.get(self.lookup_type)
@@ -70,7 +68,7 @@ class Attr(Operator):
             self,
             previous: Any,
             container: ServiceContainer,
-            target: Target,
+            target: Callable,
     ):
         return getattr(previous, self.name)
 
@@ -85,7 +83,7 @@ class Context(Operator):
             self,
             previous: Any,
             container: ServiceContainer,
-            target: Target,
+            target: Callable,
     ):
         context = container.context
         if self.attr is not None:
@@ -112,7 +110,7 @@ class Field(Operator):
             self,
             previous: Any,
             container: ServiceContainer,
-            target: Target,
+            target: Callable,
     ):
         sig = signature(target)
         try:

@@ -65,10 +65,9 @@ class InjectorRegistry(ServiceRegistry):
         self.scanner = Scanner(registry=self)
         from .injectables import Injectables
 
+        self.injectables: Optional[Injectables] = None
         if use_injectables:
             self.injectables = Injectables(registry=self)
-        else:
-            self.injectables = None
 
     def scan(
         self,

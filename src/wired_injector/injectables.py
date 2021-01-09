@@ -7,7 +7,7 @@ then report on them for uses such as generation of Sphinx config directives.
 from dataclasses import dataclass, field, replace
 from enum import Enum
 from itertools import groupby
-from typing import Callable, Optional, Any, List, Mapping, Dict, Iterator
+from typing import Callable, Optional, Any, List, Mapping, Dict
 
 from wired_injector import InjectorRegistry
 
@@ -88,7 +88,7 @@ class Injectables:
         """ Return the results by area, optionally sorted by phase """
         if area is None:
             if by_phase is not None:
-                results = sorted(self.items, key=lambda v: v.phase.value)
+                results = sorted(self.items, key=SortedValue('phase'))
                 return results
 
             return self.items
@@ -98,7 +98,7 @@ class Injectables:
         ]
 
         if by_phase:
-            results = sorted(results, key=lambda v: v.phase.value)
+            results = sorted(results, key=SortedValue('phase'))
         return results
 
     def get_grouped_injectables(self) -> GroupedInjectablesT:
@@ -106,7 +106,7 @@ class Injectables:
 
         # Remember, Python 3.7+ orders dicts, allowing us to collect
         # entries in the order we will then process them
-        results: GroupedInjectablesT = {}
+        results: Dict[Any, Any] = {}
 
         sorted_phases = sorted(self.items, key=SortedValue('phase'))
         for k1, phase in groupby(sorted_phases, key=lambda v: v.phase):
@@ -143,7 +143,7 @@ class Injectables:
     def get_info(self, kind: Optional[Enum] = None):
         """ Return injectables that have attached info."""
 
-        results: Iterator[Injectable] = [
+        results: List[Injectable] = [
             injectable
             for injectable in self.items
             if injectable.info is not None
@@ -155,4 +155,4 @@ class Injectables:
                 injectable for injectable in results if injectable.kind == kind
             ]
 
-        return list(results)
+        return results
