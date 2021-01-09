@@ -6,10 +6,10 @@ from wired_injector.injector import SkipField
 from wired_injector.operators import (
     Get,
     Attr,
-    process_pipeline,
     Context,
     Field,
 )
+from wired_injector.pipeline import process_pipeline
 
 from examples.factories import (
     FrenchCustomer,

@@ -2,11 +2,6 @@
 
 ## Now
 
-- Make an example showing plain-old-class, perhaps even typed-dict
-
-
-## Next
-
 - Pipeline, PipelineField, PipelineStep
   * Handle common exceptions more gracefully
   * Provide access to props and system_props
@@ -14,6 +9,9 @@
   * Introduce logging to help debugging
   * Research PyCharm breakpoints (doesn't stop on a return)
   * Put a specific plug-point to enable debugging breakpoints
+
+## Next
+
 ## Soon
 
 - Context manager
@@ -56,3 +54,4 @@
 - Make `target` available in an operator, to go get fields
 - Create a `Field` operator that can fetch the default value from the target
 - Config system which can record all the injectables, apply them, then report on them for uses such as generation of Sphinx config directives.
+- Make an example showing plain-old-class, perhaps even typed-dict

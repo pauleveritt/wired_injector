@@ -10,7 +10,7 @@ from wired_injector.field_info import (
     dataclass_field_info_factory,
     FieldInfo,
 )
-from wired_injector.operators import process_pipeline
+from wired_injector.pipeline import process_pipeline
 
 # get_type_hints is augmented in Python 3.9. We need to use
 # typing_extensions if not running on an older version

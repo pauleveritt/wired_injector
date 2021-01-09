@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from inspect import isclass, signature
-from typing import Type, Any, Tuple, Optional, Callable
+from typing import Type, Any, Optional, Callable
 
 from wired import ServiceContainer
 
@@ -121,19 +121,3 @@ class Field(Operator):
             msg = f'No field "{self.name}" on target "{target.__name__}"'
             raise KeyError(msg)
         return param.default
-
-
-def process_pipeline(
-    container: ServiceContainer,
-    pipeline: Tuple[Operator, ...],
-    start: Any,
-    target,
-):
-    iter_pipeline = iter(pipeline)
-    result = start
-    while iter_pipeline:
-        try:
-            operator = next(iter_pipeline)
-            result = operator(result, container, target)
-        except StopIteration:
-            return result
