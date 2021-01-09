@@ -95,7 +95,7 @@ Let's introduce some `Settings`:
 
 ```{literalinclude} ../../examples/usage/settings_manual/factories.py
 ---
-start-after: Site settings
+start-after: System settings
 end-at: name=name
 ---
 ```
@@ -137,6 +137,18 @@ Allergic to dataclasses?
 How about injectable `typing.NamedTuple` classes?
 
 ```{literalinclude} ../../examples/usage/named_tuples/factories.py
+---
+start-after: View that uses site settings
+end-at: return f'
+---
+```
+
+## Plain Old Classes
+
+What if you have your own classes?
+No problem, use them unchanged, and you don't even have to make your ``__init__`` args named in any particular way.
+
+```{literalinclude} ../../examples/usage/plain_classes/factories.py
 ---
 start-after: View that uses site settings
 end-at: return f'

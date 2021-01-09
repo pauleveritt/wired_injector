@@ -2,6 +2,8 @@
 
 ## Now
 
+- Make an example showing plain-old-class, perhaps even typed-dict
+
 
 ## Next
 
@@ -12,8 +14,6 @@
   * Introduce logging to help debugging
   * Research PyCharm breakpoints (doesn't stop on a return)
   * Put a specific plug-point to enable debugging breakpoints
-- Make an example showing plain-old-class, perhaps even typed-dict
-
 ## Soon
 
 - Context manager
