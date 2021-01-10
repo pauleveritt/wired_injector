@@ -2,10 +2,12 @@ from dataclasses import dataclass
 from typing import Any
 
 from wired import ServiceContainer
+from wired_injector.field_info import FieldInfo
 
 
 @dataclass
 class Pipeline:
+    # field_info: FieldInfo
     container: ServiceContainer
     start: Any
     target: Any

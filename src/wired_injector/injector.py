@@ -106,7 +106,7 @@ class FieldMakePipeline(NamedTuple):
     def __call__(self):
         fi = self.field_info
         c = self.container
-        if not fi.pipeline:
+        if not fi.operators:
             if getmodule(fi.field_type) is typing:
                 # Test this because, when you have a field like:
                 #   names: Tuple[str, ...] = ('Name 1',)  # noqa: E800
@@ -120,11 +120,12 @@ class FieldMakePipeline(NamedTuple):
                 raise SkipField()
         else:
             pipeline = Pipeline(
+                # field_info=self.field_info,
                 container=c,
                 start=fi.field_type,
                 target=self.target,
             )
-            fv = pipeline(*fi.pipeline)
+            fv = pipeline(*fi.operators)
         raise FoundValueField(fv)
 
 

@@ -97,4 +97,4 @@ class Target6(NamedTuple):
 
 def test_annotation():
     field_infos = _get_field_infos(Target6)
-    assert (Get(FrenchCustomer),) == field_infos[0].pipeline
+    assert (Get(FrenchCustomer),) == field_infos[0].operators

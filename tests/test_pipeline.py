@@ -1,9 +1,12 @@
 from dataclasses import dataclass
+from typing import Tuple
 
+import pytest
+from wired_injector.field_info import FieldInfo
 from wired_injector.operators import (
     Get,
     Attr,
-    Context,
+    Context, Operator,
 )
 from wired_injector.pipeline import Pipeline
 
@@ -16,6 +19,20 @@ from examples.factories import (
 @dataclass
 class Target:
     name: str = 'Some Target'
+
+
+def field_info_no_default_value(
+    pipeline: Tuple[Operator, ...],
+) -> FieldInfo:
+    """ A field with NO default value """
+    fi = FieldInfo(
+        field_name='title',
+        field_type=str,
+        default_value=None,
+        init=False,
+        pipeline=pipeline,
+    )
+    return fi
 
 
 def test_process_pipeline(regular_container):
@@ -73,5 +90,5 @@ def test_context(regular_container):
         start=View,
         target=Target,
     )
-    result = pipeline(Context(),)
+    result = pipeline(Context(), )
     assert result == regular_container.context

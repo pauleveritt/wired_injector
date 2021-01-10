@@ -39,7 +39,7 @@ class InjectorContainer(ServiceContainer):
             cget_props = {}
 
         # TODO If your component has a prop of 'name' or 'context'
-        # then those will collide with the .get args of same name.
+        #   then those will collide with the .get args of same name.
         klass = self.get(
             iface_or_type,
             context=cget_props.get('context', None),

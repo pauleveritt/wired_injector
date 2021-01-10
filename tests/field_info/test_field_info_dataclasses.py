@@ -87,7 +87,7 @@ def test_annotation():
     assert field_infos[0].field_name == 'customer_name'
     assert field_infos[0].field_type is Customer
     assert field_infos[0].default_value is None
-    assert field_infos[0].pipeline == (Get(FrenchCustomer),)
+    assert field_infos[0].operators == (Get(FrenchCustomer),)
 
 
 def test_optional():
@@ -99,4 +99,4 @@ def test_optional():
     assert field_infos[0].field_name == 'customer_name'
     assert field_infos[0].field_type is Customer
     assert field_infos[0].default_value is None
-    assert field_infos[0].pipeline == (Get(FrenchCustomer),)
+    assert field_infos[0].operators == (Get(FrenchCustomer),)

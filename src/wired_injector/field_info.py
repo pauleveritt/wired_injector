@@ -34,7 +34,7 @@ class FieldInfo(NamedTuple):
     field_type: Type
     default_value: Optional[Any]
     init: bool  # Dataclasses can flag init=False
-    pipeline: Tuple[Operator, ...]
+    operators: Tuple[Operator, ...]
 
 
 def _get_field_origin(field_type: Type) -> Type:
@@ -64,7 +64,7 @@ def function_field_info_factory(parameter: Parameter) -> FieldInfo:
     field_type = _get_field_origin(field_type)
 
     # Using Annotation[] ??
-    field_type, pipeline = _get_pipeline(field_type)
+    field_type, operators = _get_pipeline(field_type)
 
     # Default values
     if parameter.default is getattr(inspect, '_empty'):
@@ -77,7 +77,7 @@ def function_field_info_factory(parameter: Parameter) -> FieldInfo:
         field_type=field_type,
         default_value=default_value,
         init=True,
-        pipeline=tuple(pipeline),
+        operators=tuple(operators),
     )
 
 
@@ -88,7 +88,7 @@ def dataclass_field_info_factory(field: Field) -> FieldInfo:
     field_type = _get_field_origin(field_type)
 
     # Using Annotation[] ??
-    field_type, pipeline = _get_pipeline(field_type)
+    field_type, operators = _get_pipeline(field_type)
 
     # Default values
     default_value = None if field.default is MISSING else field.default
@@ -98,5 +98,5 @@ def dataclass_field_info_factory(field: Field) -> FieldInfo:
         field_type=field_type,
         default_value=default_value,
         init=field.init,
-        pipeline=tuple(pipeline),
+        operators=tuple(operators),
     )
