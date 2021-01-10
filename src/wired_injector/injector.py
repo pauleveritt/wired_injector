@@ -122,7 +122,6 @@ class FieldMakePipeline(NamedTuple):
             pipeline = Pipeline(
                 field_info=self.field_info,
                 container=c,
-                start=fi.field_type,
                 target=self.target,
             )
             fv = pipeline()

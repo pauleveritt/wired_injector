@@ -9,10 +9,7 @@ from wired_injector.operators import (
 )
 from wired_injector.pipeline import Pipeline
 
-from examples.factories import (
-    View,
-    FrenchView,
-)
+from examples.factories import View
 
 
 @dataclass
@@ -40,40 +37,37 @@ def test_process_pipeline(regular_container):
     pipeline = Pipeline(
         field_info=field_info,
         container=regular_container,
-        start=str,
         target=Target,
     )
     results = pipeline()
     assert results == 'Customer'
 
 
-def test_pipeline_one(french_container):
+def test_pipeline_one(regular_container):
     operators = Get(View),
     field_info = field_info_no_default_value(operators)
     pipeline = Pipeline(
         field_info=field_info,
-        container=french_container,
-        start=View,
+        container=regular_container,
         target=Target,
     )
-    result: FrenchView = pipeline()
-    assert result.name == 'French View'
+    result: View = pipeline()
+    assert result.name == 'View'
 
 
-def test_pipeline_two(french_container):
+def test_pipeline_two(regular_container):
     operators = Get(View), Attr('name')
     field_info = field_info_no_default_value(operators)
     pipeline = Pipeline(
         field_info=field_info,
-        container=french_container,
-        start=View,
+        container=regular_container,
         target=Target,
     )
     result: str = pipeline()
-    assert result == 'French View'
+    assert result == 'View'
 
 
-def test_pipeline_two_attr_attr(french_container):
+def test_pipeline_two_attr_attr(regular_container):
     @dataclass
     class Customer:
         name: str = 'Some Customer'
@@ -82,13 +76,13 @@ def test_pipeline_two_attr_attr(french_container):
     class Config:
         customer: Customer = Customer()
 
-    operators = Attr('customer'), Attr('name')
+    regular_container.register_singleton(Config(), Config)
+    operators = Get(Config), Attr('customer'), Attr('name')
     field_info = field_info_no_default_value(operators)
 
     pipeline = Pipeline(
         field_info=field_info,
-        container=french_container,
-        start=Config(),
+        container=regular_container,
         target=Target,
     )
     result = pipeline()
@@ -101,7 +95,6 @@ def test_context(regular_container):
     pipeline = Pipeline(
         field_info=field_info,
         container=regular_container,
-        start=View,
         target=Target,
     )
     result = pipeline()

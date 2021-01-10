@@ -9,13 +9,12 @@ from wired_injector.field_info import FieldInfo
 class Pipeline:
     field_info: FieldInfo
     container: ServiceContainer
-    start: Any
     target: Any
 
     def __call__(self):
         operators = self.field_info.operators
         iter_pipeline = iter(operators)
-        result = self.start
+        result = None
         while iter_pipeline:
             try:
                 operator = next(iter_pipeline)
