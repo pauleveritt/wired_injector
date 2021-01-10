@@ -1,20 +1,21 @@
-from typing import Any, Tuple
+from dataclasses import dataclass
+from typing import Any
 
 from wired import ServiceContainer
-from .operators import Operator
 
 
-def process_pipeline(
-    container: ServiceContainer,
-    pipeline: Tuple[Operator, ...],
-    start: Any,
-    target,
-):
-    iter_pipeline = iter(pipeline)
-    result = start
-    while iter_pipeline:
-        try:
-            operator = next(iter_pipeline)
-            result = operator(result, container, target)
-        except StopIteration:
-            return result
+@dataclass
+class Pipeline:
+    container: ServiceContainer
+    start: Any
+    target: Any
+
+    def __call__(self, *args):
+        iter_pipeline = iter(args)
+        result = self.start
+        while iter_pipeline:
+            try:
+                operator = next(iter_pipeline)
+                result = operator(result, self.container, self.target)
+            except StopIteration:
+                return result

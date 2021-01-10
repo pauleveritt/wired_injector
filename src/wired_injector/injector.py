@@ -10,7 +10,7 @@ from wired_injector.field_info import (
     dataclass_field_info_factory,
     FieldInfo,
 )
-from wired_injector.pipeline import process_pipeline
+from wired_injector.pipeline import Pipeline
 
 # get_type_hints is augmented in Python 3.9. We need to use
 # typing_extensions if not running on an older version
@@ -119,7 +119,12 @@ class FieldMakePipeline(NamedTuple):
                 # we might have a default value, let's skip this.
                 raise SkipField()
         else:
-            fv = process_pipeline(c, fi.pipeline, fi.field_type, self.target)
+            pipeline = Pipeline(
+                container=c,
+                start=fi.field_type,
+                target=self.target,
+            )
+            fv = pipeline(*fi.pipeline)
         raise FoundValueField(fv)
 
 
