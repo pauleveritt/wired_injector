@@ -18,6 +18,6 @@ class Pipeline:
         while iter_pipeline:
             try:
                 operator = next(iter_pipeline)
-                result = operator(result, self.container, self.target)
+                result = operator(result, self)
             except StopIteration:
                 return result

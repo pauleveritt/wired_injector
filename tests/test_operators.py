@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import NamedTuple, Tuple
+from typing import NamedTuple, Tuple, Optional, Callable
 
 import pytest
 from wired_injector.field_info import FieldInfo
@@ -20,52 +20,44 @@ class Target:
     name: str = 'Some Target'
 
 
-def make_field_info(
-    operators: Tuple[Operator, ...],
-) -> FieldInfo:
-    """ A field with NO default value """
-    fi = FieldInfo(
+def make_pipeline(
+    regular_container,
+    operators: Tuple['Operator', ...],
+    target: Optional[Callable] = Target,
+) -> Pipeline:
+    field_info = FieldInfo(
         field_name='title',
         field_type=str,
         default_value=None,
         init=False,
         operators=operators,
     )
-    return fi
+    pipeline = Pipeline(
+        field_info=field_info,
+        container=regular_container,
+        target=target,
+    )
+    return pipeline
 
 
 def test_get(regular_container):
     get = Get(View)
-    operators = tuple()
-    field_info = make_field_info(operators)
-    pipeline = Pipeline(
-        field_info=field_info, container=regular_container, target=Target,
-    )
-    result: View = get(
-        None, regular_container, pipeline,
-    )
+    pipeline = make_pipeline(regular_container, (get,))
+    result: View = get(None, pipeline)
     assert result.name == 'View'
 
 
 def test_get_injectable_attr(regular_container):
     get = Get(Greeting)
-    operators = (get,)
-    field_info = make_field_info(operators)
-    pipeline = Pipeline(
-        field_info=field_info, container=regular_container, target=Target,
-    )
-    result: Greeting = get(None, regular_container, pipeline)
+    pipeline = make_pipeline(regular_container, (get,))
+    result: Greeting = get(None, pipeline)
     assert result() == 'Hello VIEW'
 
 
 def test_get_attr(regular_container):
     get = Get(View, attr='name')
-    operators = (get,)
-    field_info = make_field_info(operators)
-    pipeline = Pipeline(
-        field_info=field_info, container=regular_container, target=Target,
-    )
-    result: View = get(None, regular_container, pipeline)
+    pipeline = make_pipeline(regular_container, (get,))
+    result: View = get(None, pipeline)
     assert result == 'View'
 
 
@@ -73,70 +65,48 @@ def test_get_failed(regular_container):
     class NotFound:
         pass
 
-    field_info = make_field_info(tuple())
-    pipeline = Pipeline(
-        field_info=field_info, container=regular_container, target=Target,
-    )
+    pipeline = make_pipeline(regular_container, tuple())
     with pytest.raises(SkipField):
-        Get(NotFound)(None, regular_container, pipeline)
+        Get(NotFound)(None, pipeline)
 
 
 def test_attr(regular_container):
     attr = Attr('name')
-    operators = (attr,)
-    field_info = make_field_info(operators)
-    pipeline = Pipeline(
-        field_info=field_info, container=regular_container, target=Target,
-    )
+    pipeline = make_pipeline(regular_container, (attr,))
     previous = Customer()
-    result = attr(previous, regular_container, pipeline)
+    result = attr(previous, pipeline)
     assert 'Customer' == result
 
 
 def test_get_then_attr(regular_container):
     get = Get(View)
-    operators = (get,)
-    field_info = make_field_info(operators)
-    pipeline = Pipeline(
-        field_info=field_info, container=regular_container, target=Target,
-    )
-    result1 = get(None, regular_container, pipeline)
+    pipeline = make_pipeline(regular_container, (get,))
+    result1 = get(None, pipeline)
     attr = Attr('name')
-    result = attr(result1, result1, pipeline)
+    result = attr(result1, pipeline)
     assert 'View' == result
 
 
 def test_context_attr(regular_container):
     context = Context(attr='name')
-    operators = (context,)
-    field_info = make_field_info(operators)
-    pipeline = Pipeline(
-        field_info=field_info, container=regular_container, target=Target,
-    )
-    result = context(None, regular_container, pipeline)
+    pipeline = make_pipeline(regular_container, (context,))
+    result = context(None, pipeline)
     assert result == 'Customer'
 
 
 def test_context_none_attr(regular_container):
     regular_container.context = None
     context = Context(attr='name')
-    operators = (context,)
-    field_info = make_field_info(operators)
-    pipeline = Pipeline(
-        field_info=field_info, container=regular_container, target=Target,
-    )
+    pipeline = make_pipeline(regular_container, (context,))
     with pytest.raises(SkipField):
-        context(None, regular_container, pipeline)
+        context(None, pipeline)
 
 
 def test_field_target_is_dataclass(regular_container):
     field = Field('name')
     operators = (field,)
-    field_info = make_field_info(operators)
-    pipeline = Pipeline(
-        field_info=field_info, container=regular_container, target=Target,
-    )
-    result = field(None, regular_container, pipeline)
+    pipeline = make_pipeline(regular_container, (field,))
+    result = field(None, pipeline)
     assert result == 'Some Target'
 
 
@@ -145,13 +115,9 @@ def test_field_target_is_named_tuple(regular_container):
         name: str = 'Some TupleTarget'
 
     field = Field('name')
-    operators = (field,)
-    field_info = make_field_info(operators)
-    pipeline = Pipeline(
-        field_info=field_info, container=regular_container,
-        target=TupleTarget,
-    )
-    result = field(None, regular_container, pipeline)
+    pipeline = make_pipeline(regular_container, (field,),
+                             target=TupleTarget)
+    result = field(None, pipeline)
     assert result == 'Some TupleTarget'
 
 
@@ -160,23 +126,17 @@ def test_field_target_is_function(regular_container):
         return
 
     field = Field('name')
-    operators = (field,)
-    field_info = make_field_info(operators)
-    pipeline = Pipeline(
-        field_info=field_info, container=regular_container,
+    pipeline = make_pipeline(
+        regular_container, (field,),
         target=FunctionTarget,
     )
-    result = field(None, regular_container, pipeline)
+    result = field(None, pipeline)
     assert result == 'Some FunctionTarget'
 
 
 def test_field_target_missing_field(regular_container):
     field = Field('bogus')
-    operators = (field,)
-    field_info = make_field_info(operators)
-    pipeline = Pipeline(
-        field_info=field_info, container=regular_container, target=Target,
-    )
+    pipeline = make_pipeline(regular_container, (field,))
     with pytest.raises(KeyError) as exc:
-        field(None, regular_container, pipeline)
+        field(None, pipeline)
     assert str(exc.value.args[0]) == 'No field "bogus" on target "Target"'
