@@ -50,11 +50,11 @@ def _get_field_origin(field_type: Type) -> Type:
 
 def _get_pipeline(field_type: Type):
     """ If using Annotation, get the pipeline information """
-    pipeline = []
+    operators = []
     if hasattr(field_type, '__metadata__'):
-        field_type, *pipeline = get_args(field_type)
+        field_type, *operators = get_args(field_type)
 
-    return field_type, tuple(pipeline)
+    return field_type, tuple(operators)
 
 
 def function_field_info_factory(parameter: Parameter) -> FieldInfo:

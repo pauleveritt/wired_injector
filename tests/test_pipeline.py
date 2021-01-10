@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from typing import Tuple
 
-import pytest
 from wired_injector.field_info import FieldInfo
 from wired_injector.operators import (
     Get,
@@ -22,7 +21,7 @@ class Target:
 
 
 def field_info_no_default_value(
-    pipeline: Tuple[Operator, ...],
+    operators: Tuple[Operator, ...],
 ) -> FieldInfo:
     """ A field with NO default value """
     fi = FieldInfo(
@@ -30,39 +29,47 @@ def field_info_no_default_value(
         field_type=str,
         default_value=None,
         init=False,
-        pipeline=pipeline,
+        operators=operators,
     )
     return fi
 
 
 def test_process_pipeline(regular_container):
-    start = str
+    operators = Context(attr='name'),
+    field_info = field_info_no_default_value(operators)
     pipeline = Pipeline(
+        field_info=field_info,
         container=regular_container,
-        start=start,
+        start=str,
         target=Target,
     )
-    results = pipeline(Context(attr='name'), )
+    results = pipeline()
     assert results == 'Customer'
 
 
 def test_pipeline_one(french_container):
+    operators = Get(View),
+    field_info = field_info_no_default_value(operators)
     pipeline = Pipeline(
+        field_info=field_info,
         container=french_container,
         start=View,
         target=Target,
     )
-    result: FrenchView = pipeline(Get(View), )
+    result: FrenchView = pipeline()
     assert result.name == 'French View'
 
 
 def test_pipeline_two(french_container):
+    operators = Get(View), Attr('name')
+    field_info = field_info_no_default_value(operators)
     pipeline = Pipeline(
+        field_info=field_info,
         container=french_container,
         start=View,
         target=Target,
     )
-    result: str = pipeline(Get(View), Attr('name'))
+    result: str = pipeline()
     assert result == 'French View'
 
 
@@ -75,20 +82,27 @@ def test_pipeline_two_attr_attr(french_container):
     class Config:
         customer: Customer = Customer()
 
+    operators = Attr('customer'), Attr('name')
+    field_info = field_info_no_default_value(operators)
+
     pipeline = Pipeline(
+        field_info=field_info,
         container=french_container,
         start=Config(),
         target=Target,
     )
-    result = pipeline(Attr('customer'), Attr('name'))
+    result = pipeline()
     assert result == 'Some Customer'
 
 
 def test_context(regular_container):
+    operators = Context(),
+    field_info = field_info_no_default_value(operators)
     pipeline = Pipeline(
+        field_info=field_info,
         container=regular_container,
         start=View,
         target=Target,
     )
-    result = pipeline(Context(), )
+    result = pipeline()
     assert result == regular_container.context
