@@ -1,12 +1,11 @@
 from dataclasses import dataclass
 from inspect import isclass, signature
-from typing import Type, Any, Optional, Callable
+from typing import Type, Any, Optional
 
 from wired import ServiceContainer
-
-
 # TODO Operator should be a Protocol but the typechecker then says a usage
 #   in an annotation should be a generic.
+from wired_injector.pipeline import Pipeline
 
 
 class Operator:  # pragma: no cover
@@ -16,7 +15,7 @@ class Operator:  # pragma: no cover
         self,
         previous: Any,
         container: ServiceContainer,
-        target: Callable,
+        pipeline: Pipeline,
     ) -> Any:
         ...
 
@@ -31,9 +30,9 @@ class Get(Operator):
 
     def __call__(
         self,
-        previous: Type,
+        previous: Optional[Type],
         container: ServiceContainer,
-        target: Callable,
+        pipeline: Pipeline,
     ):
         try:
             service = container.get(self.lookup_type)
@@ -69,7 +68,7 @@ class Attr(Operator):
         self,
         previous: Any,
         container: ServiceContainer,
-        target: Callable,
+        pipeline: Pipeline,
     ):
         return getattr(previous, self.name)
 
@@ -84,7 +83,8 @@ class Context(Operator):
         self,
         previous: Any,
         container: ServiceContainer,
-        target: Callable,
+
+        pipeline: Pipeline,
     ):
         context = container.context
         if self.attr is not None:
@@ -112,8 +112,9 @@ class Field(Operator):
         self,
         previous: Any,
         container: ServiceContainer,
-        target: Callable,
+        pipeline: Pipeline,
     ):
+        target = pipeline.target
         sig = signature(target)
         try:
             param = sig.parameters[self.name]

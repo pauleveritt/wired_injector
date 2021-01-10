@@ -11,9 +11,10 @@ import inspect
 import sys
 from dataclasses import Field, MISSING
 from inspect import Parameter
-from typing import NamedTuple, Optional, Type, Any, Tuple, Union
+from typing import NamedTuple, Optional, Type, Any, Tuple, Union, TYPE_CHECKING
 
-from wired_injector.operators import Operator
+if TYPE_CHECKING:
+    from wired_injector.operators import Operator
 
 # get_args is augmented in Python 3.9. We need to use
 # typing_extensions if not running on an older version
@@ -34,7 +35,7 @@ class FieldInfo(NamedTuple):
     field_type: Type
     default_value: Optional[Any]
     init: bool  # Dataclasses can flag init=False
-    operators: Tuple[Operator, ...]
+    operators: Tuple['Operator', ...]
 
 
 def _get_field_origin(field_type: Type) -> Type:
