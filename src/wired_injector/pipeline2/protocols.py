@@ -19,11 +19,24 @@ class OperatorStatus(Enum):
     not_found = 3
 
 
+class Container(Protocol):
+    """
+    The parts of ``ServiceContainer`` we need for ``Pipeline``.
+
+    The pipeline stores an instance of a ``ServiceContainer``. But
+    for testing, we don't want the actual type. Let's make a protocol
+    that represents the parts of ``ServiceContainer`` that we need.
+    """
+
+    pass
+
+
 class Pipeline(Protocol):
     """
     Sequence of fields which results in arguments to construct.
     """
-    pass
+
+    container: Container
 
 
 class OperatorResult(Protocol):
