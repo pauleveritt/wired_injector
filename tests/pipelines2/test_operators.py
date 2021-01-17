@@ -30,6 +30,7 @@ def test_get_class(
     dummy_container: DummyContainer,
     dummy_pipeline: Pipeline,
 ) -> None:
+
     # Set the lookup value
     dummy_container.fake_lookups[DummyLookupClass] = DummyLookupClass()
 
@@ -73,3 +74,19 @@ def test_get_none(
     )
     assert isinstance(result, NotFound)
     assert result.value == DummyLookupClass
+
+
+def test_get_attr(
+    dummy_container: DummyContainer,
+    dummy_pipeline: Pipeline,
+) -> None:
+    # Set the lookup value
+    dummy_container.fake_lookups[DummyLookupClass] = DummyLookupClass()
+
+    get = Get(DummyLookupClass, attr='title')
+    result: OperatorResult = get(
+        previous=None,
+        pipeline=dummy_pipeline,
+    )
+    assert isinstance(result, Found)
+    assert 'Dummy Lookup Class' == result.value

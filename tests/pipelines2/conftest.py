@@ -40,6 +40,10 @@ class DummyPipeline:
         """ Type-safe limited usage wrapper around container.get"""
         return self.container.get(lookup_key)
 
+    def inject(self, lookup_key: Any) -> Optional[Any]:
+        """ Type-safe limited usage wrapper around the injector """
+        return self.container.get(lookup_key)
+
 
 @pytest.fixture
 def dummy_container() -> DummyContainer:

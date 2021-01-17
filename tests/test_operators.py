@@ -39,52 +39,52 @@ def make_pipeline(
     )
     return pipeline
 
-
-def test_get(regular_container):
-    get = Get(View)
-    pipeline = make_pipeline(regular_container, (get,))
-    result: View = get(None, pipeline)
-    assert result.name == 'View'
-
-
-def test_get_injectable_attr(regular_container):
-    get = Get(Greeting)
-    pipeline = make_pipeline(regular_container, (get,))
-    result: Greeting = get(None, pipeline)
-    assert result() == 'Hello VIEW'
-
-
-def test_get_attr(regular_container):
-    get = Get(View, attr='name')
-    pipeline = make_pipeline(regular_container, (get,))
-    result: View = get(None, pipeline)
-    assert result == 'View'
-
-
-def test_get_failed(regular_container):
-    class NotFound:
-        pass
-
-    pipeline = make_pipeline(regular_container, tuple())
-    with pytest.raises(SkipField):
-        Get(NotFound)(None, pipeline)
-
-
-def test_attr(regular_container):
-    attr = Attr('name')
-    pipeline = make_pipeline(regular_container, (attr,))
-    previous = Customer()
-    result = attr(previous, pipeline)
-    assert 'Customer' == result
-
-
-def test_get_then_attr(regular_container):
-    get = Get(View)
-    pipeline = make_pipeline(regular_container, (get,))
-    result1 = get(None, pipeline)
-    attr = Attr('name')
-    result = attr(result1, pipeline)
-    assert 'View' == result
+#
+# def test_get(regular_container):
+#     get = Get(View)
+#     pipeline = make_pipeline(regular_container, (get,))
+#     result: View = get(None, pipeline)
+#     assert result.name == 'View'
+#
+#
+# def test_get_injectable_attr(regular_container):
+#     get = Get(Greeting)
+#     pipeline = make_pipeline(regular_container, (get,))
+#     result: Greeting = get(None, pipeline)
+#     assert result() == 'Hello VIEW'
+#
+#
+# def test_get_attr(regular_container):
+#     get = Get(View, attr='name')
+#     pipeline = make_pipeline(regular_container, (get,))
+#     result: View = get(None, pipeline)
+#     assert result == 'View'
+#
+#
+# def test_get_failed(regular_container):
+#     class NotFound:
+#         pass
+#
+#     pipeline = make_pipeline(regular_container, tuple())
+#     with pytest.raises(SkipField):
+#         Get(NotFound)(None, pipeline)
+#
+#
+# def test_attr(regular_container):
+#     attr = Attr('name')
+#     pipeline = make_pipeline(regular_container, (attr,))
+#     previous = Customer()
+#     result = attr(previous, pipeline)
+#     assert 'Customer' == result
+#
+#
+# def test_get_then_attr(regular_container):
+#     get = Get(View)
+#     pipeline = make_pipeline(regular_container, (get,))
+#     result1 = get(None, pipeline)
+#     attr = Attr('name')
+#     result = attr(result1, pipeline)
+#     assert 'View' == result
 
 
 def test_context_attr(regular_container):

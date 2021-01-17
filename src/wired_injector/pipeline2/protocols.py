@@ -43,6 +43,10 @@ class Pipeline(Protocol):
         """ Type-safe limited usage wrapper around container.get"""
         ...
 
+    def inject(self, lookup_key: Any) -> Optional[Any]:
+        """Type-safe, replaceable wrapper around the injector """
+        ...
+
 
 class OperatorResult(Protocol):
     value: Any
