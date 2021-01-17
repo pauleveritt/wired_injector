@@ -13,12 +13,6 @@ except ImportError:
     from typing_extensions import Annotated, Protocol  # type: ignore # noqa: F401
 
 
-class OperatorStatus(Enum):
-    found = 1
-    not_applicable = 2
-    not_found = 3
-
-
 class Container(Protocol):
     """
     The parts of ``ServiceContainer`` we need for ``Pipeline``.
@@ -50,7 +44,6 @@ class Pipeline(Protocol):
 
 class OperatorResult(Protocol):
     value: Any
-    status: OperatorStatus
 
 
 class Operator(Protocol):

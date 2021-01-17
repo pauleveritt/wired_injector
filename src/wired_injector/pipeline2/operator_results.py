@@ -13,15 +13,12 @@ can then do the right thing in the rest of the operator pipeline.
 from dataclasses import dataclass
 from typing import Any, Type
 
-from . import OperatorStatus
-
 
 @dataclass
 class Found:
     """ Operation was looked up in the container and found """
 
     value: Any
-    status: OperatorStatus = OperatorStatus.found
 
 
 @dataclass
@@ -35,4 +32,3 @@ class NotFound:
     """
 
     value: Type[Any]
-    status: OperatorStatus = OperatorStatus.not_found
