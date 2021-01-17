@@ -1,4 +1,5 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import Any, Dict, TypeVar, Type, Optional
 
 import pytest
 from wired_injector.pipeline2 import (
@@ -11,10 +12,15 @@ try:
 except ImportError:
     from typing_extensions import Protocol  # type: ignore # noqa: F401
 
+LookupType = TypeVar('LookupType')
+
 
 @dataclass
 class DummyContainer:
-    pass
+    fake_lookups: Dict[Any, Any] = field(default_factory=dict)
+
+    def get(self, lookup_value: Type[LookupType]) -> Optional[LookupType]:
+        return self.fake_lookups.get(lookup_value)
 
 
 @dataclass
@@ -28,7 +34,11 @@ class DummyLookupProtocol(Protocol):
 
 @dataclass
 class DummyPipeline:
-    container: Container
+    container: Container = field(default_factory=DummyContainer)
+
+    def lookup(self, lookup_key: Any) -> Optional[Any]:
+        """ Type-safe limited usage wrapper around container.get"""
+        return self.container.get(lookup_key)
 
 
 @pytest.fixture

@@ -28,7 +28,8 @@ class Container(Protocol):
     that represents the parts of ``ServiceContainer`` that we need.
     """
 
-    pass
+    def get(self, key: Any) -> Any:
+        pass
 
 
 class Pipeline(Protocol):
@@ -37,6 +38,10 @@ class Pipeline(Protocol):
     """
 
     container: Container
+
+    def lookup(self, lookup_key: Any) -> Optional[Any]:
+        """ Type-safe limited usage wrapper around container.get"""
+        ...
 
 
 class OperatorResult(Protocol):

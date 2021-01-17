@@ -18,5 +18,6 @@ class Get:
         previous: Optional[Any],
         pipeline: Pipeline,
     ) -> OperatorResult:
-        f = Found(value=99)
+        value = pipeline.lookup(self.lookup_type)
+        f = Found(value=value)
         return f
