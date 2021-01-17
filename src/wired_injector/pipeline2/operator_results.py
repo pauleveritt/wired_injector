@@ -11,7 +11,7 @@ object holds the value but also indicates the status, so the caller
 can then do the right thing in the rest of the operator pipeline.
 """
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Type
 
 from . import OperatorStatus
 
@@ -19,6 +19,7 @@ from . import OperatorStatus
 @dataclass
 class Found:
     """ Operation was looked up in the container and found """
+
     value: Any
     status: OperatorStatus = OperatorStatus.found
 
@@ -28,7 +29,10 @@ class NotFound:
     """
     A lookup was done in the container but nothing matched.
 
-    In this case the value assigned should be the error to display.
+    In this case the value assigned is the type/protocol that was
+    being looked up. The caller will decide how to display that
+    in an exception value.
     """
-    value: Any
+
+    value: Type[Any]
     status: OperatorStatus = OperatorStatus.not_found
