@@ -4,7 +4,7 @@ Protocol "interfaces" used for the pieces in pipelines.
 """
 from __future__ import annotations
 
-from typing import Optional, Any
+from typing import Optional, Any, Type, Iterator, Dict, Callable
 
 try:
     from typing import Annotated, Protocol
@@ -68,4 +68,36 @@ class Operator(Protocol):
         previous: Optional[Result],
         pipeline: Pipeline,
     ) -> Result:
+        ...
+
+
+class FieldInfo(Protocol):
+    """
+    Necessary subset of field/parameter metadata for rules.
+    """
+
+    field_name: str
+    field_type: Type[Any]
+    default_value: Optional[Any]
+    init: bool  # Dataclasses can flag init=False
+    operators: Iterator[Operator]
+
+
+class Rule(Protocol):
+    """
+    Attempt to handle a field or parameter.
+
+    Each field/parameter in a target gets introspected and the
+    relevant "field info" is passed through a series of rules.
+    Each rule has the chance to handle the value, skip, bail
+    out with an error, etc.
+    """
+
+    field_info: FieldInfo
+    props: Dict[str, Any]
+    container: Container
+    system_props: Optional[Dict[str, Any]]
+    target: Optional[Callable[..., Any]]
+
+    def __call__(self) -> Result:
         ...

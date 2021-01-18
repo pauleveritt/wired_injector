@@ -54,6 +54,20 @@ class Error:
 
 
 @dataclass
+class Init:
+    """
+    The field is not part of the args collected for construction.
+
+    Dataclasses have a concept of field(init=False) which means this
+    field is neither part of the passed-in args nor a default value.
+    The field is assigned in ``__post_init__``.
+    """
+
+    value: Type[Any]
+    msg: Optional[str] = None
+
+
+@dataclass
 class Skip:
     """
     The rule didn't match its conditions so go on to the next rule.
