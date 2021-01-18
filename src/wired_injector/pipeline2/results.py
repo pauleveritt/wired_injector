@@ -35,3 +35,35 @@ class NotFound:
 
     msg: Optional[str]
     value: Type[Any]
+
+
+@dataclass
+class Error:
+    """
+    Problems that can't be skipped for something downstream.
+
+    Some situations, like failing a container lookup, can be passed
+    over with ``NotFound`` for something later to try and handle.
+    Others, such as trying to do a lookup with a string, are flat-out
+    mistakes and processing should stop. No more operators, no more
+    rules being processed.
+    """
+
+    msg: Optional[str]
+    value: Type[Any]
+
+
+@dataclass
+class Skip:
+    """
+    The rule didn't match its conditions so go on to the next rule.
+
+    Each rule has some conditions: the service container rule expects
+    the field type to be ServiceContainer, the pipeline rule expects
+    a non-empty sequence after ``Annotated``. When these aren't
+    met, the rule can use this ``Result`` to explicitly flag "Continue
+    on to the next thing."
+    """
+
+    value: Type[Any]
+    msg: Optional[str] = None

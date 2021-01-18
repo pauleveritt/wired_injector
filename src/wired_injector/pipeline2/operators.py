@@ -22,6 +22,9 @@ class Get:
         pipeline: Pipeline,
     ) -> Result:
 
+        # Can't lookup a string, ever, so bail on this with an error.
+        pass
+
         # Try to get an instance (or a class, if it is injectable)
         value = pipeline.lookup(self.lookup_key)
         if value is None:
