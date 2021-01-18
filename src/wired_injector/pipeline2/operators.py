@@ -6,7 +6,7 @@ from inspect import isclass
 from typing import Any, Optional
 
 from . import Result, Pipeline
-from .results import Found, NotFound
+from .results import Error, Found, NotFound
 
 
 @dataclass(frozen=True)
@@ -23,7 +23,10 @@ class Get:
     ) -> Result:
 
         # Can't lookup a string, ever, so bail on this with an error.
-        pass
+        if isinstance(self.lookup_key, str):
+            lk = self.lookup_key
+            msg = f"Cannot use a string '{lk}' as container lookup value"
+            return Error(msg=msg, value=Get)
 
         # Try to get an instance (or a class, if it is injectable)
         value = pipeline.lookup(self.lookup_key)
@@ -77,21 +80,14 @@ class Context:
         # If the container.context is None, then getting an
         # attr off of it is pointless. Bail out with NotFound
         # and let downstream try to get a field default.
-        context = pipeline.container.context
-        # TODO Result
-        # if context is None:
-        #     return NotFound
         value = pipeline.container.context
+        if value is None:
+            msg = f"Container context is None"
+            return Error(msg=msg, value=Context)
+
         if self.attr is not None:
-            if value is not None:
-                v = getattr(value, self.attr)
-                value = Found(value=v)
-            else:
-                # Asking for an attr when the container.context
-                # is None is an error, perhaps this field has a
-                # default.
-                from wired_injector.injector import SkipField
+            # Pluck the attribute's value and return that instead
+            # of the container.context.
+            value = getattr(value, self.attr)
 
-                raise SkipField()
-
-        return value
+        return Found(value=value)

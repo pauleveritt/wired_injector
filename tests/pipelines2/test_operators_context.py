@@ -1,7 +1,7 @@
 from wired_injector.pipeline import Pipeline
 from wired_injector.pipeline2 import Operator, Result
 from wired_injector.pipeline2.operators import Context
-from wired_injector.pipeline2.results import Found
+from wired_injector.pipeline2.results import Error, Found
 
 from .conftest import DummyContext, DummyLookupClass
 
@@ -32,3 +32,16 @@ def test_context_found(dummy_pipeline: Pipeline) -> None:
     )
     assert isinstance(result, Found)
     assert 'Dummy Context' == result.value
+
+
+def test_context_none(dummy_pipeline: Pipeline) -> None:
+    # Error() result on container.context=None
+
+    attr = Context('title')
+    result: Result = attr(
+        previous=DummyLookupClass(),
+        pipeline=dummy_pipeline,
+    )
+    assert isinstance(result, Error)
+    assert 'Container context is None' == result.msg
+    assert result.value == Context

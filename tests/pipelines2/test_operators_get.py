@@ -1,7 +1,11 @@
 from wired_injector.pipeline import Pipeline
 from wired_injector.pipeline2 import Operator, Result
 from wired_injector.pipeline2.operators import Get
-from wired_injector.pipeline2.results import Found, NotFound
+from wired_injector.pipeline2.results import (
+    Error,
+    Found,
+    NotFound,
+)
 
 from .conftest import (
     DummyContainer,
@@ -90,3 +94,20 @@ def test_get_attr(
     )
     assert isinstance(result, Found)
     assert 'Dummy Lookup Class' == result.value
+
+
+def test_get_error_str(
+    dummy_container: DummyContainer,
+    dummy_pipeline: Pipeline,
+) -> None:
+    # Try to do a container lookup on a string instead of a class
+
+    get = Get('WRONG')
+    result: Result = get(
+        previous=None,
+        pipeline=dummy_pipeline,
+    )
+    assert isinstance(result, Error)
+    expected = "Cannot use a string 'WRONG' as container lookup value"
+    assert result.msg == expected
+    assert result.value == Get
