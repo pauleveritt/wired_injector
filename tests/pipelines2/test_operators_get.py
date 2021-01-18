@@ -1,15 +1,10 @@
 from wired_injector.pipeline import Pipeline
 from wired_injector.pipeline2 import Operator, Result
+from wired_injector.pipeline2.operators import Get
 from wired_injector.pipeline2.results import Found, NotFound
-from wired_injector.pipeline2.operators import (
-    Attr,
-    Context,
-    Get,
-)
 
 from .conftest import (
     DummyContainer,
-    DummyContext,
     DummyLookupClass,
     DummyLookupProtocol,
 )
@@ -94,51 +89,3 @@ def test_get_attr(
     )
     assert isinstance(result, Found)
     assert 'Dummy Lookup Class' == result.value
-
-
-def test_attr_setup() -> None:
-    # Ensure it meets the protocol
-    meets_protocol: Operator = Attr('title')
-    assert meets_protocol
-
-    # Do we store the right things?
-    get = Attr('title')
-    assert 'title' == get.name
-
-
-def test_attr_found(dummy_pipeline: Pipeline) -> None:
-    attr = Attr('title')
-    result: Result = attr(
-        previous=DummyLookupClass(),
-        pipeline=dummy_pipeline,
-    )
-    assert isinstance(result, Found)
-    assert 'Dummy Lookup Class' == result.value
-
-
-def test_context_setup() -> None:
-    # Ensure it meets the protocol
-    meets_protocol: Operator = Context()
-    assert meets_protocol
-
-    # Do we store the right things?
-    context = Context()
-    assert None is context.attr
-
-
-def test_context_setup_attr() -> None:
-    context = Context(attr='title')
-    assert 'title' == context.attr
-
-
-def test_context_found(dummy_pipeline: Pipeline) -> None:
-    # Set a context on the dummy container
-    dummy_pipeline.container.context = DummyContext()
-
-    attr = Context('title')
-    result: Result = attr(
-        previous=DummyLookupClass(),
-        pipeline=dummy_pipeline,
-    )
-    assert isinstance(result, Found)
-    assert 'Dummy Context' == result.value

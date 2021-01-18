@@ -25,8 +25,9 @@ class Get:
         # Try to get an instance (or a class, if it is injectable)
         value = pipeline.lookup(self.lookup_key)
         if value is None:
-            # This lookup type isn't in the
-            nf = NotFound(value=self.lookup_key)
+            # TODO Result This lookup type isn't in the
+            msg = 'XXX'
+            nf = NotFound(msg=msg, value=self.lookup_key)
             return nf
 
         if isclass(value):
@@ -70,6 +71,13 @@ class Context:
         pipeline: Pipeline,
     ) -> Result:
 
+        # If the container.context is None, then getting an
+        # attr off of it is pointless. Bail out with NotFound
+        # and let downstream try to get a field default.
+        context = pipeline.container.context
+        # TODO Result
+        # if context is None:
+        #     return NotFound
         value = pipeline.container.context
         if self.attr is not None:
             if value is not None:

@@ -44,7 +44,17 @@ class Pipeline(Protocol):
 
 
 class Result(Protocol):
+    """
+    Result classes which indicate status and hold information.
+
+    Flow of control in operators and rules is hard. We want to
+    provide a good developer experience, especially for errors,
+    so we have a way for individual units to return back a container
+    of resulting information.
+    """
+
     value: Any
+    msg: Optional[str] = None
 
 
 class Operator(Protocol):

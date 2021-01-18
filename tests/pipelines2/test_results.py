@@ -19,19 +19,23 @@ def test_found() -> None:
 
 def test_not_found_class() -> None:
     # Ensure it meets the protocol
-    meets_protocol: Result = NotFound(value=DummyLookupClass)
+    meets_protocol: Result = NotFound(msg='', value=DummyLookupClass)
     assert meets_protocol
 
     # Now test construction
-    result = NotFound(value=DummyLookupClass)
+    msg = ''
+    result = NotFound(msg=msg, value=DummyLookupClass)
+    assert msg == result.msg
     assert DummyLookupClass == result.value
 
 
 def test_not_found_protocol() -> None:
     # Ensure it meets the protocol
-    meets_protocol: Result = NotFound(value=DummyLookupProtocol)
+    meets_protocol: Result = NotFound(msg='', value=DummyLookupProtocol)
     assert meets_protocol
 
     # Now test construction
-    result = NotFound(value=DummyLookupProtocol)
+    msg = ''
+    result = NotFound(msg=msg, value=DummyLookupProtocol)
+    assert msg == result.msg
     assert DummyLookupProtocol == result.value
