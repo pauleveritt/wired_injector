@@ -72,7 +72,8 @@ def test_get_none(
         pipeline=dummy_pipeline,
     )
     assert isinstance(result, NotFound)
-    assert result.value == DummyLookupClass
+    assert result.msg == "No service 'DummyLookupClass' found in container"
+    assert result.value == Get
 
 
 def test_get_attr(

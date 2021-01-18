@@ -25,9 +25,9 @@ class Get:
         # Try to get an instance (or a class, if it is injectable)
         value = pipeline.lookup(self.lookup_key)
         if value is None:
-            # TODO Result This lookup type isn't in the
-            msg = 'XXX'
-            nf = NotFound(msg=msg, value=self.lookup_key)
+            lookup_name = self.lookup_key.__name__
+            msg = f"No service '{lookup_name}' found in container"
+            nf = NotFound(msg=msg, value=Get)
             return nf
 
         if isclass(value):
