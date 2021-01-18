@@ -1,7 +1,10 @@
 from wired_injector.pipeline import Pipeline
 from wired_injector.pipeline2 import Operator, OperatorResult
 from wired_injector.pipeline2.operator_results import Found, NotFound
-from wired_injector.pipeline2.operators import Get
+from wired_injector.pipeline2.operators import (
+    Attr,
+    Get,
+)
 
 from .conftest import (
     DummyContainer,
@@ -30,7 +33,6 @@ def test_get_class(
     dummy_container: DummyContainer,
     dummy_pipeline: Pipeline,
 ) -> None:
-
     # Set the lookup value
     dummy_container.fake_lookups[DummyLookupClass] = DummyLookupClass()
 
@@ -86,6 +88,26 @@ def test_get_attr(
     get = Get(DummyLookupClass, attr='title')
     result: OperatorResult = get(
         previous=None,
+        pipeline=dummy_pipeline,
+    )
+    assert isinstance(result, Found)
+    assert 'Dummy Lookup Class' == result.value
+
+
+def test_attr_setup(dummy_pipeline: Pipeline) -> None:
+    # Ensure it meets the protocol
+    meets_protocol: Operator = Attr('title')
+    assert meets_protocol
+
+    # Do we store the right things?
+    get = Attr('title')
+    assert 'title' == get.name
+
+
+def test_attr_found(dummy_pipeline: Pipeline) -> None:
+    attr = Attr('title')
+    result: OperatorResult = attr(
+        previous=DummyLookupClass(),
         pipeline=dummy_pipeline,
     )
     assert isinstance(result, Found)

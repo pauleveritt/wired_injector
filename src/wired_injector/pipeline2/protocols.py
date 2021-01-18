@@ -4,7 +4,6 @@ Protocol "interfaces" used for the pieces in pipelines.
 """
 from __future__ import annotations
 
-from enum import Enum
 from typing import Optional, Any
 
 try:
@@ -21,6 +20,8 @@ class Container(Protocol):
     for testing, we don't want the actual type. Let's make a protocol
     that represents the parts of ``ServiceContainer`` that we need.
     """
+
+    context: Any
 
     def get(self, key: Any) -> Any:
         pass

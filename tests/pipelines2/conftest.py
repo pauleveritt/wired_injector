@@ -17,6 +17,7 @@ LookupType = TypeVar('LookupType')
 
 @dataclass
 class DummyContainer:
+    context: Any = None
     fake_lookups: Dict[Any, Any] = field(default_factory=dict)
 
     def get(self, lookup_value: Type[LookupType]) -> Optional[LookupType]:
