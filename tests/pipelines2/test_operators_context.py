@@ -26,8 +26,9 @@ def test_context_found(dummy_pipeline: Pipeline) -> None:
     dummy_pipeline.container.context = DummyContext()
 
     attr = Context('title')
+    previous = Found(value=DummyLookupClass())
     result: Result = attr(
-        previous=DummyLookupClass(),
+        previous=previous,
         pipeline=dummy_pipeline,
     )
     assert isinstance(result, Found)
@@ -38,8 +39,9 @@ def test_context_none(dummy_pipeline: Pipeline) -> None:
     # Error() result on container.context=None
 
     attr = Context('title')
+    previous = Found(value=DummyLookupClass())
     result: Result = attr(
-        previous=DummyLookupClass(),
+        previous=previous,
         pipeline=dummy_pipeline,
     )
     assert isinstance(result, Error)

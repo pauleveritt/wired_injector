@@ -18,7 +18,7 @@ class Get:
 
     def __call__(
         self,
-        previous: Optional[Any],
+        previous: Optional[Result],
         pipeline: Pipeline,
     ) -> Result:
 
@@ -58,10 +58,20 @@ class Attr:
 
     def __call__(
         self,
-        previous: Any,
+        previous: Optional[Result],
         pipeline: Pipeline,
     ) -> Result:
-        value = getattr(previous, self.name)
+
+        if previous is None:
+            # This operator is being used first in the pipeline
+            # which then means we are trying to do getattr on
+            # None. Raise a specific error.
+            msg = "Cannot use 'Attr' operator first in the pipeline"
+            return NotFound(msg=msg, value=Attr)
+
+        # Get the value out of the Result passed in as previous
+        previous_value: Any = previous.value
+        value = getattr(previous_value, self.name)
         return Found(value=value)
 
 
@@ -73,7 +83,7 @@ class Context:
 
     def __call__(
         self,
-        previous: Any,
+        previous: Optional[Result],
         pipeline: Pipeline,
     ) -> Result:
 

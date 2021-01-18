@@ -6,6 +6,7 @@ Process all operators and result in a value, or handle the problem.
 from typing import Iterator
 
 from . import Operator, Result, Pipeline
+from .results import Error
 
 
 def process_field_pipeline(
@@ -14,13 +15,22 @@ def process_field_pipeline(
 ) -> Result:
     """ Process each operator in the pipeline and return the result """
 
-    # Get the first one
+    # Get the first operator
     result = next(operators)(None, pipeline)
+    # If this is an error, don't process any more operators
+    if isinstance(result, Error):
+        return result
+
+    # Proceed with remaining operators
     while operators:
         try:
             operator = next(operators)
             result = operator(result, pipeline)
+
+            # If this is an error, don't process any more operators
+            if isinstance(result, Error):
+                return result
         except StopIteration:
             return result
 
-    return result
+    return result  # pragma: no cover

@@ -65,7 +65,7 @@ class Operator(Protocol):
 
     def __call__(
         self,
-        previous: Optional[Any],
+        previous: Optional[Result],
         pipeline: Pipeline,
     ) -> Result:
         ...

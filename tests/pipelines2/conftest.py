@@ -4,8 +4,9 @@ from typing import Any, Dict, TypeVar, Type, Optional
 import pytest
 from wired_injector.pipeline2 import (
     Container,
-    Pipeline,
+    Pipeline, Result,
 )
+from wired_injector.pipeline2.results import Found
 
 try:
     from typing import Protocol
@@ -49,6 +50,26 @@ class DummyPipeline:
     def inject(self, lookup_key: Any) -> Optional[Any]:
         """ Type-safe limited usage wrapper around the injector """
         return self.container.get(lookup_key)
+
+
+@dataclass
+class DummyNoOp:
+    """
+    A fake operator that keeps track of whether it was called.
+
+    To test Error results, we need to ensure the field/rule pipeline
+    bails out and does not keep calling operators.
+    """
+
+    call_count: int = 0
+
+    def __call__(
+        self,
+        previous: Optional[Result],
+        pipeline: Pipeline,
+    ) -> Result:
+        self.call_count += 1
+        return Found(value=99)
 
 
 @pytest.fixture
