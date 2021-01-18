@@ -2,7 +2,7 @@
 Implementations of major operators such as ``Get``.
 """
 from dataclasses import dataclass
-from inspect import isclass
+from inspect import isclass, signature
 from typing import Any, Optional
 
 from . import Result, Pipeline
@@ -61,7 +61,6 @@ class Attr:
         previous: Optional[Result],
         pipeline: Pipeline,
     ) -> Result:
-
         if previous is None:
             # This operator is being used first in the pipeline
             # which then means we are trying to do getattr on
@@ -101,3 +100,30 @@ class Context:
             value = getattr(value, self.attr)
 
         return Found(value=value)
+
+
+@dataclass(frozen=True)
+class Field:
+    """ Get default value field in dataclass/namedtuple being constructed """
+
+    __slots__ = ('name',)
+    name: str
+
+    def __call__(
+        self,
+        previous: Optional[Result],
+        pipeline: Pipeline,
+    ) -> Result:
+
+        target = pipeline.target
+        # TODO Eventually we could avoid the cost of doing this signature
+        #   by either storing on Pipeline or even having a registry
+        #   factory (across containers/requests) that fetched the signature
+        #   for a callable.
+        sig = signature(target)
+        try:
+            param = sig.parameters[self.name]
+        except KeyError:
+            msg = f'No field "{self.name}" on target'
+            return Error(msg=msg, value=Field)
+        return Found(value=param.default)

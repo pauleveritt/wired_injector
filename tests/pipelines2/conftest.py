@@ -40,8 +40,14 @@ class DummyContext:
 
 
 @dataclass
+class DummyTarget:
+    title: str = 'Dummy Target'
+
+
+@dataclass
 class DummyPipeline:
     container: Container = field(default_factory=DummyContainer)
+    target: Any = DummyTarget
 
     def lookup(self, lookup_key: Any) -> Optional[Any]:
         """ Type-safe limited usage wrapper around container.get"""

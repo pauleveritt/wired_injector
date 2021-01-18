@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Any
 
 from . import Container
 
@@ -10,3 +11,4 @@ class DefaultPipeline:
     """
 
     container: Container
+    target: Any

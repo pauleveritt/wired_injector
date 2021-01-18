@@ -34,7 +34,24 @@ def test_get_class(
     dummy_container: DummyContainer,
     dummy_pipeline: Pipeline,
 ) -> None:
-    # Set the lookup value
+    # Set the lookup value to use a value that is a class, to simulate
+    # injection.
+    dummy_container.fake_lookups[DummyLookupClass] = DummyLookupClass
+
+    get = Get(DummyLookupClass)
+    result: Result = get(
+        previous=None,
+        pipeline=dummy_pipeline,
+    )
+    assert isinstance(result, Found)
+    assert result.value == DummyLookupClass
+
+
+def test_get_class_instance(
+    dummy_container: DummyContainer,
+    dummy_pipeline: Pipeline,
+) -> None:
+    # Set the lookup value to use a value that is an instance
     dummy_container.fake_lookups[DummyLookupClass] = DummyLookupClass()
 
     get = Get(DummyLookupClass)
