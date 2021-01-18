@@ -5,8 +5,8 @@ from dataclasses import dataclass
 from inspect import isclass
 from typing import Any, Optional
 
-from . import OperatorResult, Pipeline
-from .operator_results import Found, NotFound
+from . import Result, Pipeline
+from .results import Found, NotFound
 
 
 @dataclass(frozen=True)
@@ -20,7 +20,7 @@ class Get:
         self,
         previous: Optional[Any],
         pipeline: Pipeline,
-    ) -> OperatorResult:
+    ) -> Result:
 
         # Try to get an instance (or a class, if it is injectable)
         value = pipeline.lookup(self.lookup_key)
@@ -53,7 +53,7 @@ class Attr:
         self,
         previous: Any,
         pipeline: Pipeline,
-    ) -> OperatorResult:
+    ) -> Result:
         value = getattr(previous, self.name)
         return Found(value=value)
 
@@ -68,7 +68,7 @@ class Context:
         self,
         previous: Any,
         pipeline: Pipeline,
-    ) -> OperatorResult:
+    ) -> Result:
 
         value = pipeline.container.context
         if self.attr is not None:

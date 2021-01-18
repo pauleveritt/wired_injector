@@ -1,6 +1,6 @@
 from wired_injector.pipeline import Pipeline
-from wired_injector.pipeline2 import Operator, OperatorResult
-from wired_injector.pipeline2.operator_results import Found, NotFound
+from wired_injector.pipeline2 import Operator, Result
+from wired_injector.pipeline2.results import Found, NotFound
 from wired_injector.pipeline2.operators import (
     Attr,
     Get,
@@ -37,7 +37,7 @@ def test_get_class(
     dummy_container.fake_lookups[DummyLookupClass] = DummyLookupClass()
 
     get = Get(DummyLookupClass)
-    result: OperatorResult = get(
+    result: Result = get(
         previous=None,
         pipeline=dummy_pipeline,
     )
@@ -55,7 +55,7 @@ def test_get_protocol(
     dummy_container.fake_lookups[DummyLookupProtocol] = DummyLookupClass()
 
     get = Get(DummyLookupProtocol)
-    result: OperatorResult = get(
+    result: Result = get(
         previous=None,
         pipeline=dummy_pipeline,
     )
@@ -70,7 +70,7 @@ def test_get_none(
     # Lookup fails because nothing is in the container.
 
     get = Get(DummyLookupClass)
-    result: OperatorResult = get(
+    result: Result = get(
         previous=None,
         pipeline=dummy_pipeline,
     )
@@ -86,7 +86,7 @@ def test_get_attr(
     dummy_container.fake_lookups[DummyLookupClass] = DummyLookupClass()
 
     get = Get(DummyLookupClass, attr='title')
-    result: OperatorResult = get(
+    result: Result = get(
         previous=None,
         pipeline=dummy_pipeline,
     )
@@ -106,7 +106,7 @@ def test_attr_setup(dummy_pipeline: Pipeline) -> None:
 
 def test_attr_found(dummy_pipeline: Pipeline) -> None:
     attr = Attr('title')
-    result: OperatorResult = attr(
+    result: Result = attr(
         previous=DummyLookupClass(),
         pipeline=dummy_pipeline,
     )

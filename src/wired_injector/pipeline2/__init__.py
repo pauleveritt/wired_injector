@@ -36,13 +36,13 @@ relative link.
 __all__ = [
     'Container',
     'Operator',
-    'OperatorResult',
+    'Result',
     'Pipeline',
 ]
 
 from .protocols import (
     Container,
     Operator,
-    OperatorResult,
+    Result,
     Pipeline,
 )

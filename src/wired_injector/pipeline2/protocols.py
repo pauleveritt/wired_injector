@@ -43,7 +43,7 @@ class Pipeline(Protocol):
         ...
 
 
-class OperatorResult(Protocol):
+class Result(Protocol):
     value: Any
 
 
@@ -57,5 +57,5 @@ class Operator(Protocol):
         self,
         previous: Optional[Any],
         pipeline: Pipeline,
-    ) -> OperatorResult:
+    ) -> Result:
         ...

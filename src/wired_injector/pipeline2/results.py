@@ -1,12 +1,12 @@
 """
-OperatorResult classes to hold value that signify certain outcomes.
+Result classes to hold value that signify certain outcomes.
 
-From a flow-of-control perspective, an operator needs to signal to
+From a flow-of-control perspective, an operator/rule needs to signal to
 the caller the decision it reached. We could use exceptions, but
 those have some anti-patterns regarding typing and are hard to
 reason about.
 
-Instead, an operator should always return a result object. This
+Instead, an operator or rule should always return a result object. This
 object holds the value but also indicates the status, so the caller
 can then do the right thing in the rest of the operator pipeline.
 """

@@ -1,5 +1,5 @@
-from wired_injector.pipeline2 import OperatorResult
-from wired_injector.pipeline2.operator_results import (
+from wired_injector.pipeline2 import Result
+from wired_injector.pipeline2.results import (
     Found,
     NotFound,
 )
@@ -9,7 +9,7 @@ from .conftest import DummyLookupClass, DummyLookupProtocol
 
 def test_found() -> None:
     # Ensure it meets the protocol
-    meets_protocol: OperatorResult = Found(value=99)
+    meets_protocol: Result = Found(value=99)
     assert meets_protocol
 
     # Now test construction
@@ -19,7 +19,7 @@ def test_found() -> None:
 
 def test_not_found_class() -> None:
     # Ensure it meets the protocol
-    meets_protocol: OperatorResult = NotFound(value=DummyLookupClass)
+    meets_protocol: Result = NotFound(value=DummyLookupClass)
     assert meets_protocol
 
     # Now test construction
@@ -29,7 +29,7 @@ def test_not_found_class() -> None:
 
 def test_not_found_protocol() -> None:
     # Ensure it meets the protocol
-    meets_protocol: OperatorResult = NotFound(value=DummyLookupProtocol)
+    meets_protocol: Result = NotFound(value=DummyLookupProtocol)
     assert meets_protocol
 
     # Now test construction
