@@ -34,6 +34,11 @@ class DummyLookupProtocol(Protocol):
 
 
 @dataclass
+class DummyContext:
+    title: str = 'Dummy Context'
+
+
+@dataclass
 class DummyPipeline:
     container: Container = field(default_factory=DummyContainer)
 

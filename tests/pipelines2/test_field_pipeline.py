@@ -13,15 +13,26 @@ def test_field_pipeline_one(
     # Set the lookup value
     dummy_container.fake_lookups[DummyLookupClass] = DummyLookupClass()
 
-    operators = iter([Get(DummyLookupClass), ])
-    result: Result = process_field_pipeline(operators=operators, pipeline=dummy_pipeline)
+    operators = iter(
+        [
+            Get(DummyLookupClass),
+        ]
+    )
+    result: Result = process_field_pipeline(
+        operators=operators, pipeline=dummy_pipeline
+    )
     assert isinstance(result, Found)
     assert isinstance(result.value, DummyLookupClass)
 
 
 def test_field_pipeline_not_found(dummy_pipeline: Pipeline) -> None:
-    operators = iter([Get(DummyLookupClass), ])
-    result: Result = process_field_pipeline(operators=operators, pipeline=dummy_pipeline)
+    operators = iter(
+        [
+            Get(DummyLookupClass),
+        ]
+    )
+    result: Result = process_field_pipeline(
+        operators=operators, pipeline=dummy_pipeline
+    )
     assert isinstance(result, NotFound)
     assert DummyLookupClass == result.value
-
