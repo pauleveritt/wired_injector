@@ -4,7 +4,7 @@ Protocol "interfaces" used for the pieces in pipelines.
 """
 from __future__ import annotations
 
-from typing import Optional, Any, Type, Iterator, Dict, Callable
+from typing import Optional, Any, Type, Dict, Callable, Sequence
 
 try:
     from typing import Annotated, Protocol
@@ -81,7 +81,7 @@ class FieldInfo(Protocol):
     field_type: Type[Any]
     default_value: Optional[Any]
     init: bool  # Dataclasses can flag init=False
-    operators: Iterator[Operator]
+    operators: Sequence[Operator]
 
 
 class Rule(Protocol):

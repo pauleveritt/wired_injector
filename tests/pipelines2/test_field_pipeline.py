@@ -1,8 +1,7 @@
-from typing import Iterator
+from typing import Sequence
 
 import pytest
-from wired_injector.pipeline2 import Operator
-from wired_injector.pipeline2 import Pipeline, Result
+from wired_injector.pipeline2 import Operator, Pipeline, Result
 from wired_injector.pipeline2.field_pipeline import process_field_pipeline
 from wired_injector.pipeline2.operators import Attr, Get
 from wired_injector.pipeline2.results import (
@@ -24,7 +23,7 @@ def single_pipeline(dummy_pipeline: Pipeline) -> Pipeline:
 
 
 def test_field_pipeline_one(single_pipeline: Pipeline) -> None:
-    operators = iter([Get(DummyLookupClass), ])
+    operators = (Get(DummyLookupClass),)
     result: Result = process_field_pipeline(
         operators=operators, pipeline=single_pipeline
     )
@@ -33,7 +32,7 @@ def test_field_pipeline_one(single_pipeline: Pipeline) -> None:
 
 
 def test_field_pipeline_two(single_pipeline: Pipeline) -> None:
-    operators: Iterator[Operator] = iter([Get(DummyLookupClass), Attr('title')])
+    operators: Sequence[Operator] = (Get(DummyLookupClass), Attr('title'))
     result: Result = process_field_pipeline(
         operators=operators, pipeline=single_pipeline
     )
@@ -42,7 +41,7 @@ def test_field_pipeline_two(single_pipeline: Pipeline) -> None:
 
 
 def test_field_pipeline_not_found(dummy_pipeline: Pipeline) -> None:
-    operators: Iterator[Operator] = iter([Get(DummyLookupClass), ])
+    operators: Sequence[Operator] = (Get(DummyLookupClass),)
     result: Result = process_field_pipeline(
         operators=operators, pipeline=dummy_pipeline
     )
@@ -54,7 +53,7 @@ def test_field_pipeline_not_found(dummy_pipeline: Pipeline) -> None:
 def test_field_pipeline_first_op_err(dummy_pipeline: Pipeline) -> None:
     # The first operator generates an error
     no_op = DummyNoOp()
-    operators: Iterator[Operator] = iter([no_op, Get('XXX')])
+    operators: Sequence[Operator] = (no_op, Get('XXX'))
     result: Result = process_field_pipeline(
         operators=operators, pipeline=dummy_pipeline
     )
@@ -67,7 +66,7 @@ def test_field_pipeline_first_op_err(dummy_pipeline: Pipeline) -> None:
 def test_field_pipeline_second_op_err(dummy_pipeline: Pipeline) -> None:
     # An operator after the first one, generated an error
     no_op = DummyNoOp()
-    operators: Iterator[Operator] = iter([Get('XXX'), no_op])
+    operators: Sequence[Operator] = (Get('XXX'), no_op)
     result: Result = process_field_pipeline(
         operators=operators, pipeline=dummy_pipeline
     )

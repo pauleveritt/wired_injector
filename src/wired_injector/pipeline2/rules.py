@@ -2,7 +2,7 @@
 Operate on the info in a field until a value is produced.
 """
 from dataclasses import dataclass
-from typing import Type, Optional, Any, Iterator, Dict, Callable
+from typing import Type, Optional, Any, Dict, Callable, Sequence
 
 from wired import ServiceContainer
 from wired_injector.pipeline2.default_pipeline import DefaultPipeline
@@ -23,7 +23,7 @@ class DefaultFieldInfo:
     field_type: Type[Any]
     default_value: Optional[Any]
     init: bool  # Dataclasses can flag init=False
-    operators: Iterator[Operator]
+    operators: Sequence[Operator]
 
 
 @dataclass

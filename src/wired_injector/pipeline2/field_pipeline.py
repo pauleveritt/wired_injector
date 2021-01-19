@@ -3,21 +3,22 @@ Process all operators and result in a value, or handle the problem.
 
 """
 
-from typing import Iterator
+from typing import Sequence
 
 from . import Operator, Result, Pipeline
 from .results import Error
 
 
 def process_field_pipeline(
-    operators: Iterator[Operator],
+    operators: Sequence[Operator],
     pipeline: Pipeline,
 ) -> Result:
     """ Process each operator in the pipeline and return the result """
 
+    iter_operators = iter(operators)
     # Get the first operator
     try:
-        result = next(operators)(None, pipeline)
+        result = next(iter_operators)(None, pipeline)
     except StopIteration:
         # This means the pipeline was empty,which is an error
         msg = f'Annotated was used with no subsequent operators'
@@ -28,9 +29,9 @@ def process_field_pipeline(
         return result
 
     # Proceed with remaining operators
-    while operators:
+    while iter_operators:
         try:
-            operator = next(operators)
+            operator = next(iter_operators)
             result = operator(result, pipeline)
 
             # If this is an error, don't process any more operators

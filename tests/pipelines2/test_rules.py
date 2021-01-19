@@ -23,7 +23,7 @@ def dummy_field_info() -> FieldInfo:
         field_type=str,
         default_value=None,
         init=False,
-        operators=iter([]),
+        operators=tuple(),
     )
     return df
 
@@ -176,7 +176,7 @@ def test_annotation_pipeline_no_operators(
     dummy_field_info: FieldInfo,
 ) -> None:
     # Doing Annotated but there aren't any operators, which is an error
-    dummy_field_info.operators = iter([])
+    dummy_field_info.operators = tuple()
     field_is_container = AnnotationPipeline(dummy_field_info, {}, dummy_container)
     result: Result = field_is_container()
     assert isinstance(result, Error)
