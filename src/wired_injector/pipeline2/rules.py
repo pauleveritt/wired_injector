@@ -106,15 +106,8 @@ class AnnotationPipeline:
     target: Optional[Callable[..., Any]] = None
 
     def __call__(self) -> Result:
-        # TODO Next This should be the outermost pipeline, which
-        #   means changing the rule protocol to make one and pass
-        #   into each rule.
-        pipeline = DefaultPipeline(
-            container=self.container,
-            target=self.target,
-        )
         result: Result = process_field_pipeline(
             operators=self.field_info.operators,
-            pipeline=pipeline,
+            pipeline=self.pipeline,
         )
         return result
