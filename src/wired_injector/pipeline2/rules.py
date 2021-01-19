@@ -5,11 +5,14 @@ from dataclasses import dataclass
 from typing import Type, Optional, Any, Iterator, Dict, Callable
 
 from wired import ServiceContainer
+from wired_injector.pipeline2.default_pipeline import DefaultPipeline
+from wired_injector.pipeline2.field_pipeline import process_field_pipeline
 
 from . import Container, FieldInfo, Operator, Result
 from .results import (
     Init,
-    Skip, Found,
+    Skip,
+    Found,
 )
 
 
@@ -24,7 +27,7 @@ class DefaultFieldInfo:
 
 
 @dataclass
-class FieldIsInit:
+class IsInit:
     """ If this is a dataclass field with init=False, skip """
 
     field_info: FieldInfo
@@ -43,7 +46,7 @@ class FieldIsInit:
 
 
 @dataclass
-class FieldIsInProps:
+class IsInProps:
     """ If field in passed-in props or system props, return value """
 
     field_info: FieldInfo
@@ -70,7 +73,7 @@ class FieldIsInProps:
 
 
 @dataclass
-class FieldIsContainer:
+class IsContainer:
     """ If the field is asking for a ServiceContainer, return it """
 
     field_info: FieldInfo
@@ -85,3 +88,28 @@ class FieldIsContainer:
 
         # Nothing matched, so skip
         return Skip(value=self.field_info.field_type)
+
+
+@dataclass
+class AnnotationPipeline:
+    """ If field pipeline, process it, else, bail out """
+
+    field_info: FieldInfo
+    props: Dict[str, Any]
+    container: Container
+    system_props: Optional[Dict[str, Any]] = None
+    target: Optional[Callable[..., Any]] = None
+
+    def __call__(self) -> Result:
+        # TODO Next This should be the outermost pipeline, which
+        #   means changing the rule protocol to make one and pass
+        #   into each rule.
+        pipeline = DefaultPipeline(
+            container=self.container,
+            target=self.target,
+        )
+        result: Result = process_field_pipeline(
+            operators=self.field_info.operators,
+            pipeline=pipeline,
+        )
+        return result

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Optional
 
 from . import Container
 
@@ -12,3 +12,11 @@ class DefaultPipeline:
 
     container: Container
     target: Any
+
+    def lookup(self, lookup_key: Any) -> Optional[Any]:
+        """ Type-safe limited usage wrapper around container.get"""
+        return None
+
+    def inject(self, lookup_key: Any) -> Optional[Any]:
+        """Type-safe, replaceable wrapper around the injector """
+        return None

@@ -67,10 +67,11 @@ def test_field_not_found(dummy_pipeline: Pipeline) -> None:
     assert Field == result.value
 
 
-def test_field_target_is_named_tuple(dummy_pipeline: Pipeline) -> None:
-    class TupleTarget(NamedTuple):
-        title: str = 'Some TupleTarget'
+class TupleTarget(NamedTuple):
+    title: str = 'Some TupleTarget'
 
+
+def test_field_target_is_named_tuple(dummy_pipeline: Pipeline) -> None:
     dummy_pipeline.target = TupleTarget
     field = Field('title')
     result = field(None, dummy_pipeline)
@@ -78,10 +79,11 @@ def test_field_target_is_named_tuple(dummy_pipeline: Pipeline) -> None:
     assert 'Some TupleTarget' == result.value
 
 
-def test_field_target_is_function(dummy_pipeline: Pipeline) -> None:
-    def FunctionTarget(title: str = 'Some FunctionTarget') -> str:
-        return title
+def FunctionTarget(title: str = 'Some FunctionTarget') -> str:
+    return title
 
+
+def test_field_target_is_function(dummy_pipeline: Pipeline) -> None:
     dummy_pipeline.target = FunctionTarget
     field = Field('title')
     result = field(None, dummy_pipeline)

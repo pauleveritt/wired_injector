@@ -16,7 +16,13 @@ def process_field_pipeline(
     """ Process each operator in the pipeline and return the result """
 
     # Get the first operator
-    result = next(operators)(None, pipeline)
+    try:
+        result = next(operators)(None, pipeline)
+    except StopIteration:
+        # This means the pipeline was empty,which is an error
+        msg = f'Annotated was used with no subsequent operators'
+        return Error(msg=msg, value=Operator)
+
     # If this is an error, don't process any more operators
     if isinstance(result, Error):
         return result
