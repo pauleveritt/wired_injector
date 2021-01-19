@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Any, Dict, TypeVar, Type, Optional
+from typing import Any, Dict, TypeVar, Type, Optional, Callable
 
 import pytest
 from wired_injector.pipeline2 import (
@@ -47,7 +47,9 @@ class DummyTarget:
 @dataclass
 class DummyPipeline:
     container: Container = field(default_factory=DummyContainer)
-    target: Any = DummyTarget
+    props: Dict[str, Any] = field(default_factory=dict)
+    system_props: Optional[Dict[str, Any]] = None
+    target: Callable[..., Any] = DummyTarget
 
     def lookup(self, lookup_key: Any) -> Optional[Any]:
         """ Type-safe limited usage wrapper around container.get"""

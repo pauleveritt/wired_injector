@@ -33,7 +33,9 @@ class Pipeline(Protocol):
     """
 
     container: Container
-    target: Any
+    props: Dict[str, Any]
+    target: Callable[..., Any]
+    system_props: Optional[Dict[str, Any]] = None
 
     def lookup(self, lookup_key: Any) -> Optional[Any]:
         """ Type-safe limited usage wrapper around container.get"""

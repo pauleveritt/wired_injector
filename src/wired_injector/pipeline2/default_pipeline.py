@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Any, Optional, Dict, Callable
 
 from . import Container
 
@@ -11,7 +11,9 @@ class DefaultPipeline:
     """
 
     container: Container
-    target: Any
+    props: Dict[str, Any]
+    target: Callable[..., Any]
+    system_props: Optional[Dict[str, Any]] = None
 
     def lookup(self, lookup_key: Any) -> Optional[Any]:
         """ Type-safe limited usage wrapper around container.get"""
