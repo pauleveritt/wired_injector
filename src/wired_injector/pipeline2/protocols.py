@@ -97,11 +97,7 @@ class Rule(Protocol):
     """
 
     field_info: FieldInfo
-    props: Dict[str, Any]
-    container: Container
-    pipeline: Optional[Pipeline]
-    system_props: Optional[Dict[str, Any]]
-    target: Optional[Callable[..., Any]]
+    pipeline: Pipeline
 
     def __call__(self) -> Result:
         ...
