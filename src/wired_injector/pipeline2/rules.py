@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from typing import Type, Optional, Any, Dict, Callable, Sequence
 
 from wired import ServiceContainer
+from wired_injector.pipeline2 import Pipeline
 from wired_injector.pipeline2.default_pipeline import DefaultPipeline
 from wired_injector.pipeline2.field_pipeline import process_field_pipeline
 
@@ -33,6 +34,7 @@ class IsInit:
     field_info: FieldInfo
     props: Dict[str, Any]
     container: Container
+    pipeline: Pipeline
     system_props: Optional[Dict[str, Any]] = None
     target: Optional[Callable[..., Any]] = None
 
@@ -52,6 +54,7 @@ class IsInProps:
     field_info: FieldInfo
     props: Dict[str, Any]
     container: Container
+    pipeline: Pipeline
     system_props: Optional[Dict[str, Any]] = None
     target: Optional[Callable[..., Any]] = None
 
@@ -79,6 +82,7 @@ class IsContainer:
     field_info: FieldInfo
     props: Dict[str, Any]
     container: Container
+    pipeline: Pipeline
     system_props: Optional[Dict[str, Any]] = None
     target: Optional[Callable[..., Any]] = None
 
@@ -97,6 +101,7 @@ class AnnotationPipeline:
     field_info: FieldInfo
     props: Dict[str, Any]
     container: Container
+    pipeline: Pipeline
     system_props: Optional[Dict[str, Any]] = None
     target: Optional[Callable[..., Any]] = None
 
