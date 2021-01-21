@@ -1,12 +1,15 @@
 from dataclasses import dataclass, field
-from typing import Any, Dict, TypeVar, Type, Optional, Callable
+from typing import Any, Dict, TypeVar, Type, Optional, Callable, Sequence, NamedTuple
 
 import pytest
 from wired_injector.pipeline2 import (
     Container,
-    Pipeline, Result,
+    FieldInfo,
+    Pipeline,
+    Result,
 )
 from wired_injector.pipeline2.results import Found
+from wired_injector.pipeline2.rules import DefaultFieldInfo
 
 try:
     from typing import Protocol
@@ -41,12 +44,26 @@ class DummyContext:
 
 @dataclass
 class DummyTarget:
+    age: int
     title: str = 'Dummy Target'
+
+
+class DummyTargetNamedTuple(NamedTuple):
+    age: int
+    title: str = 'Dummy Target'
+
+
+def dummy_target_function(
+    age: int,
+    title: str = 'Dummy Target',
+) -> DummyTarget:
+    return DummyTarget(age=age, title=title)
 
 
 @dataclass
 class DummyPipeline:
     container: Container = field(default_factory=DummyContainer)
+    field_infos: Sequence[FieldInfo] = tuple()
     props: Dict[str, Any] = field(default_factory=dict)
     system_props: Optional[Dict[str, Any]] = None
     target: Callable[..., Any] = DummyTarget
@@ -86,5 +103,36 @@ def dummy_container() -> DummyContainer:
 
 
 @pytest.fixture
-def dummy_pipeline(dummy_container: DummyContainer) -> Pipeline:
-    return DummyPipeline(container=dummy_container)
+def dummy_title_field() -> FieldInfo:
+    df = DefaultFieldInfo(
+        field_name='title',
+        field_type=str,
+        default_value=None,
+        init=False,
+        operators=tuple(),
+    )
+    return df
+
+
+@pytest.fixture
+def dummy_age_field() -> FieldInfo:
+    df = DefaultFieldInfo(
+        field_name='age',
+        field_type=str,
+        default_value=None,
+        init=False,
+        operators=tuple(),
+    )
+    return df
+
+
+@pytest.fixture
+def dummy_pipeline(
+    dummy_age_field: FieldInfo,
+    dummy_container: DummyContainer,
+    dummy_title_field: FieldInfo,
+) -> Pipeline:
+    return DummyPipeline(
+        container=dummy_container,
+        field_infos=(dummy_title_field, dummy_age_field,)
+    )

@@ -33,6 +33,7 @@ class Pipeline(Protocol):
     """
 
     container: Container
+    field_infos: Sequence[FieldInfo]
     props: Dict[str, Any]
     target: Callable[..., Any]
     system_props: Optional[Dict[str, Any]] = None
