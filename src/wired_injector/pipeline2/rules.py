@@ -94,7 +94,8 @@ class IsSimpleType:
     def __call__(self) -> Result:
         if not self.field_info.has_annotated:
             # No annotation, this rule matches
-            return Found(value=self.pipeline.container)
+            value = self.pipeline.container.get(self.field_info.field_type)
+            return Found(value=value)
 
         # Nothing matched, so skip
         return Skip(value=self.field_info.field_type)

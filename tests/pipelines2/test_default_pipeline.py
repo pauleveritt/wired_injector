@@ -59,7 +59,7 @@ def test_construction_function_target(
     assert 'title' == meets_protocol.field_infos[1].field_name
 
 
-def test_apply_pipeline(
+def test_apply_pipeline_one(
     dummy_container: Container,
 ) -> None:
     pipeline = DefaultPipeline(

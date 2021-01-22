@@ -5,7 +5,7 @@ import sys
 from dataclasses import dataclass, field, fields
 from typing import Optional, List
 
-from wired_injector.field_info import dataclass_field_info_factory
+from wired_injector.pipeline2.field_info import dataclass_field_info_factory
 from wired_injector.operators import Get
 
 from wired_injector.pipeline2 import FieldInfo

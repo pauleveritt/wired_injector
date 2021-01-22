@@ -3,7 +3,7 @@ from dataclasses import dataclass, is_dataclass, fields, field
 from inspect import signature
 from typing import Any, Optional, Dict, Callable, Sequence, Tuple, Type
 
-from wired_injector.field_info import dataclass_field_info_factory, function_field_info_factory
+from wired_injector.pipeline2.field_info import dataclass_field_info_factory, function_field_info_factory
 from . import Result
 from .results import (
     Error,
@@ -47,10 +47,10 @@ class DefaultPipeline:
     """
 
     container: Container
-    field_infos: Sequence[FieldInfo] = field(init=False)
     props: Dict[str, Any]
     target: Target
     system_props: Optional[Dict[str, Any]] = None
+    field_infos: Sequence[FieldInfo] = field(init=False)
 
     def __post_init__(self):
         """ For the target, extract each field into sequence of field info """

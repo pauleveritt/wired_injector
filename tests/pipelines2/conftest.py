@@ -123,6 +123,7 @@ def dummy_annotated_field() -> FieldInfo:
         default_value=None,
         init=False,
         operators=(Context(), ),
+        has_annotated=True,
     )
     return df
 

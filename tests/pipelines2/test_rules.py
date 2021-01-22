@@ -15,6 +15,7 @@ from wired_injector.pipeline2.rules import (
     IsSimpleType,
 )
 
+from .conftest import DummyTarget
 
 def test_default_field_info(dummy_title_field: FieldInfo) -> None:
     # Ensure it meets the protocol
@@ -163,11 +164,14 @@ def test_is_simple_type(
     dummy_title_field: FieldInfo,
     dummy_pipeline: Pipeline,
 ) -> None:
-    dummy_title_field.field_type = ServiceContainer
-    field_is_container = IsSimpleType(dummy_title_field, dummy_pipeline)
-    result: Result = field_is_container()
+    fake_lookups = getattr(dummy_pipeline.container, 'fake_lookups')
+    dt = DummyTarget(age=99)
+    fake_lookups[DummyTarget] = dt
+    dummy_title_field.field_type = DummyTarget
+    field_is_simple_type = IsSimpleType(dummy_title_field, dummy_pipeline)
+    result: Result = field_is_simple_type()
     assert isinstance(result, Found)
-    assert dummy_pipeline.container == result.value
+    assert result.value == dt
 
 
 def test_is_not_simple_type(
@@ -176,8 +180,8 @@ def test_is_not_simple_type(
 ) -> None:
     # This has a field with annotated type, so the rule doesn't match,
     # and instead it skips.
-    field_is_container = IsContainer(dummy_annotated_field, dummy_pipeline)
-    result: Result = field_is_container()
+    field_is_not_simple_type = IsSimpleType(dummy_annotated_field, dummy_pipeline)
+    result: Result = field_is_not_simple_type()
     assert isinstance(result, Skip)
     assert str == result.value
 
