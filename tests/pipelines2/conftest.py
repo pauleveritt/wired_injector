@@ -8,6 +8,7 @@ from wired_injector.pipeline2 import (
     Pipeline,
     Result,
 )
+from wired_injector.pipeline2.operators import Context
 from wired_injector.pipeline2.results import Found
 from wired_injector.pipeline2.rules import DefaultFieldInfo
 
@@ -110,6 +111,18 @@ def dummy_title_field() -> FieldInfo:
         default_value=None,
         init=False,
         operators=tuple(),
+    )
+    return df
+
+
+@pytest.fixture
+def dummy_annotated_field() -> FieldInfo:
+    df = DefaultFieldInfo(
+        field_name='title',
+        field_type=str,
+        default_value=None,
+        init=False,
+        operators=(Context(), ),
     )
     return df
 

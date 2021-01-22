@@ -171,11 +171,12 @@ def test_is_simple_type(
 
 
 def test_is_not_simple_type(
-    dummy_title_field: FieldInfo,
+    dummy_annotated_field: FieldInfo,
     dummy_pipeline: Pipeline,
 ) -> None:
-    # The field is NOT asking for field_type=ServiceContainer
-    field_is_container = IsContainer(dummy_title_field, dummy_pipeline)
+    # This has a field with annotated type, so the rule doesn't match,
+    # and instead it skips.
+    field_is_container = IsContainer(dummy_annotated_field, dummy_pipeline)
     result: Result = field_is_container()
     assert isinstance(result, Skip)
     assert str == result.value

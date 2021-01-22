@@ -12,7 +12,7 @@ from examples.factories import (
 try:
     from typing import Annotated
 except ImportError:
-    from typing_extensions import Annotated  # type: ignore
+    from typing_extensions import Annotated  # type: ignore  # noqa: F401
 
 
 def test_no_parameters(regular_injector):

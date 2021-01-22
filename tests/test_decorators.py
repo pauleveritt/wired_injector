@@ -18,7 +18,7 @@ from wired_injector.operators import Attr, Context, Get
 try:
     from typing import Annotated
 except ImportError:
-    from typing_extensions import Annotated  # type: ignore
+    from typing_extensions import Annotated  # type: ignore  # noqa: F401
 
 
 class FirstContext:

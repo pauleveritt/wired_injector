@@ -21,7 +21,7 @@ class FrenchCustomer(Customer):
 try:
     from typing import Annotated
 except ImportError:
-    from typing_extensions import Annotated  # type: ignore
+    from typing_extensions import Annotated  # type: ignore  # noqa: F401
 
 # get_type_hints is augmented in Python 3.9. We need to use
 # typing_extensions if not running on an older version

@@ -92,7 +92,8 @@ class IsSimpleType:
     pipeline: Pipeline
 
     def __call__(self) -> Result:
-        if self.field_info.field_type is ServiceContainer:
+        if not self.field_info.has_annotated:
+            # No annotation, this rule matches
             return Found(value=self.pipeline.container)
 
         # Nothing matched, so skip

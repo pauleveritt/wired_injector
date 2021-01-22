@@ -14,7 +14,7 @@ from examples.factories import Customer, FrenchCustomer
 try:
     from typing import Annotated
 except ImportError:
-    from typing_extensions import Annotated  # type: ignore
+    from typing_extensions import Annotated  # type: ignore  # noqa: F401
 
 
 def _get_field_infos(target) -> List[FieldInfo]:
