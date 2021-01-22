@@ -2,28 +2,29 @@
 Operate on the info in a field until a value is produced.
 """
 from dataclasses import dataclass
-from typing import Type, Optional, Any, Dict, Callable, Sequence
+from typing import Type, Optional, Any, Sequence
 
 from wired import ServiceContainer
 from wired_injector.pipeline2 import Pipeline
 from wired_injector.pipeline2.field_pipeline import process_field_pipeline
 
-from . import Container, FieldInfo, Operator, Result
+from . import FieldInfo, Operator, Result
 from .results import (
     Init,
-    Skip,
     Found,
+    Skip,
 )
 
 
 @dataclass
 class DefaultFieldInfo:
     """ Default implementation of the ``FieldInfo`` protocol """
+    default_value: Optional[Any]
     field_name: str
     field_type: Type[Any]
-    default_value: Optional[Any]
     init: bool  # Dataclasses can flag init=False
     operators: Sequence[Operator]
+    has_annotated: bool = False
 
 
 @dataclass
@@ -49,7 +50,6 @@ class IsInProps:
     field_info: FieldInfo
     pipeline: Pipeline
 
-
     def __call__(self) -> Result:
         props = self.pipeline.props
         system_props = self.pipeline.system_props
@@ -72,6 +72,21 @@ class IsInProps:
 @dataclass
 class IsContainer:
     """ If the field is asking for a ServiceContainer, return it """
+
+    field_info: FieldInfo
+    pipeline: Pipeline
+
+    def __call__(self) -> Result:
+        if self.field_info.field_type is ServiceContainer:
+            return Found(value=self.pipeline.container)
+
+        # Nothing matched, so skip
+        return Skip(value=self.field_info.field_type)
+
+
+@dataclass
+class IsSimpleType:
+    """ Just a type hint, no annotations """
 
     field_info: FieldInfo
     pipeline: Pipeline

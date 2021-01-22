@@ -85,6 +85,7 @@ class FieldInfo(Protocol):
     default_value: Optional[Any]
     init: bool  # Dataclasses can flag init=False
     operators: Sequence[Operator]
+    has_annotated: bool
 
 
 class Rule(Protocol):
