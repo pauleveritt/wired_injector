@@ -8,10 +8,11 @@ from wired_injector.pipeline2 import (
 )
 from wired_injector.pipeline2.results import Init, Skip, Found, Error
 from wired_injector.pipeline2.rules import (
-    IsInit,
-    IsInProps,
-    IsContainer,
     AnnotationPipeline,
+    IsContainer,
+    IsInProps,
+    IsInit,
+    IsSimpleType,
 )
 
 
@@ -156,6 +157,28 @@ def test_is_container(
     result: Result = field_is_container()
     assert isinstance(result, Found)
     assert dummy_pipeline.container == result.value
+
+
+def test_is_simple_type(
+    dummy_title_field: FieldInfo,
+    dummy_pipeline: Pipeline,
+) -> None:
+    dummy_title_field.field_type = ServiceContainer
+    field_is_container = IsSimpleType(dummy_title_field, dummy_pipeline)
+    result: Result = field_is_container()
+    assert isinstance(result, Found)
+    assert dummy_pipeline.container == result.value
+
+
+def test_is_not_simple_type(
+    dummy_title_field: FieldInfo,
+    dummy_pipeline: Pipeline,
+) -> None:
+    # The field is NOT asking for field_type=ServiceContainer
+    field_is_container = IsContainer(dummy_title_field, dummy_pipeline)
+    result: Result = field_is_container()
+    assert isinstance(result, Skip)
+    assert str == result.value
 
 
 def test_annotation_pipeline_no_operators(

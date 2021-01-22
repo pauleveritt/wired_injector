@@ -8,9 +8,9 @@ from wired import ServiceContainer
 from wired_injector.field_info import (
     function_field_info_factory,
     dataclass_field_info_factory,
-    FieldInfo,
 )
-from wired_injector.pipeline import Pipeline
+from .pipeline import Pipeline
+from .pipeline2 import FieldInfo
 
 # get_type_hints is augmented in Python 3.9. We need to use
 # typing_extensions if not running on an older version

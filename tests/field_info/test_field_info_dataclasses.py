@@ -5,9 +5,10 @@ import sys
 from dataclasses import dataclass, field, fields
 from typing import Optional, List
 
-from wired_injector.field_info import FieldInfo, dataclass_field_info_factory
+from wired_injector.field_info import dataclass_field_info_factory
 from wired_injector.operators import Get
 
+from wired_injector.pipeline2 import FieldInfo
 
 class Customer:
     pass
@@ -76,6 +77,7 @@ def test_init_false():
     assert field_infos[0].field_type == str
     assert field_infos[0].default_value is None
     assert field_infos[0].init is False
+    assert field_infos[0].has_annotated is False
 
 
 def test_annotation():
@@ -88,6 +90,7 @@ def test_annotation():
     assert field_infos[0].field_type is Customer
     assert field_infos[0].default_value is None
     assert field_infos[0].operators == (Get(FrenchCustomer),)
+    assert field_infos[0].has_annotated is True
 
 
 def test_optional():

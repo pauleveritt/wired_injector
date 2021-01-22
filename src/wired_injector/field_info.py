@@ -13,6 +13,8 @@ from dataclasses import Field, MISSING
 from inspect import Parameter
 from typing import NamedTuple, Optional, Type, Any, Tuple, Union, TYPE_CHECKING
 
+from wired_injector.pipeline2.rules import DefaultFieldInfo
+
 if TYPE_CHECKING:
     from wired_injector.operators import Operator
 
@@ -28,14 +30,6 @@ try:
     from typing import get_origin
 except ImportError:  # pragma: no cover
     from typing_utils import get_origin  # type: ignore
-
-
-class FieldInfo(NamedTuple):
-    field_name: str
-    field_type: Type
-    default_value: Optional[Any]
-    init: bool  # Dataclasses can flag init=False
-    operators: Tuple['Operator', ...]
 
 
 def _get_field_origin(field_type: Type) -> Type:
@@ -58,7 +52,7 @@ def _get_pipeline(field_type: Type):
     return field_type, tuple(operators)
 
 
-def function_field_info_factory(parameter: Parameter) -> FieldInfo:
+def function_field_info_factory(parameter: Parameter) -> DefaultFieldInfo:
     field_type = parameter.annotation
 
     # Is this a generic, such as Optional[ServiceContainer]?
@@ -73,7 +67,7 @@ def function_field_info_factory(parameter: Parameter) -> FieldInfo:
     else:
         default_value = parameter.default
 
-    return FieldInfo(
+    return DefaultFieldInfo(
         field_name=parameter.name,
         field_type=field_type,
         default_value=default_value,
@@ -82,22 +76,24 @@ def function_field_info_factory(parameter: Parameter) -> FieldInfo:
     )
 
 
-def dataclass_field_info_factory(field: Field) -> FieldInfo:
+def dataclass_field_info_factory(field: Field) -> DefaultFieldInfo:
     field_type = field.type
 
     # Is this a generic, such as Optional[ServiceContainer]?
     field_type = _get_field_origin(field_type)
 
     # Using Annotation[] ??
+    has_annotated = hasattr(field_type, '__metadata__')
     field_type, operators = _get_pipeline(field_type)
 
     # Default values
     default_value = None if field.default is MISSING else field.default
 
-    return FieldInfo(
+    return DefaultFieldInfo(
         field_name=field.name,
         field_type=field_type,
         default_value=default_value,
         init=field.init,
         operators=tuple(operators),
+        has_annotated=has_annotated,
     )

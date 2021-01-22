@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from wired import ServiceContainer
-from wired_injector.field_info import FieldInfo
+from wired_injector.pipeline2 import FieldInfo
 
 
 @dataclass

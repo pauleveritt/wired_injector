@@ -19,11 +19,11 @@ from .results import (
 @dataclass
 class DefaultFieldInfo:
     """ Default implementation of the ``FieldInfo`` protocol """
-    default_value: Optional[Any]
     field_name: str
     field_type: Type[Any]
-    init: bool  # Dataclasses can flag init=False
-    operators: Sequence[Operator]
+    default_value: Optional[Any] = None
+    init: bool = True  # Dataclasses can flag init=False
+    operators: Sequence[Operator] = tuple()
     has_annotated: bool = False
 
 

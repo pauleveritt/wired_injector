@@ -64,7 +64,7 @@ def test_apply_pipeline(
 ) -> None:
     pipeline = DefaultPipeline(
         container=dummy_container,
-        props=dict(age=99),
+        props=dict(age=9999),
         system_props={},
         target=DummyTarget,
     )

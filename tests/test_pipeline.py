@@ -1,13 +1,14 @@
 from dataclasses import dataclass
 from typing import Tuple
 
-from wired_injector.field_info import FieldInfo
 from wired_injector.operators import (
     Get,
     Attr,
     Context, Operator,
 )
 from wired_injector.pipeline import Pipeline
+from wired_injector.pipeline2 import FieldInfo
+from wired_injector.pipeline2.rules import DefaultFieldInfo
 
 from examples.factories import View
 
@@ -21,7 +22,7 @@ def field_info_no_default_value(
     operators: Tuple[Operator, ...],
 ) -> FieldInfo:
     """ A field with NO default value """
-    fi = FieldInfo(
+    fi = DefaultFieldInfo(
         field_name='title',
         field_type=str,
         default_value=None,

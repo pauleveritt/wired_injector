@@ -2,17 +2,13 @@ from dataclasses import dataclass
 from typing import NamedTuple, Tuple, Optional, Callable
 
 import pytest
-from wired_injector.field_info import FieldInfo
 from wired_injector.injector import SkipField
 from wired_injector.operators import (
-    Get,
-    Attr,
     Context,
     Field, Operator,
 )
 from wired_injector.pipeline import Pipeline
-
-from examples.factories import Customer, View, Greeting
+from wired_injector.pipeline2.rules import DefaultFieldInfo
 
 
 @dataclass
@@ -25,7 +21,7 @@ def make_pipeline(
     operators: Tuple['Operator', ...],
     target: Optional[Callable] = Target,
 ) -> Pipeline:
-    field_info = FieldInfo(
+    field_info = DefaultFieldInfo(
         field_name='title',
         field_type=str,
         default_value=None,
