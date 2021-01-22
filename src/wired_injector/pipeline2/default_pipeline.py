@@ -12,7 +12,13 @@ from .results import (
     NotFound,
     Skip,
 )
-from .rules import IsInit, IsInProps, IsContainer, AnnotationPipeline
+from .rules import (
+    AnnotationPipeline,
+    IsContainer,
+    IsInProps,
+    IsInit,
+    IsSimpleType,
+)
 
 from . import Container, FieldInfo
 
@@ -29,6 +35,7 @@ RULES: Tuple[Type[Any], ...] = (
     IsInit,
     IsInProps,
     IsContainer,
+    IsSimpleType,
     AnnotationPipeline,
 )
 

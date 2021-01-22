@@ -64,10 +64,9 @@ def test_apply_pipeline(
 ) -> None:
     pipeline = DefaultPipeline(
         container=dummy_container,
-        props=dict(age=9999),
+        props=dict(age=99),
         system_props={},
         target=DummyTarget,
     )
     dummy_target: DummyTarget = pipeline()
     assert 99 == dummy_target.age
-    # assert 9 == dummy_target.age
