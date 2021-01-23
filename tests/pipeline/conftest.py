@@ -100,10 +100,6 @@ class DummyPipeline:
     system_props: Optional[Dict[str, Any]] = None
     target: Callable[..., Any] = DummyTarget
 
-    # def lookup(self, lookup_key: Any, default: Optional[Any] = None) -> Optional[Any]:
-    #     """ Type-safe limited usage wrapper around container.get"""
-    #     return self.container.get(lookup_key, default=default)
-
 
 @dataclass
 class DummyNoOp:
