@@ -30,8 +30,8 @@ class Container(Protocol):
         self,
         iface_or_type=Any,
         *,
-        cget_props: Optional[Mapping[str, Any]],
-        system_props: Optional[Mapping[str, Any]],
+        cget_props: Optional[Mapping[str, Any]] = None,
+        system_props: Optional[Mapping[str, Any]] = None,
         **kwargs,
     ) -> Any:
         ...

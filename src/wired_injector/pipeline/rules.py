@@ -106,7 +106,7 @@ class IsSimpleType:
                 # ...then wired tries to do obj.__qualname__ and fails
                 return Skip(value=IsSimpleType)
 
-            value = self.pipeline.container.get(fi.field_type)
+            value = self.pipeline.container.get(fi.field_type, default=None)
             if value is None:
                 # That field type is not in the container, bail with
                 # a NotFound

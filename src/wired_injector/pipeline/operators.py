@@ -29,7 +29,7 @@ class Get:
             return Error(msg=msg, value=Get)
 
         # Try to get an instance (or a class, if it is injectable)
-        value = pipeline.container.get(self.lookup_key)
+        value = pipeline.container.get(self.lookup_key, default=None)
         if value is None:
             lookup_name = self.lookup_key.__name__
             msg = f"No service '{lookup_name}' found in container"

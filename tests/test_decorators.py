@@ -13,7 +13,7 @@ from dataclasses import dataclass
 import pytest
 from wired.dataclasses import register_dataclass
 from wired_injector import injectable, Injector, InjectorRegistry
-from wired_injector.operators import Attr, Context, Get
+from wired_injector.pipeline.operators import Attr, Context, Get
 
 try:
     from typing import Annotated
