@@ -67,6 +67,7 @@ def test_default_value():
     assert field_infos[0].field_name == 'customer_name'
     assert field_infos[0].field_type == str
     assert field_infos[0].default_value == 'Some Customer'
+    assert field_infos[0].has_annotated is False
 
 
 def test_annotation():
@@ -78,6 +79,7 @@ def test_annotation():
     assert field_infos[0].field_type is Customer
     assert field_infos[0].default_value is None
     assert field_infos[0].operators == (Get(FrenchCustomer),)
+    assert field_infos[0].has_annotated is True
 
 
 def test_annotation_optional():
@@ -89,3 +91,4 @@ def test_annotation_optional():
     assert field_infos[0].field_type is Customer
     assert field_infos[0].default_value is None
     assert field_infos[0].operators == (Get(FrenchCustomer),)
+    assert field_infos[0].has_annotated is True

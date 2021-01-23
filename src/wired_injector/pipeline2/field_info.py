@@ -59,6 +59,7 @@ def function_field_info_factory(parameter: Parameter) -> DefaultFieldInfo:
     field_type = _get_field_origin(field_type)
 
     # Using Annotation[] ??
+    has_annotated = hasattr(field_type, '__metadata__')
     field_type, operators = _get_pipeline(field_type)
 
     # Default values
@@ -73,6 +74,7 @@ def function_field_info_factory(parameter: Parameter) -> DefaultFieldInfo:
         default_value=default_value,
         init=True,
         operators=tuple(operators),
+        has_annotated=has_annotated,
     )
 
 

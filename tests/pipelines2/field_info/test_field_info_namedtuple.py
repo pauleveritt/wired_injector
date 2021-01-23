@@ -75,6 +75,7 @@ def test_default_value():
     assert field_infos[0].field_name == 'customer_name'
     assert field_infos[0].field_type == str
     assert field_infos[0].default_value == 'Some Customer'
+    assert field_infos[0].has_annotated is False
 
 
 class Target5(NamedTuple):
@@ -99,3 +100,4 @@ class Target6(NamedTuple):
 def test_annotation():
     field_infos = _get_field_infos(Target6)
     assert (Get(FrenchCustomer),) == field_infos[0].operators
+    assert field_infos[0].has_annotated is True
