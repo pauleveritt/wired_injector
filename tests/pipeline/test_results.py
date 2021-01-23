@@ -61,6 +61,5 @@ def test_skip() -> None:
     assert meets_protocol
 
     # Now test construction
-    msg = ''
     result = Skip(value=DummyLookupClass)
     assert DummyLookupClass == result.value

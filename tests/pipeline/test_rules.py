@@ -1,6 +1,6 @@
 import sys
 from dataclasses import dataclass, fields
-from typing import Dict, Any, Tuple
+from typing import Tuple
 
 from wired import ServiceContainer
 from wired_injector.pipeline import (
@@ -12,7 +12,6 @@ from wired_injector.pipeline.field_info import dataclass_field_info_factory
 from wired_injector.pipeline.results import (
     Init,
     Found,
-    NotFound,
     Skip,
 )
 from wired_injector.pipeline.rules import (
@@ -70,7 +69,6 @@ def test_is_in_props_no_props(
     dummy_pipeline: Pipeline,
 ) -> None:
     # No props
-    props: Dict[Any, Any] = {}
     field_is_props = IsInProps(dummy_title_field, dummy_pipeline)
     result: Result = field_is_props()
     assert isinstance(result, Skip)
@@ -234,7 +232,9 @@ def test_is_not_simple_type(
 ) -> None:
     # This has a field with annotated type, so the rule doesn't match,
     # and instead it skips.
-    field_is_not_simple_type = IsSimpleType(dummy_annotated_field, dummy_pipeline)
+    field_is_not_simple_type = IsSimpleType(
+        dummy_annotated_field, dummy_pipeline
+    )
     result: Result = field_is_not_simple_type()
     assert isinstance(result, Skip)
     assert IsSimpleType == result.value

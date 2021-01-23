@@ -96,7 +96,7 @@ class Context:
         # and let downstream try to get a field default.
         value = pipeline.container.context
         if value is None:
-            msg = f"Container context is None"
+            msg = 'Container context is None'
             return Error(msg=msg, value=Context)
 
         if self.attr is not None:

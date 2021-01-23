@@ -293,4 +293,3 @@ def test_result_notfound(regular_injector):
         regular_injector(Target)
     msg = "Target|view|IsSimpleType: No service 'Foo' found in container"
     assert exc.value.args[0] == msg
-

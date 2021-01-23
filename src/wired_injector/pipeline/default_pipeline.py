@@ -3,7 +3,10 @@ from dataclasses import dataclass, is_dataclass, fields, field
 from inspect import signature
 from typing import Any, Optional, Dict, Callable, Sequence, Tuple, Type
 
-from wired_injector.pipeline.field_info import dataclass_field_info_factory, function_field_info_factory
+from wired_injector.pipeline.field_info import (
+    dataclass_field_info_factory,
+    function_field_info_factory,
+)
 
 from . import Result, Container, FieldInfo
 from .results import (
@@ -80,7 +83,7 @@ class DefaultPipeline:
             result: Optional[Result] = None
             for rule in RULES:
                 r = rule(field_info, self)
-                result: Result = r()
+                result = r()
 
                 # These results cause processing to break and stop
                 # processing through any more rules.
@@ -92,7 +95,8 @@ class DefaultPipeline:
                     # of any more rules, but bail out completely of
                     # target construction, with a ValueError.
                     tn = self.target.__name__
-                    prefix = f'{tn}|{field_name}|{rule.__name__}|{result.value.__name__}'
+                    vn = result.value.__name__
+                    prefix = f'{tn}|{field_name}|{rule.__name__}|{vn}'
                     msg = f'{prefix}: {result.msg}'
                     raise ValueError(msg)
                 elif isinstance(result, Init):

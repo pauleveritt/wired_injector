@@ -1,6 +1,16 @@
 import sys
 from dataclasses import dataclass, field, fields
-from typing import Any, Dict, TypeVar, Type, Optional, Callable, Sequence, NamedTuple, List
+from typing import (
+    Any,
+    Dict,
+    TypeVar,
+    Type,
+    Optional,
+    Callable,
+    Sequence,
+    NamedTuple,
+    List,
+)
 
 import pytest
 from wired_injector.pipeline import (
@@ -46,7 +56,9 @@ class DummyContainer:
     context: Any = None
     fake_lookups: Dict[Any, Any] = field(default_factory=dict)
 
-    def get(self, lookup_value: Type[LookupType], default: Optional[Any] = None) -> Optional[LookupType]:
+    def get(
+        self, lookup_value: Type[LookupType], default: Optional[Any] = None
+    ) -> Optional[LookupType]:
         return self.fake_lookups.get(lookup_value)
 
     def inject(self, lookup_key: Any) -> Optional[Any]:
@@ -62,7 +74,9 @@ class DummyLookupClass:
 @dataclass
 class DummyDoubleLookupClass:
     title: str = 'Dummy Lookup Class'
-    dummy_lookup_class: DummyLookupClass = field(default_factory=DummyLookupClass)
+    dummy_lookup_class: DummyLookupClass = field(
+        default_factory=DummyLookupClass
+    )
 
 
 class DummyLookupProtocol(Protocol):
@@ -171,5 +185,8 @@ def dummy_pipeline(
 ) -> Pipeline:
     return DummyPipeline(
         container=dummy_container,
-        field_infos=(dummy_title_field, dummy_age_field,)
+        field_infos=(
+            dummy_title_field,
+            dummy_age_field,
+        ),
     )

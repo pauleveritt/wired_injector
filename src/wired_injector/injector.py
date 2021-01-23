@@ -1,6 +1,5 @@
-import typing
 from dataclasses import dataclass
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING, Dict
 
 if TYPE_CHECKING:
     from wired_injector import InjectorContainer
@@ -15,8 +14,6 @@ class Injector:
     The injector is a factory in a container which fetch the data
     needed for a factory, then call it. The injector is a per-container
     service.
-
-
     """
 
     container: 'InjectorContainer'
@@ -24,7 +21,7 @@ class Injector:
     def __call__(
         self,
         target: Any,
-        system_props: Optional[typing.Mapping[str, Any]] = None,
+        system_props: Optional[Dict[str, Any]] = None,
         **kwargs,
     ) -> Any:
         props = kwargs

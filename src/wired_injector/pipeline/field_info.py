@@ -11,12 +11,12 @@ import inspect
 import sys
 from dataclasses import Field, MISSING
 from inspect import Parameter
-from typing import NamedTuple, Optional, Type, Any, Tuple, Union, TYPE_CHECKING
+from typing import Type, Union, TYPE_CHECKING
 
 from wired_injector.pipeline.rules import DefaultFieldInfo
 
 if TYPE_CHECKING:
-    from wired_injector.operators import Operator
+    pass
 
 # get_args is augmented in Python 3.9. We need to use
 # typing_extensions if not running on an older version

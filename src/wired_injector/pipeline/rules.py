@@ -23,6 +23,7 @@ from .results import (
 @dataclass
 class DefaultFieldInfo:
     """ Default implementation of the ``FieldInfo`` protocol """
+
     field_name: str
     field_type: Type[Any]
     default_value: Optional[Any] = None
@@ -61,10 +62,7 @@ class IsInProps:
             # Props have precedence
             prop_value = props[self.field_info.field_name]
             return Found(value=prop_value)
-        elif (
-            system_props
-            and self.field_info.field_name in system_props
-        ):
+        elif system_props and self.field_info.field_name in system_props:
             # If the "system" passes in props behind the scenes, use it
             prop_value = system_props[self.field_info.field_name]
             return Found(value=prop_value)

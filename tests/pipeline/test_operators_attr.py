@@ -31,7 +31,6 @@ def test_attr_bogus_first(dummy_pipeline: Pipeline) -> None:
     # Attr shouldn't be the first item in the pipeline, otherwise,
     # it will be trying to pluck from None.
     attr = Attr('title')
-    previous = Found(value=DummyLookupClass())
     result: Result = attr(
         previous=None,
         pipeline=dummy_pipeline,
