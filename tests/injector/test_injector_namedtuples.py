@@ -2,7 +2,7 @@ from typing import Optional, NamedTuple
 
 from wired import ServiceContainer
 from wired_injector.injector import Injector
-from wired_injector.operators import Get, Attr
+from wired_injector.pipeline2.operators import Get, Attr
 
 from examples.factories import (
     View,
