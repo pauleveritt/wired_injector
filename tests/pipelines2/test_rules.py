@@ -190,9 +190,9 @@ def test_annotation_pipeline_no_operators(
     dummy_title_field: FieldInfo,
     dummy_pipeline: Pipeline,
 ) -> None:
-    # Doing Annotated but there aren't any operators, which is an error
+    # Doing Annotated but there aren't any operators, so Skip
+    # to allow default to do something.
     dummy_title_field.operators = tuple()
     field_is_container = AnnotationPipeline(dummy_title_field, dummy_pipeline)
     result: Result = field_is_container()
-    assert isinstance(result, Error)
-    assert 'Annotated was used with no subsequent operators' == result.msg
+    assert isinstance(result, Skip)

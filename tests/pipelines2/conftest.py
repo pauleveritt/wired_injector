@@ -25,7 +25,7 @@ class DummyContainer:
     context: Any = None
     fake_lookups: Dict[Any, Any] = field(default_factory=dict)
 
-    def get(self, lookup_value: Type[LookupType]) -> Optional[LookupType]:
+    def get(self, lookup_value: Type[LookupType], default: Optional[Any] = None) -> Optional[LookupType]:
         return self.fake_lookups.get(lookup_value)
 
 
@@ -69,9 +69,9 @@ class DummyPipeline:
     system_props: Optional[Dict[str, Any]] = None
     target: Callable[..., Any] = DummyTarget
 
-    def lookup(self, lookup_key: Any) -> Optional[Any]:
+    def lookup(self, lookup_key: Any, default: Optional[Any] = None) -> Optional[Any]:
         """ Type-safe limited usage wrapper around container.get"""
-        return self.container.get(lookup_key)
+        return self.container.get(lookup_key, default=default)
 
     def inject(self, lookup_key: Any) -> Optional[Any]:
         """ Type-safe limited usage wrapper around the injector """
@@ -122,7 +122,7 @@ def dummy_annotated_field() -> FieldInfo:
         field_type=str,
         default_value=None,
         init=False,
-        operators=(Context(), ),
+        operators=(Context(),),
         has_annotated=True,
     )
     return df

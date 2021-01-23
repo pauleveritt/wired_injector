@@ -4,7 +4,8 @@ from inspect import signature
 from typing import Any, Optional, Dict, Callable, Sequence, Tuple, Type
 
 from wired_injector.pipeline2.field_info import dataclass_field_info_factory, function_field_info_factory
-from . import Result
+
+from . import Result, Container, FieldInfo
 from .results import (
     Error,
     Found,
@@ -19,8 +20,6 @@ from .rules import (
     IsInit,
     IsSimpleType,
 )
-
-from . import Container, FieldInfo
 
 # get_type_hints is augmented in Python 3.9. We need to use
 # typing_extensions if not running on an older version
@@ -71,9 +70,9 @@ class DefaultPipeline:
                 function_field_info_factory(param) for param in parameters
             ]
 
-    def lookup(self, lookup_key: Any) -> Optional[Any]:
+    def lookup(self, lookup_key: Any, default: Optional[Any] = None) -> Optional[Any]:
         """ Type-safe limited usage wrapper around container.get"""
-        return self.container.get(lookup_key, default=None)
+        return self.container.get(lookup_key, default=default)
 
     def inject(self, lookup_key: Any) -> Optional[Any]:
         """Type-safe, replaceable wrapper around the injector """
