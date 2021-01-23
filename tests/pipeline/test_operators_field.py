@@ -72,7 +72,7 @@ class TupleTarget(NamedTuple):
 
 
 def test_field_target_is_named_tuple(dummy_pipeline: Pipeline) -> None:
-    dummy_pipeline.target = TupleTarget
+    setattr(dummy_pipeline, 'target', TupleTarget)
     field = Field('title')
     result = field(None, dummy_pipeline)
     assert isinstance(result, Found)
@@ -84,7 +84,7 @@ def FunctionTarget(title: str = 'Some FunctionTarget') -> str:
 
 
 def test_field_target_is_function(dummy_pipeline: Pipeline) -> None:
-    dummy_pipeline.target = FunctionTarget
+    setattr(dummy_pipeline, 'target', FunctionTarget())
     field = Field('title')
     result = field(None, dummy_pipeline)
     assert isinstance(result, Found)

@@ -2,7 +2,7 @@
 Test FieldInfo from parameters on a function.
 """
 from inspect import signature
-from typing import Optional, List
+from typing import Optional, List, Sequence
 
 from wired import ServiceContainer
 from wired_injector.pipeline import FieldInfo
@@ -17,7 +17,7 @@ except ImportError:
     from typing_extensions import Annotated  # type: ignore  # noqa: F401
 
 
-def _get_field_infos(target) -> List[FieldInfo]:
+def _get_field_infos(target) -> Sequence[FieldInfo]:
     # This is usually done by the thing that processes each field
 
     sig = signature(target)

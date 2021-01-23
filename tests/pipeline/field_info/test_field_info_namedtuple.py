@@ -2,7 +2,7 @@
 Test FieldInfo from fields on a namedtuple class.
 """
 from inspect import signature
-from typing import Optional, List, NamedTuple
+from typing import Optional, NamedTuple, Sequence
 
 from wired import ServiceContainer
 from wired_injector.pipeline import FieldInfo
@@ -17,7 +17,7 @@ except ImportError:
     from typing_extensions import Annotated  # type: ignore  # noqa: F401
 
 
-def _get_field_infos(target) -> List[FieldInfo]:
+def _get_field_infos(target) -> Sequence[FieldInfo]:
     # This is usually done by the thing that processes each field
 
     # Exact same as for functions

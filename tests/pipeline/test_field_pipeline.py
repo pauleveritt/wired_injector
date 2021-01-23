@@ -26,9 +26,8 @@ def single_pipeline(dummy_pipeline: Pipeline) -> Pipeline:
 def test_field_pipeline_zero(single_pipeline: Pipeline) -> None:
     # Empty operators. Really shouldn't happen, as it is an
     # error to use Annotated with nothing after the type.
-    operators = tuple()
     result: Result = process_field_pipeline(
-        operators=operators, pipeline=single_pipeline
+        operators=tuple(), pipeline=single_pipeline
     )
     assert isinstance(result, Skip)
 

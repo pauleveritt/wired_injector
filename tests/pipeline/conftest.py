@@ -9,7 +9,7 @@ from typing import (
     Callable,
     Sequence,
     NamedTuple,
-    List,
+    Mapping,
 )
 
 import pytest
@@ -39,7 +39,7 @@ else:
 LookupType = TypeVar('LookupType')
 
 
-def _get_field_infos(target) -> List[FieldInfo]:
+def _get_field_infos(target) -> Sequence[FieldInfo]:
     # We iterate through type hints to preserve ordering, though
     # perhaps it doesn't matter.
     type_hints = get_type_hints(target, include_extras=True)
@@ -61,9 +61,16 @@ class DummyContainer:
     ) -> Optional[LookupType]:
         return self.fake_lookups.get(lookup_value)
 
-    def inject(self, lookup_key: Any) -> Optional[Any]:
+    def inject(
+        self,
+        iface_or_type=Any,
+        *,
+        cget_props: Optional[Mapping[str, Any]] = None,
+        system_props: Optional[Mapping[str, Any]] = None,
+        **kwargs,
+    ) -> Any:
         """ Type-safe limited usage wrapper around the injector """
-        return self.get(lookup_key)
+        return self.get(iface_or_type)
 
 
 @dataclass

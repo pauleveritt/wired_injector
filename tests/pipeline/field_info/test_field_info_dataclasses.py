@@ -55,7 +55,8 @@ def test_more_generic():
 
     field_infos = _get_field_infos(View)
     assert field_infos[0].field_name == 'customer_name'
-    assert isinstance(field_infos[0].field_type, typing._GenericAlias)
+    ga = getattr(typing, '_GenericAlias')
+    assert isinstance(field_infos[0].field_type, ga)
     assert field_infos[0].default_value is None
     assert field_infos[0].init is True
 
