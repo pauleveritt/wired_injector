@@ -49,6 +49,10 @@ class DummyContainer:
     def get(self, lookup_value: Type[LookupType], default: Optional[Any] = None) -> Optional[LookupType]:
         return self.fake_lookups.get(lookup_value)
 
+    def inject(self, lookup_key: Any) -> Optional[Any]:
+        """ Type-safe limited usage wrapper around the injector """
+        return self.get(lookup_key)
+
 
 @dataclass
 class DummyLookupClass:
@@ -96,13 +100,9 @@ class DummyPipeline:
     system_props: Optional[Dict[str, Any]] = None
     target: Callable[..., Any] = DummyTarget
 
-    def lookup(self, lookup_key: Any, default: Optional[Any] = None) -> Optional[Any]:
-        """ Type-safe limited usage wrapper around container.get"""
-        return self.container.get(lookup_key, default=default)
-
-    def inject(self, lookup_key: Any) -> Optional[Any]:
-        """ Type-safe limited usage wrapper around the injector """
-        return self.container.get(lookup_key)
+    # def lookup(self, lookup_key: Any, default: Optional[Any] = None) -> Optional[Any]:
+    #     """ Type-safe limited usage wrapper around container.get"""
+    #     return self.container.get(lookup_key, default=default)
 
 
 @dataclass

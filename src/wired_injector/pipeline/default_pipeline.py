@@ -70,14 +70,6 @@ class DefaultPipeline:
                 function_field_info_factory(param) for param in parameters
             ]
 
-    def lookup(self, lookup_key: Any, default: Optional[Any] = None) -> Optional[Any]:
-        """ Type-safe limited usage wrapper around container.get"""
-        return self.container.get(lookup_key, default=default)
-
-    def inject(self, lookup_key: Any) -> Optional[Any]:
-        """Type-safe, replaceable wrapper around the injector """
-        raise NotImplementedError()
-
     def __call__(self) -> Any:
         args = {}
 

@@ -29,7 +29,7 @@ class Get:
             return Error(msg=msg, value=Get)
 
         # Try to get an instance (or a class, if it is injectable)
-        value = pipeline.lookup(self.lookup_key)
+        value = pipeline.container.get(self.lookup_key)
         if value is None:
             lookup_name = self.lookup_key.__name__
             msg = f"No service '{lookup_name}' found in container"
@@ -40,7 +40,7 @@ class Get:
             # We asked the container to get something and got back a
             # class instead of an instance. That means we are doing
             # *injection* so construct an injectable instance.
-            value = pipeline.inject(value)
+            value = pipeline.container.inject(value)
 
         # Are we plucking an attr?
         if self.attr is not None:

@@ -4,7 +4,7 @@ Protocol "interfaces" used for the pieces in pipelines.
 """
 from __future__ import annotations
 
-from typing import Optional, Any, Type, Dict, Callable, Sequence
+from typing import Optional, Any, Type, Dict, Callable, Sequence, Mapping
 
 try:
     from typing import Annotated, Protocol
@@ -14,17 +14,27 @@ except ImportError:
 
 class Container(Protocol):
     """
-    The parts of ``ServiceContainer`` we need for ``Pipeline``.
+    The parts of ``InjectorContainer`` we need for ``Pipeline``.
 
-    The pipeline stores an instance of a ``ServiceContainer``. But
+    The pipeline stores an instance of a ``InjectorContainer``. But
     for testing, we don't want the actual type. Let's make a protocol
     that represents the parts of ``ServiceContainer`` that we need.
     """
 
     context: Any
 
-    def get(self, key: Any, default: Optional[Any]) -> Any:
+    def get(self, key: Any, default: Optional[Any] = None) -> Any:
         pass
+
+    def inject(
+        self,
+        iface_or_type=Any,
+        *,
+        cget_props: Optional[Mapping[str, Any]],
+        system_props: Optional[Mapping[str, Any]],
+        **kwargs,
+    ) -> Any:
+        ...
 
 
 class Pipeline(Protocol):
@@ -37,14 +47,6 @@ class Pipeline(Protocol):
     props: Dict[str, Any]
     target: Callable[..., Any]
     system_props: Optional[Dict[str, Any]] = None
-
-    def lookup(self, lookup_key: Any, default: Optional[Any]) -> Optional[Any]:
-        """ Type-safe limited usage wrapper around container.get"""
-        ...
-
-    def inject(self, lookup_key: Any) -> Optional[Any]:
-        """Type-safe, replaceable wrapper around the injector """
-        ...
 
 
 class Result(Protocol):

@@ -2,9 +2,9 @@
 Operate on the info in a field until a value is produced.
 """
 import builtins
-from dataclasses import dataclass
-from inspect import getmodule, isclass
 import typing
+from dataclasses import dataclass
+from inspect import getmodule
 from typing import Type, Optional, Any, Sequence
 
 from wired import ServiceContainer
@@ -106,7 +106,7 @@ class IsSimpleType:
                 # ...then wired tries to do obj.__qualname__ and fails
                 return Skip(value=IsSimpleType)
 
-            value = self.pipeline.lookup(fi.field_type)
+            value = self.pipeline.container.get(fi.field_type)
             if value is None:
                 # That field type is not in the container, bail with
                 # a NotFound

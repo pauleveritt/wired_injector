@@ -200,9 +200,7 @@ def test_is_simple_type_builtin(
     dummy_title_field.default_value = 'yes'
     field_is_simple_type = IsSimpleType(dummy_title_field, dummy_pipeline)
     result: Result = field_is_simple_type()
-    assert isinstance(result, NotFound)
-    msg = "No service 'str' found in container"
-    assert result.msg == msg
+    assert isinstance(result, Skip)
     assert result.value == IsSimpleType
 
 
