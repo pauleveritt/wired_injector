@@ -8,6 +8,7 @@ from wired_injector.pipeline2.results import (
     Error,
     Found,
     NotFound,
+    Skip,
 )
 
 from .conftest import DummyLookupClass, DummyNoOp
@@ -20,6 +21,16 @@ def single_pipeline(dummy_pipeline: Pipeline) -> Pipeline:
     fake_lookups = getattr(dummy_pipeline.container, 'fake_lookups')
     fake_lookups[DummyLookupClass] = DummyLookupClass()
     return dummy_pipeline
+
+
+def test_field_pipeline_zero(single_pipeline: Pipeline) -> None:
+    # Empty operators. Really shouldn't happen, as it is an
+    # error to use Annotated with nothing after the type.
+    operators = tuple()
+    result: Result = process_field_pipeline(
+        operators=operators, pipeline=single_pipeline
+    )
+    assert isinstance(result, Skip)
 
 
 def test_field_pipeline_one(single_pipeline: Pipeline) -> None:
