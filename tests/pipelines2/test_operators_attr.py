@@ -39,3 +39,17 @@ def test_attr_bogus_first(dummy_pipeline: Pipeline) -> None:
     assert isinstance(result, NotFound)
     assert "Cannot use 'Attr' operator first in the pipeline" == result.msg
     assert Attr == result.value
+
+
+def test_attr_previous_notfound(dummy_pipeline: Pipeline) -> None:
+    # The previous item was a Get() of something that resulted
+    # in NotFound. Attr isn't an operator that can handle NotFound,
+    # so it should just pass the NotFound through.
+    attr = Attr('title')
+    previous = NotFound(msg='Not Found', value=DummyLookupClass)
+    result: Result = attr(
+        previous=previous,
+        pipeline=dummy_pipeline,
+    )
+    assert isinstance(result, NotFound)
+    assert DummyLookupClass == result.value

@@ -12,6 +12,7 @@ from . import FieldInfo, Operator, Result
 from .results import (
     Init,
     Found,
+    NotFound,
     Skip,
 )
 
@@ -94,7 +95,14 @@ class IsSimpleType:
     def __call__(self) -> Result:
         if not self.field_info.has_annotated:
             # No annotation, this rule matches
-            value = self.pipeline.container.get(self.field_info.field_type)
+            value = self.pipeline.lookup(self.field_info.field_type)
+            if value is None:
+                # That field type is not in the container, bail with
+                # a NotFound
+                lookup_name = self.field_info.field_type.__name__
+                msg = f"No service '{lookup_name}' found in container"
+                nf = NotFound(msg=msg, value=IsSimpleType)
+                return nf
             return Found(value=value)
 
         # Nothing matched, so skip

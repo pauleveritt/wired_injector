@@ -2,7 +2,11 @@ from dataclasses import dataclass
 from typing import Optional
 
 from wired import ServiceContainer
-from wired_injector.operators import Get, Attr, Context
+from wired_injector.pipeline2.operators import (
+    Attr,
+    Context,
+    Get,
+)
 
 from examples.factories import (
     View,
