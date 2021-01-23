@@ -107,6 +107,10 @@ class DefaultPipeline:
                     # The target is a dataclass and this field is
                     # marked as init=True, so no injection wanted.
                     break
+                elif isinstance(result, NotFound):
+                    # The rule matched, but resulted in a value that
+                    # couldn't be found, so don't look at any more rules.
+                    break
 
             # All the rules for this field have run.
             if isinstance(result, Found):
@@ -116,8 +120,14 @@ class DefaultPipeline:
                 # This is ok, no need to put anything in the args.
                 pass
             elif isinstance(result, NotFound):
-                # Let's make a nice error message to remove some magic
-                pass
+                # If this field doesn't have a default value, and the rules
+                # resulted in a NotFound, then let's make a nice error
+                # message to remove some magic.
+                if field_info.default_value is None:
+                    tn = self.target.__name__
+                    prefix = f'{tn}|{field_name}|{result.value.__name__}'
+                    msg = f'{prefix}: {result.msg}'
+                    raise LookupError(msg)
             elif isinstance(result, Skip):
                 # No rules provided a value, let's look at the field
                 # field default and get it from there. In theory we could
@@ -128,18 +138,5 @@ class DefaultPipeline:
                 # We shouldn't get here. Every rule should return a
                 # ``Result`` from the allowed list. Raise an error.
                 pass
-
-            # DON'T DO THIS! The Get operator now handles this. We will
-            # delete this once the old injector tests have been moved
-            # over and we can prove this isn't needed.
-            # except FoundValueField as exc:
-            #     this_value = exc.value
-            #     if isclass(this_value):
-            #         # This "service" is actually injectable, instead of
-            #         # a plain factory. At the moment, we just have a class.
-            #         # Use this injector instance to turn it into an instance.
-            #         this_value = self(this_value)
-            #     args[field_name] = this_value
-            #     continue
 
         return self.target(**args)

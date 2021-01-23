@@ -1,6 +1,7 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional
 
+import pytest
 from wired import ServiceContainer
 from wired_injector.pipeline2.operators import (
     Attr,
@@ -259,3 +260,37 @@ def test_context_then_attr(regular_injector):
     target: Target = regular_injector(Target)
     result = target()
     assert result == 'Customer'
+
+
+def test_init_false(regular_injector):
+    # field(init=False) means no injection
+    @dataclass
+    class Target:
+        title: str = field(init=False)
+
+        def __post_init__(self):
+            self.title = 'POST INIT'
+
+    target: Target = regular_injector(Target)
+    result: Target = target
+    assert 'POST INIT' == result.title
+
+
+def test_result_notfound(regular_injector):
+    # The rules ran and finished with NotFound. Should
+    # get a nice LookupError exception message.
+    class Foo:
+        pass
+
+    @dataclass
+    class Target:
+        view: Foo
+
+        def __call__(self) -> Foo:
+            return self.view
+
+    with pytest.raises(LookupError) as exc:
+        regular_injector(Target)
+    msg = "Target|view|IsSimpleType: No service 'Foo' found in container"
+    assert exc.value.args[0] == msg
+
