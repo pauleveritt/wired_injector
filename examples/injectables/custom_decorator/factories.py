@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from wired_injector import injectable
-from wired_injector.operators import Get
+from wired_injector.pipeline.operators import Get
 
 from .constants import Phase
 from .decorators import config

@@ -1,18 +1,21 @@
-from typing import Dict, Any
+import sys
+from dataclasses import dataclass, fields
+from typing import Dict, Any, Tuple
 
 from wired import ServiceContainer
-from wired_injector.pipeline2 import (
+from wired_injector.pipeline import (
     FieldInfo,
     Pipeline,
     Result,
 )
-from wired_injector.pipeline2.results import (
+from wired_injector.pipeline.field_info import dataclass_field_info_factory
+from wired_injector.pipeline.results import (
     Init,
     Found,
     NotFound,
     Skip,
 )
-from wired_injector.pipeline2.rules import (
+from wired_injector.pipeline.rules import (
     AnnotationPipeline,
     IsContainer,
     IsInProps,
@@ -21,6 +24,11 @@ from wired_injector.pipeline2.rules import (
 )
 
 from .conftest import DummyTarget
+
+if sys.version_info[:3] >= (3, 9):
+    from typing import get_type_hints
+else:  # pragma: no cover
+    from typing_extensions import get_type_hints
 
 
 def test_default_field_info(dummy_title_field: FieldInfo) -> None:
@@ -198,6 +206,30 @@ def test_is_simple_type_builtin(
     assert result.value == IsSimpleType
 
 
+def test_is_simple_type_generic(
+    dummy_pipeline: Pipeline,
+) -> None:
+    # No pipeline but looking up a type that is wrapped
+    # in a generic such as Tuple[str, ...]
+    @dataclass
+    class DummyGenericField:
+        titles: Tuple[str, ...] = ('first', 'second')
+
+    # Get the field info
+    type_hints = get_type_hints(DummyGenericField, include_extras=True)
+    fields_mapping = {f.name: f for f in fields(DummyGenericField)}
+    field_infos = [
+        dataclass_field_info_factory(fields_mapping[field_name])
+        for field_name in type_hints
+    ]
+    field_info = field_infos[0]
+
+    field_is_simple_type = IsSimpleType(field_info, dummy_pipeline)
+    result: Result = field_is_simple_type()
+    assert isinstance(result, Skip)
+    assert result.value == IsSimpleType
+
+
 def test_is_not_simple_type(
     dummy_annotated_field: FieldInfo,
     dummy_pipeline: Pipeline,
@@ -207,7 +239,7 @@ def test_is_not_simple_type(
     field_is_not_simple_type = IsSimpleType(dummy_annotated_field, dummy_pipeline)
     result: Result = field_is_not_simple_type()
     assert isinstance(result, Skip)
-    assert str == result.value
+    assert IsSimpleType == result.value
 
 
 def test_annotation_pipeline_no_operators(

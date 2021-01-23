@@ -5,9 +5,9 @@ from inspect import signature
 from typing import Optional, List, NamedTuple
 
 from wired import ServiceContainer
-from wired_injector.pipeline2.field_info import function_field_info_factory
-from wired_injector.operators import Get
-from wired_injector.pipeline2 import FieldInfo
+from wired_injector.pipeline import FieldInfo
+from wired_injector.pipeline.field_info import function_field_info_factory
+from wired_injector.pipeline.operators import Get
 
 from examples.factories import Customer, FrenchCustomer
 

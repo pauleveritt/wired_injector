@@ -3,7 +3,7 @@ from typing import Optional
 
 from wired import service_factory
 from wired_injector import injectable
-from wired_injector.operators import Get
+from wired_injector.pipeline.operators import Get
 
 try:
     from typing import Annotated

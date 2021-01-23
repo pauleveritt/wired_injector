@@ -3,7 +3,7 @@ from typing import Optional
 
 import pytest
 from wired import ServiceContainer
-from wired_injector.pipeline2.operators import (
+from wired_injector.pipeline.operators import (
     Attr,
     Context,
     Get,

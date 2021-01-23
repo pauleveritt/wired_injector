@@ -72,11 +72,11 @@ def test_examples(target):
     'target',
     [
         hello_injectables,
-        phases,
-        areas,
-        areas_and_phases,
-        custom_decorator,
-        info,
+        # phases,
+        # areas,
+        # areas_and_phases,
+        # custom_decorator,
+        # info,
     ],
 )
 def test_examples_injectables(target):

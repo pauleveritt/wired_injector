@@ -1,7 +1,7 @@
 from wired_injector.pipeline import Pipeline
-from wired_injector.pipeline2 import Operator, Result
-from wired_injector.pipeline2.operators import Attr
-from wired_injector.pipeline2.results import Found, NotFound
+from wired_injector.pipeline import Operator, Result
+from wired_injector.pipeline.operators import Attr
+from wired_injector.pipeline.results import Found, NotFound
 
 from .conftest import DummyLookupClass
 

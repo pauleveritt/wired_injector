@@ -1,5 +1,5 @@
-from wired_injector.pipeline2 import Pipeline, Container
-from wired_injector.pipeline2.default_pipeline import DefaultPipeline
+from wired_injector.pipeline import Pipeline, Container
+from wired_injector.pipeline.default_pipeline import DefaultPipeline
 
 from .conftest import (
     DummyTarget,

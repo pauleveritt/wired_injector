@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from wired_injector import injectable
-from wired_injector.operators import Get, Attr
+from wired_injector.pipeline.operators import Get, Attr
 
 try:
     from typing import Annotated

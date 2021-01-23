@@ -2,11 +2,13 @@
 Operate on the info in a field until a value is produced.
 """
 from dataclasses import dataclass
+from inspect import getmodule
+import typing
 from typing import Type, Optional, Any, Sequence
 
 from wired import ServiceContainer
-from wired_injector.pipeline2 import Pipeline
-from wired_injector.pipeline2.field_pipeline import process_field_pipeline
+from wired_injector.pipeline import Pipeline
+from wired_injector.pipeline.field_pipeline import process_field_pipeline
 
 from . import FieldInfo, Operator, Result
 from .results import (
@@ -95,6 +97,13 @@ class IsSimpleType:
     def __call__(self) -> Result:
         if not self.field_info.has_annotated:
             # No annotation, this rule matches
+
+            if getmodule(self.field_info.field_type) is typing:
+                # Test this because, when you have a field like:
+                #   names: Tuple[str, ...] = ('Name 1',)  # noqa: E800
+                # ...then wired tries to do obj.__qualname__ and fails
+                return Skip(value=IsSimpleType)
+
             value = self.pipeline.lookup(self.field_info.field_type)
             if value is None:
                 # That field type is not in the container, bail with
@@ -106,7 +115,7 @@ class IsSimpleType:
             return Found(value=value)
 
         # Nothing matched, so skip
-        return Skip(value=self.field_info.field_type)
+        return Skip(value=IsSimpleType)
 
 
 @dataclass

@@ -13,7 +13,7 @@ from dataclasses import Field, MISSING
 from inspect import Parameter
 from typing import NamedTuple, Optional, Type, Any, Tuple, Union, TYPE_CHECKING
 
-from wired_injector.pipeline2.rules import DefaultFieldInfo
+from wired_injector.pipeline.rules import DefaultFieldInfo
 
 if TYPE_CHECKING:
     from wired_injector.operators import Operator

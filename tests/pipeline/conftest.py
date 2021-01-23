@@ -1,23 +1,44 @@
-from dataclasses import dataclass, field
-from typing import Any, Dict, TypeVar, Type, Optional, Callable, Sequence, NamedTuple
+import sys
+from dataclasses import dataclass, field, fields
+from typing import Any, Dict, TypeVar, Type, Optional, Callable, Sequence, NamedTuple, List
 
 import pytest
-from wired_injector.pipeline2 import (
+from wired_injector.pipeline import (
     Container,
     FieldInfo,
     Pipeline,
     Result,
 )
-from wired_injector.pipeline2.operators import Context
-from wired_injector.pipeline2.results import Found
-from wired_injector.pipeline2.rules import DefaultFieldInfo
+from wired_injector.pipeline.field_info import dataclass_field_info_factory
+from wired_injector.pipeline.operators import Context
+from wired_injector.pipeline.results import Found
+from wired_injector.pipeline.rules import DefaultFieldInfo
 
 try:
     from typing import Protocol
 except ImportError:
     from typing_extensions import Protocol  # type: ignore # noqa: F401
 
+# get_type_hints is augmented in Python 3.9. We need to use
+# typing_extensions if not running on an older version
+if sys.version_info[:3] >= (3, 9):
+    from typing import get_type_hints
+else:
+    from typing_extensions import get_type_hints
+
 LookupType = TypeVar('LookupType')
+
+
+def _get_field_infos(target) -> List[FieldInfo]:
+    # We iterate through type hints to preserve ordering, though
+    # perhaps it doesn't matter.
+    type_hints = get_type_hints(target, include_extras=True)
+    fields_mapping = {f.name: f for f in fields(target)}
+    field_infos = [
+        dataclass_field_info_factory(fields_mapping[field_name])
+        for field_name in type_hints
+    ]
+    return field_infos
 
 
 @dataclass

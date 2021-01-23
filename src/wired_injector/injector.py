@@ -5,7 +5,7 @@ from typing import Tuple, Type, Any, Optional
 
 from wired import ServiceContainer
 
-from .pipeline2.default_pipeline import DefaultPipeline
+from .pipeline.default_pipeline import DefaultPipeline
 
 # get_type_hints is augmented in Python 3.9. We need to use
 # typing_extensions if not running on an older version

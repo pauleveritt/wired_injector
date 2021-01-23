@@ -1,5 +1,5 @@
-from wired_injector.pipeline2 import Result
-from wired_injector.pipeline2.results import (
+from wired_injector.pipeline import Result
+from wired_injector.pipeline.results import (
     Error,
     Found,
     NotFound,

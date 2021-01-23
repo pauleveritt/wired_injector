@@ -1,7 +1,7 @@
 from wired_injector.pipeline import Pipeline
-from wired_injector.pipeline2 import Operator, Result
-from wired_injector.pipeline2.operators import Get
-from wired_injector.pipeline2.results import (
+from wired_injector.pipeline import Operator, Result
+from wired_injector.pipeline.operators import Get
+from wired_injector.pipeline.results import (
     Error,
     Found,
     NotFound,

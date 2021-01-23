@@ -1,10 +1,10 @@
 from typing import Sequence
 
 import pytest
-from wired_injector.pipeline2 import Operator, Pipeline, Result
-from wired_injector.pipeline2.field_pipeline import process_field_pipeline
-from wired_injector.pipeline2.operators import Attr, Get
-from wired_injector.pipeline2.results import (
+from wired_injector.pipeline import Operator, Pipeline, Result
+from wired_injector.pipeline.field_pipeline import process_field_pipeline
+from wired_injector.pipeline.operators import Attr, Get
+from wired_injector.pipeline.results import (
     Error,
     Found,
     NotFound,
