@@ -6,7 +6,12 @@ from wired_injector.pipeline2 import (
     Pipeline,
     Result,
 )
-from wired_injector.pipeline2.results import Init, Skip, Found, Error
+from wired_injector.pipeline2.results import (
+    Init,
+    Found,
+    NotFound,
+    Skip,
+)
 from wired_injector.pipeline2.rules import (
     AnnotationPipeline,
     IsContainer,
@@ -17,6 +22,7 @@ from wired_injector.pipeline2.rules import (
 
 from .conftest import DummyTarget
 
+
 def test_default_field_info(dummy_title_field: FieldInfo) -> None:
     # Ensure it meets the protocol
     meets_protocol: FieldInfo = dummy_title_field
@@ -24,6 +30,7 @@ def test_default_field_info(dummy_title_field: FieldInfo) -> None:
 
     dfi = dummy_title_field
     assert dfi.field_name == 'title'
+    assert False is dfi.has_annotated
 
 
 def test_is_init_false(
@@ -172,6 +179,23 @@ def test_is_simple_type(
     result: Result = field_is_simple_type()
     assert isinstance(result, Found)
     assert result.value == dt
+
+
+def test_is_simple_type_builtin(
+    dummy_title_field: FieldInfo,
+    dummy_pipeline: Pipeline,
+) -> None:
+    # No pipeline but looking up a type that is built-in and
+    # trying to look it up causes a TypeError in wired, e.g.
+    # customer_name: str = 'Customer Name'  # noqa: E800
+    dummy_title_field.field_type = str
+    dummy_title_field.default_value = 'yes'
+    field_is_simple_type = IsSimpleType(dummy_title_field, dummy_pipeline)
+    result: Result = field_is_simple_type()
+    assert isinstance(result, NotFound)
+    msg = "No service 'str' found in container"
+    assert result.msg == msg
+    assert result.value == IsSimpleType
 
 
 def test_is_not_simple_type(
