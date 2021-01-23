@@ -84,7 +84,7 @@ def FunctionTarget(title: str = 'Some FunctionTarget') -> str:
 
 
 def test_field_target_is_function(dummy_pipeline: Pipeline) -> None:
-    setattr(dummy_pipeline, 'target', FunctionTarget())
+    setattr(dummy_pipeline, 'target', FunctionTarget)
     field = Field('title')
     result = field(None, dummy_pipeline)
     assert isinstance(result, Found)
