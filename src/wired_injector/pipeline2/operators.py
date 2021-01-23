@@ -68,6 +68,11 @@ class Attr:
             msg = "Cannot use 'Attr' operator first in the pipeline"
             return NotFound(msg=msg, value=Attr)
 
+        elif isinstance(previous, NotFound):
+            # This operator doesn't handle NotFound so just pass
+            # it through.
+            return previous
+
         # Get the value out of the Result passed in as previous
         previous_value: Any = previous.value
         value = getattr(previous_value, self.name)

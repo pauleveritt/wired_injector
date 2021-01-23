@@ -23,7 +23,7 @@ class Container(Protocol):
 
     context: Any
 
-    def get(self, key: Any) -> Any:
+    def get(self, key: Any, default: Optional[Any]) -> Any:
         pass
 
 

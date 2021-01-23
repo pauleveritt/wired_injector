@@ -73,11 +73,11 @@ class DefaultPipeline:
 
     def lookup(self, lookup_key: Any) -> Optional[Any]:
         """ Type-safe limited usage wrapper around container.get"""
-        return None
+        return self.container.get(lookup_key, default=None)
 
     def inject(self, lookup_key: Any) -> Optional[Any]:
         """Type-safe, replaceable wrapper around the injector """
-        return None
+        raise NotImplementedError()
 
     def __call__(self) -> Any:
         args = {}
