@@ -67,6 +67,7 @@ class Attr(Operator):
         previous: Any,
         pipeline: Pipeline,
     ):
+        raise NotImplementedError()
         return getattr(previous, self.name)
 
 

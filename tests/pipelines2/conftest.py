@@ -34,6 +34,12 @@ class DummyLookupClass:
     title: str = 'Dummy Lookup Class'
 
 
+@dataclass
+class DummyDoubleLookupClass:
+    title: str = 'Dummy Lookup Class'
+    dummy_lookup_class: DummyLookupClass = field(default_factory=DummyLookupClass)
+
+
 class DummyLookupProtocol(Protocol):
     title: str = 'Dummy Lookup Class'
 

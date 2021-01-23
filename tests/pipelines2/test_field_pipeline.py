@@ -11,7 +11,7 @@ from wired_injector.pipeline2.results import (
     Skip,
 )
 
-from .conftest import DummyLookupClass, DummyNoOp
+from .conftest import DummyLookupClass, DummyNoOp, DummyDoubleLookupClass
 
 
 @pytest.fixture
@@ -44,6 +44,22 @@ def test_field_pipeline_one(single_pipeline: Pipeline) -> None:
 
 def test_field_pipeline_two(single_pipeline: Pipeline) -> None:
     operators: Sequence[Operator] = (Get(DummyLookupClass), Attr('title'))
+    result: Result = process_field_pipeline(
+        operators=operators, pipeline=single_pipeline
+    )
+    assert isinstance(result, Found)
+    assert 'Dummy Lookup Class' == result.value
+
+
+def test_field_pipeline_two_attr(single_pipeline: Pipeline) -> None:
+    # The injector finds a field that needs another injectable
+    fake_lookups = getattr(single_pipeline.container, 'fake_lookups')
+    fake_lookups[DummyDoubleLookupClass] = DummyDoubleLookupClass()
+    operators: Sequence[Operator] = (
+        Get(DummyDoubleLookupClass),
+        Attr('dummy_lookup_class'),
+        Attr('title'),
+    )
     result: Result = process_field_pipeline(
         operators=operators, pipeline=single_pipeline
     )
