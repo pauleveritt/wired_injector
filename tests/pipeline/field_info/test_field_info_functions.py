@@ -1,8 +1,9 @@
 """
 Test FieldInfo from parameters on a function.
 """
+
 from inspect import signature
-from typing import Optional, List, Sequence
+from typing import Optional, Sequence
 
 from wired import ServiceContainer
 from wired_injector.pipeline import FieldInfo
