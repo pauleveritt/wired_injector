@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, Optional, TYPE_CHECKING, Dict
 
-if TYPE_CHECKING:
+if TYPE_CHECKING: # pragma: no cover
     from wired_injector import InjectorContainer
 
 from .pipeline.default_pipeline import DefaultPipeline

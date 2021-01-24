@@ -83,11 +83,11 @@ class Injectables:
     def find_by_area(
         self,
         area: Optional[Enum] = None,
-        by_phase: Optional[bool] = False,
+        by_phase: bool = False,
     ) -> Optional[List[Injectable]]:
         """ Return the results by area, optionally sorted by phase """
         if area is None:
-            if by_phase is not None:
+            if by_phase:
                 results = sorted(self.items, key=SortedValue('phase'))
                 return results
 

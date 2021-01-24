@@ -8,11 +8,11 @@ from typing import Optional, Any, Type, Dict, Callable, Sequence, Mapping
 
 try:
     from typing import Annotated, Protocol
-except ImportError:
+except ImportError:  # pragma: no cover
     from typing_extensions import Annotated, Protocol  # type: ignore # noqa: F401
 
 
-class Container(Protocol):
+class Container(Protocol):  # pragma: no cover
     """
     The parts of ``InjectorContainer`` we need for ``Pipeline``.
 
@@ -37,7 +37,7 @@ class Container(Protocol):
         ...
 
 
-class Pipeline(Protocol):
+class Pipeline(Protocol):  # pragma: no cover
     """
     Sequence of fields which results in arguments to construct.
     """
@@ -49,7 +49,7 @@ class Pipeline(Protocol):
     system_props: Optional[Dict[str, Any]] = None
 
 
-class Result(Protocol):
+class Result(Protocol):  # pragma: no cover
     """
     Result classes which indicate status and hold information.
 
@@ -63,7 +63,7 @@ class Result(Protocol):
     msg: Optional[str] = None
 
 
-class Operator(Protocol):
+class Operator(Protocol):  # pragma: no cover
     """
     A step in a FieldPipeline.
 
@@ -77,7 +77,7 @@ class Operator(Protocol):
         ...
 
 
-class FieldInfo(Protocol):
+class FieldInfo(Protocol):  # pragma: no cover
     """
     Necessary subset of field/parameter metadata for rules.
     """
@@ -90,7 +90,7 @@ class FieldInfo(Protocol):
     has_annotated: bool
 
 
-class Rule(Protocol):
+class Rule(Protocol):  # pragma: no cover
     """
     Attempt to handle a field or parameter.
 

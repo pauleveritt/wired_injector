@@ -59,6 +59,11 @@ def test_find_all(full_injectables):
     assert len(results) == len(full_injectables.items)
 
 
+def test_find_area_none(full_injectables):
+    results = full_injectables.find_by_area(area=None)
+    assert len(results) == len(full_injectables.items)
+
+
 def test_find_area(full_injectables, system_init_two):
     full_injectables.commit(area=Area.system)
     results = full_injectables.find_by_area(area=Area.system)
@@ -68,6 +73,11 @@ def test_find_area(full_injectables, system_init_two):
 
 def test_find_area_phase(full_injectables):
     results = full_injectables.find_by_area(area=Area.system, by_phase=True)
+    first = results[0]
+    assert Phase.init == first.phase
+
+def test_find_by_phase(full_injectables):
+    results = full_injectables.find_by_area(by_phase=True)
     first = results[0]
     assert Phase.init == first.phase
 
