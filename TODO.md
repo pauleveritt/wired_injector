@@ -2,18 +2,12 @@
 
 ## Now
 
-- Pipeline, PipelineField, PipelineStep
-  * Handle common exceptions more gracefully
-  * Provide access to props and system_props
-  * Write a `Props('propname')` operator
-  * Introduce logging to help debugging
-  * Research PyCharm breakpoints (doesn't stop on a return)
-  * Put a specific plug-point to enable debugging breakpoints
-
 ## Next
 
 ## Soon
 
+- Write a `Props('propname')` operator
+  
 - Context manager
   * https://medium.com/swlh/python-coding-tip-using-the-with-statement-instead-try-finally-f45a645c6008
 
@@ -55,3 +49,7 @@
 - Create a `Field` operator that can fetch the default value from the target
 - Config system which can record all the injectables, apply them, then report on them for uses such as generation of Sphinx config directives.
 - Make an example showing plain-old-class, perhaps even typed-dict
+- Pipeline, Rule, Operator rewrite
+  * Handle common exceptions more gracefully
+  * Introduce logging to help debugging
+
