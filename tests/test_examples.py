@@ -36,6 +36,15 @@ from examples.usage import (
     context_override,
 )
 
+from examples.protocols import (
+    simple_app,
+    second_customer,
+    base_customer,
+    second_greeter,
+    base_greeter,
+    simple_protocols,
+)
+
 
 @pytest.mark.parametrize(
     'target',
@@ -80,5 +89,21 @@ def test_examples(target):
     ],
 )
 def test_examples_injectables(target):
+    expected, actual = target.test()
+    assert expected == actual
+
+
+@pytest.mark.parametrize(
+    'target',
+    [
+        simple_app,
+        second_customer,
+        base_customer,
+        second_greeter,
+        base_greeter,
+        simple_protocols,
+    ],
+)
+def test_examples_protocols(target):
     expected, actual = target.test()
     assert expected == actual

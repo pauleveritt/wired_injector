@@ -2,6 +2,10 @@
 
 ## Now
 
+- Move `DummyPipeline` into fixtures somewhere and make reusable in `Themester`
+  * Then do the same for other fixtures
+  * Then retire lots of other "fixtures" such as `Customer`
+  
 ## Next
 
 ## Soon

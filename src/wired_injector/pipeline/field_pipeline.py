@@ -22,7 +22,8 @@ def process_field_pipeline(
     iter_operators = iter(operators)
     # Get the first operator
     try:
-        result = next(iter_operators)(None, pipeline)
+        operator: Operator = next(iter_operators)
+        result = operator(None, pipeline)
     except StopIteration:
         # This means the pipeline was empty, so Skip.
         return Skip(value=Pipeline)
@@ -34,7 +35,7 @@ def process_field_pipeline(
     # Proceed with remaining operators
     while iter_operators:
         try:
-            operator = next(iter_operators)
+            operator: Operator = next(iter_operators)
             result = operator(result, pipeline)
 
             # If this is an error, don't process any more operators
