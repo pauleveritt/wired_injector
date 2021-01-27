@@ -43,6 +43,9 @@ from examples.protocols import (
     second_greeter,
     base_greeter,
     simple_protocols,
+    adherent,
+    pluggable_app,
+    pluggable_system,
 )
 
 
@@ -102,6 +105,9 @@ def test_examples_injectables(target):
         second_greeter,
         base_greeter,
         simple_protocols,
+        adherent,
+        pluggable_app,
+        pluggable_system,
     ],
 )
 def test_examples_protocols(target):

@@ -12,5 +12,7 @@ We'll see more later. But this is such a hard sell, let's set markers early.
 - Design Patterns, Uncle Bob's open/closed in [SOLID](https://stackify.com/solid-design-open-closed-principle/), Bertrand Meyer [Design By Contract](https://en.wikipedia.org/wiki/Design_by_contract) 
   * This isn't about "Java"
   * It's about scalable designs
-  
+- TypeScript showed
+- Mostly for provider-side
+
 [Previous: Caveats](caveats.md) | [Next: Key Insight](insight.md)

@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import Optional
 
-from wired import service_factory
+from wired import service_factory, ServiceContainer
 from wired_injector import injectable
 from wired_injector.pipeline.operators import Get
 
@@ -23,15 +25,15 @@ class Customer:
 class View:
     name: Optional[str] = 'View'
 
-    def __call__(self):
+    def __call__(self) -> Optional[str]:
         return self.name
 
     @property
-    def caps_name(self):
+    def caps_name(self) -> Optional[str]:
         return self.name.upper() if self.name is not None else None
 
     @classmethod
-    def __wired_factory__(cls, container):
+    def __wired_factory__(cls, container: ServiceContainer) -> View:
         return cls()
 
 
@@ -41,7 +43,7 @@ class View:
 class Greeting:
     customer_name: Annotated[str, Get(View, attr='caps_name')]
 
-    def __call__(self):
+    def __call__(self) -> str:
         return f'Hello {self.customer_name}'
 
 
@@ -58,5 +60,5 @@ class FrenchView(View):
     name: Optional[str] = 'French View'
 
     @classmethod
-    def __wired_factory__(cls, container):
+    def __wired_factory__(cls, container: ServiceContainer) -> FrenchView:
         return cls()

@@ -1,10 +1,3 @@
-"""
-Solve problems with base ``Customer``.
-
-Nouns are a reasonable usage of superclasses for (nominal)
-typing. But (haha) even this has some problems.
-"""
-
 from dataclasses import dataclass
 from typing import Tuple
 
@@ -14,8 +7,8 @@ class Customer:
 
 
 @dataclass()
-class RegularCustomer(Customer):
-    first_name: str = 'Marie'
+class AmericanCustomer(Customer):
+    first_name: str = 'Judy'
 
 
 @dataclass()
@@ -33,11 +26,11 @@ class Greeter:
 
 
 def test() -> Tuple[Tuple[str, str], Tuple[str, str]]:
-    regular_customer = RegularCustomer()
+    regular_customer = AmericanCustomer()
     greeter = Greeter()
     greeting1 = greeter.greet(regular_customer)
     french_customer = FrenchCustomer()
     greeting2 = greeter.greet(french_customer)
 
-    expected = ('Hello Marie!', 'Hello Sophie!')
+    expected = ('Hello Judy!', 'Hello Sophie!')
     return expected, (greeting1, greeting2)

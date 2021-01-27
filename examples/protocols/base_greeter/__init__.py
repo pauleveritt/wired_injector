@@ -1,16 +1,3 @@
-"""
-Base ``Greeter``.
-
-Works in Python. Static analysis: ok in PyCharm and mypy.
-
-But:
-- ``Greeter`` is a verb-y kind of thing
-- Those feel extra-yucky for composition-over-inheritance
-- See how the method was moved to superclass?
-- What would be alternative? (down the rabbit hole)
-- Look at line 57
-"""
-
 from dataclasses import dataclass
 from typing import List, Tuple
 

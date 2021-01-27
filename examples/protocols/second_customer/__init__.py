@@ -1,9 +1,3 @@
-"""
-Add a second kind of ``Customer``.
-
-Works in Python. Fails in static analysis (PyCharm, mypy.)
-"""
-
 from dataclasses import dataclass
 from typing import Tuple
 

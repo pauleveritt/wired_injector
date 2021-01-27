@@ -1,14 +1,3 @@
-"""
-Simple greeting app: ``Greeter greets Customer``.
-
-In this first step we just show that starting point of a pluggable app.
-
-Works in:
-- Python
-- PyCharm
-- mypy
-"""
-
 from dataclasses import dataclass
 from typing import Tuple
 

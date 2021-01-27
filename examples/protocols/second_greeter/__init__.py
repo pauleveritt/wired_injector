@@ -1,14 +1,3 @@
-"""
-Now a second ``Greeter``.
-
-- Different salutation
-- Hardwired decision on what kind of customer
-  * Then get the correct greeter
-- But at least the two ``greet`` methods have ``Customer``
-
-Works in Python. Static analysis: ok in PyCharm, fails in mypy.
-"""
-
 from dataclasses import dataclass
 from typing import Tuple, List
 

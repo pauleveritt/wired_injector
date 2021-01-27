@@ -1,3 +1,13 @@
+"""
+Get warnings if the implementation doesn't conform to protocol.
+
+Works in Python. Static analysis: ok in PyCharm and fails mypy.
+
+- Add usage of the `@adherent` decorator from Glyph
+- Asserts that the following "implements" a protocol
+- Works in mypy (no-op in PyCharm)
+"""
+
 from typing import Tuple, Mapping, List
 
 from .models import (
@@ -14,13 +24,12 @@ def test() -> Tuple[List[str], List[str]]:
         RegularCustomer(), FrenchCustomer(),
     )
     greetings = []
-    # Oops: The pain!! Time for some Any
-    greeters: Mapping[Customer, Greeter] = {
-        RegularCustomer: RegularGreeter(),
-        FrenchCustomer: FrenchGreeter(),
-    }
+    greeters: Mapping[str, Greeter] = dict(
+        RegularCustomer=RegularGreeter(),
+        FrenchCustomer=FrenchGreeter(),
+    )
     for customer in customers:
-        greeter = greeters[customer.__class__]
+        greeter = greeters[customer.__class__.__name__]
         greeting = greeter.greet(customer)
         greetings.append(greeting)
 
