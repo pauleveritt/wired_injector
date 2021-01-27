@@ -309,10 +309,17 @@ Let's look at the protocols:
 The system might ship with some default implementations of views:
 
 ```{literalinclude} ../../examples/protocols/pluggable_app/views.py
+---
+emphasize-lines: 12-12, 25-25
+---
 ```
 
 Again, these implementations make no statement about the protocols they support.
 Their support is expressed simply by have the shape of some protocol.
+
+Notice the `customer: Customer` dataclass field?
+That's `wired_injector` in action.
+The view is saying: "Go find me the appropriate implementation of a `Customer`."
 
 The `@injectable` decorator is part of `wired_injector`, which is a system for helping build pluggable applications with dependency injection.
 These lines say "the following class is a kind of View and should be used when the context is a FrenchCustomer".
