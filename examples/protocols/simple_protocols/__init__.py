@@ -20,6 +20,7 @@ def test() -> Tuple[List[str], List[str]]:
         FrenchCustomer: FrenchGreeter(),
     }
     for customer in customers:
+        # Oops: PyCharm doesn't like this without the above
         greeter = greeters[customer.__class__]
         greeting = greeter.greet(customer)
         greetings.append(greeting)

@@ -214,10 +214,14 @@ As you can see, though they look like classes, they actually have no implementat
 Our implementations are in another file:
 
 ```{literalinclude} ../../examples/protocols/simple_protocols/models.py
+---
+emphasize-lines: 20-20, 29-29
+---
 ```
 
-Nothing interesting here.
-In fact, what's interesting is *what's missing*: no subclassing, and no mention of the protocols that these implement!
+As you can see, our `greet` methods pass in a `Customer` protocol.
+This **lets me test them** with a dummy while still getting the benefits of static typing (in fact, avoiding a failure.)
+In fact, what's more interesting is *what's missing*: no subclassing, and no mention of the protocols that these implement!
 
 Let's point out some interesting items at this point:
 
@@ -351,3 +355,18 @@ Since the site is scanned last, it wins, and this becomes the default view imple
 
 Even better, since protocols are used, you can use some tooling to tell you if your site's view breaks the current *or future* contract.
 
+## Challenges
+
+That's a roundup of using protocols in a real system.
+Let's discuss some of the downsides, after using them for a while:
+
+- You'll get a bunch of "Yuck, Java" reactions
+- It's *more work* to write a spec and an implementation
+- Nearly everything is broken...this is new and rarely used, not sure it will ever catch on
+  - Every protocol ticket in mypy feels obscure, magical, and unlikely to ever get fixed
+- Squigglies, but the error is...?
+- Interplay with metaprogramming (dataclasses, decorators, etc.)
+- Can't say "implements"
+- Can't use Protocol as a type hint
+- Runtime feels like a hack
+- No second-generation help (e.g. "PyCharm let me navigate to all the implementers", adapters are probably out)
